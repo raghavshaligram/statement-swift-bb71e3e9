@@ -105,6 +105,35 @@ function hasDate(text: string): boolean {
   return DATE_PATTERNS.some(({ re }) => re.test(text));
 }
 
+/**
+ * True if a row is nothing but a date -- e.g. a table cell's date got OCR'd
+ * onto its own physical line, separated from the rest of that same row's
+ * content (confirmed on a real scanned credit-card statement: a tight line-
+ * spacing table produced a bare "01/22/18" row immediately followed by
+ * "SM NORTH TRAVEL CLUB QUEZON CITY 6,500.00" as a *separate* OCR row, even
+ * though both are really one transaction). Used to break anchor-assignment
+ * ties correctly for this specific case -- see groupRowsIntoBlocks.
+ */
+function isDateOnlyRow(text: string, dateOrder: DateOrder): boolean {
+  const found = findDate(text, dateOrder);
+  if (!found) return false;
+  const remainder = text.replace(found.matchedText, "").trim();
+  return remainder.length === 0;
+}
+
+// Common statement-summary phrases across different bank/card statement
+// styles -- deliberately broad enough to catch real variants ("Opening
+// Balance" vs "Previous Balance" vs "Balance Forward" vs "Beginning
+// Balance"), but only ever applied to rows that ALSO have no date (see call
+// site), so this can't accidentally exclude a real dated transaction whose
+// own description happens to contain one of these words.
+const SUMMARY_ROW_RE =
+  /\b(previous balance|opening balance|beginning balance|balance forward|closing balance|new balance|statement balance|total amount due|minimum amount due|minimum payment due)\b/i;
+
+function isStatementSummaryRow(text: string): boolean {
+  return SUMMARY_ROW_RE.test(text);
+}
+
 // --- amount parsing -----------------------------------------------------------
 
 // Matches a single standalone number-shaped token -- used against individual
@@ -123,13 +152,22 @@ function hasDate(text: string): boolean {
 // already recognized elsewhere in the app (detect-currency.ts) and to allow
 // a leading + as well as -, rather than silently finding zero numbers on
 // every row of a statement that uses either convention.
-const AMOUNT_ITEM_RE = /^\(?[+-]?[$£€¥₹]?(?:\d{1,2}(?:,\d{2})+,\d{3}|\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2})\)?$/;
+const AMOUNT_ITEM_RE = /^\(?[+-]?[$£€¥₹]?(?:\d{1,2}(?:,\d{2})+,\d{3}|\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2})\)?[CDcd]?$/;
 
 function parseAmountToken(token: string): number {
-  const negative = /^\(.*\)$/.test(token.trim()) || token.trim().startsWith("-");
-  const cleaned = token.replace(/[()$£€¥₹,+\s-]/g, "");
-  const value = parseFloat(cleaned);
-  return negative ? -Math.abs(value) : value;
+  const trimmed = token.trim();
+  const negative = /^\(.*\)$/.test(trimmed) || trimmed.startsWith("-");
+  // A trailing C/D suffix is an explicit Dr/Cr marker some statements use
+  // instead of (or alongside) a leading sign or parentheses -- confirmed on
+  // a real scanned credit-card statement ("20,000.00C" for a payment).
+  // Matches our existing output-side convention (Cr = positive, Dr =
+  // negative): "C" forces positive, "D" forces negative, taking priority
+  // over a leading sign/parens if both were somehow present.
+  const suffixMatch = trimmed.match(/([CDcd])$/);
+  const cleaned = token.replace(/[()$£€¥₹,+\s-]/g, "").replace(/[CDcd]$/, "");
+  const value = Math.abs(parseFloat(cleaned));
+  if (suffixMatch) return suffixMatch[1].toUpperCase() === "D" ? -value : value;
+  return negative ? -value : value;
 }
 
 type NumberToken = { value: number; raw: string; x: number };
@@ -197,7 +235,7 @@ type Block = { rows: Row[]; anchorRow: Row };
  * edge case, not fully solved here, and worth checking for on further real
  * statements.
  */
-function groupRowsIntoBlocks(rows: Row[]): Block[] {
+function groupRowsIntoBlocks(rows: Row[], dateOrder: DateOrder): Block[] {
   const anchorIndices: number[] = [];
   rows.forEach((row, i) => {
     if (hasDate(row.text)) anchorIndices.push(i);
@@ -212,12 +250,33 @@ function groupRowsIntoBlocks(rows: Row[]): Block[] {
     let nearestDist = Math.abs(i - nearest);
     for (const anchorIdx of anchorIndices) {
       const dist = Math.abs(i - anchorIdx);
-      // Prefer the later anchor on ties, since interior prefix lines that are
-      // equidistant from the previous and next anchor belong to the next
-      // transaction, not the previous one (see block comment above).
-      if (dist < nearestDist || (dist === nearestDist && anchorIdx > nearest)) {
+      if (dist < nearestDist) {
         nearest = anchorIdx;
         nearestDist = dist;
+      } else if (dist === nearestDist && anchorIdx !== nearest) {
+        // Tie between the earlier anchor (`nearest`) and this later one.
+        // Default: prefer the later anchor, since interior prefix lines
+        // that are equidistant from the previous and next anchor usually
+        // belong to the next transaction (a payee name printed above its
+        // own date/amount line), not the previous one.
+        //
+        // Real exception found via a scanned credit-card statement: when
+        // the EARLIER anchor is a bare date-only row (its own date got
+        // OCR'd onto its own line, separated from the rest of that same
+        // transaction by tight line spacing), the equidistant row in
+        // between is almost always the rest of THAT split transaction, not
+        // a prefix for the next one -- confirmed directly: a table row
+        // split into "01/22/18" (anchor, nothing else) then "SM NORTH
+        // TRAVEL CLUB QUEZON CITY 6,500.00" (no date, tied between this
+        // anchor and the next one) was losing that content to the
+        // following transaction instead of reuniting it with its own date,
+        // both silently corrupting the following transaction's amount and
+        // dropping this one's entirely (empty block, no amount, discarded).
+        const earlierIsDateOnly = isDateOnlyRow(rows[nearest].text, dateOrder);
+        if (!earlierIsDateOnly) {
+          nearest = anchorIdx;
+          nearestDist = dist;
+        }
       }
     }
     blockByAnchor.get(nearest)!.push(rows[i]);
@@ -459,8 +518,20 @@ export function parseTransactionsFromPages(pages: PageText[], fullText: string):
     const columns = header ? header.columns : carriedColumns;
     if (header) carriedColumns = header.columns;
 
-    const candidateRows = header ? rows.slice(header.headerRowIndex + 1) : rows;
-    const blocks = groupRowsIntoBlocks(candidateRows);
+    // Statement-summary lines ("Previous Balance", "Total Amount Due", etc.)
+    // have no date of their own, so they were previously getting absorbed as
+    // noise into whichever adjacent dated transaction was nearest -- confirmed
+    // on a real scanned credit-card statement: "Previous Balance 25,000.00"
+    // merged into the first real transaction's block, and its 25,000.00
+    // figure won out over that transaction's own real amount. Filtered out
+    // here, before block-grouping, rather than trying to detect and strip
+    // them after the fact. Deliberately requires BOTH the phrase match AND no
+    // date on the row -- a real dated transaction is never excluded just
+    // because its own description happens to contain one of these words.
+    const candidateRows = (header ? rows.slice(header.headerRowIndex + 1) : rows).filter(
+      (row) => hasDate(row.text) || !isStatementSummaryRow(row.text)
+    );
+    const blocks = groupRowsIntoBlocks(candidateRows, dateOrder);
 
     for (const block of blocks) {
       const txn = buildTransactionFromBlock(block, columns, dateOrder, page.pageNumber);
