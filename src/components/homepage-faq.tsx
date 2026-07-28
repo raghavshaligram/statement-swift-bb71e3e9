@@ -20,6 +20,10 @@ const FAQ: Array<{ q: string; a: string }> = [
     a: "Named detection for 23+ major banks across the US, UK, Canada, and India — including Chase, Bank of America, Citibank, Barclays, HSBC, RBC, ICICI, HDFC, and more — plus a generic layout parser for any other bank's text-based PDF statement. Export to Excel, CSV, Tally XML, OFX, QIF, QBO, or IIF.",
   },
   {
+    q: "Does it work with credit card statements, not just bank accounts?",
+    a: "The generic parser handles credit card statements reasonably well — it's been tested against a real scanned credit card statement and correctly extracted all its transactions. Credit card statement layouts vary a lot between issuers, though, so this isn't as thoroughly verified across issuers as our named bank detection is. Always double-check extracted rows before exporting.",
+  },
+  {
     q: "Does it work with scanned PDFs or photos?",
     a: "Yes, both, using on-device OCR automatically — no upload, same as everything else. Scanned PDFs work the same as any PDF, no signup needed. Uploading a raw photo or screenshot (JPG/PNG/WEBP) requires a free account, since photo OCR costs the same to run as scanning a PDF. Results depend on image quality: a clear scan or screenshot works well, but a blurry or heavily compressed photo may not read correctly. Always double-check extracted rows before exporting.",
   },
