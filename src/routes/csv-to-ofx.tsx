@@ -29,10 +29,10 @@ const FAQ = [
 export const Route = createFileRoute("/csv-to-ofx")({
   head: () => ({
     meta: [
-      { title: "CSV to OFX Converter — Free, On-Device — LedgerLocal" },
+      { title: "CSV to OFX Converter — Free — LedgerLocal" },
       {
         name: "description",
-        content: "Convert any CSV to OFX for QuickBooks or Quicken import. Free, unlimited, nothing uploaded — runs entirely in your browser.",
+        content: "Free CSV to OFX converter for QuickBooks or Quicken import. Auto-detects your CSV's columns — no template required. Nothing uploaded, runs entirely in your browser.",
       },
     ],
   }),

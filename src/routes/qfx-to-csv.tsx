@@ -30,10 +30,10 @@ const FAQ = [
 export const Route = createFileRoute("/qfx-to-csv")({
   head: () => ({
     meta: [
-      { title: "QFX to CSV Converter — Free, On-Device — LedgerLocal" },
+      { title: "QFX to CSV Converter Free — LedgerLocal" },
       {
         name: "description",
-        content: "Convert a QFX (Quicken) file to CSV. Free, unlimited, nothing uploaded — runs entirely in your browser.",
+        content: "Free QFX to CSV converter, works on Mac or Windows. Drop your Quicken export and download a clean CSV. Nothing uploaded, runs entirely in your browser.",
       },
     ],
   }),

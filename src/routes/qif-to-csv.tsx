@@ -30,10 +30,10 @@ const FAQ = [
 export const Route = createFileRoute("/qif-to-csv")({
   head: () => ({
     meta: [
-      { title: "QIF to CSV Converter — Free, On-Device — LedgerLocal" },
+      { title: "QIF to CSV Converter — Free — LedgerLocal" },
       {
         name: "description",
-        content: "Convert a Quicken QIF file to CSV. Free, unlimited, nothing uploaded — runs entirely in your browser.",
+        content: "Free QIF to CSV converter for Quicken exports. Extracts date, payee, and amount from every record. Nothing uploaded, runs entirely in your browser.",
       },
     ],
   }),

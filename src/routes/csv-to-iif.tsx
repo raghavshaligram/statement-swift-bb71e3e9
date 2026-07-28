@@ -29,10 +29,10 @@ const FAQ = [
 export const Route = createFileRoute("/csv-to-iif")({
   head: () => ({
     meta: [
-      { title: "CSV to IIF Converter — Free, On-Device — LedgerLocal" },
+      { title: "CSV to IIF Converter for QuickBooks Desktop — Free — LedgerLocal" },
       {
         name: "description",
-        content: "Convert any CSV to IIF for QuickBooks Desktop import. Free, unlimited, nothing uploaded — runs entirely in your browser.",
+        content: "Free CSV to IIF converter for QuickBooks Desktop import. Auto-detects your CSV's columns — no template required. Nothing uploaded, runs entirely in your browser.",
       },
     ],
   }),

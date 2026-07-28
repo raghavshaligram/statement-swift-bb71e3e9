@@ -30,10 +30,10 @@ const FAQ = [
 export const Route = createFileRoute("/ofx-to-csv")({
   head: () => ({
     meta: [
-      { title: "OFX to CSV Converter — Free, On-Device — LedgerLocal" },
+      { title: "OFX to CSV Converter — Free — LedgerLocal" },
       {
         name: "description",
-        content: "Convert an OFX (or QFX) file to CSV. Free, unlimited, nothing uploaded — runs entirely in your browser.",
+        content: "Free OFX (or QFX) to CSV converter. No install, no script — drop your file and download a clean CSV. Nothing uploaded, runs entirely in your browser.",
       },
     ],
   }),

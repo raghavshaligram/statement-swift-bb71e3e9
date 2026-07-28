@@ -29,10 +29,10 @@ const FAQ = [
 export const Route = createFileRoute("/csv-to-qif")({
   head: () => ({
     meta: [
-      { title: "CSV to QIF Converter — Free, On-Device — LedgerLocal" },
+      { title: "CSV to QIF Converter Free — On-Device — LedgerLocal" },
       {
         name: "description",
-        content: "Convert any CSV to QIF for Quicken import. Free, unlimited, nothing uploaded — runs entirely in your browser.",
+        content: "Free CSV to QIF converter for Quicken import. Auto-detects your CSV's columns — no template required. Nothing uploaded, runs entirely in your browser.",
       },
     ],
   }),
