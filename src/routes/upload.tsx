@@ -185,7 +185,7 @@ function UploadPage() {
           <div className="grid gap-3 sm:grid-cols-3">
             {[
               ["Multi-bank bundles", "Drop statements from different banks together."],
-              ["22+ banks, 4 countries", "Named detection across the US, UK, Canada, and India, plus a generic parser for any other bank."],
+              ["23+ banks, 4 countries", "Named detection across the US, UK, Canada, and India, plus a generic parser for any other bank."],
               ["PDF, scan, or photo", "Text-based PDFs read directly; scanned pages and JPG/PNG/WEBP photos fall back to on-device OCR."],
             ].map(([t, b]) => (
               <div key={t} className="rounded-lg border border-border bg-card p-4">

@@ -13,11 +13,11 @@ const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "Is it free?",
-    a: "Yes, for occasional use. No signup: unlimited separate conversions, 6 pages each. Sign up free: a 10-page lifetime allowance (PDFs and photos/scans combined). Pro removes the limit entirely for one flat monthly price — no credits, no per-page fees.",
+    a: "Yes, for occasional use. No signup: 6 pages per conversion, as many conversions as you like. Sign up free: a 10-page lifetime allowance (PDFs and photos/scans combined). Pro removes the limit entirely for one flat monthly price — no credits, no per-page fees.",
   },
   {
     q: "Which banks and formats are supported?",
-    a: "Named detection for 20+ major banks across the US, UK, Canada, and India — including Chase, Bank of America, Citibank, Barclays, HSBC, RBC, ICICI, HDFC, and more — plus a generic layout parser for any other bank's text-based PDF statement. Export to Excel, CSV, Tally XML, OFX, QIF, QBO, or IIF.",
+    a: "Named detection for 23+ major banks across the US, UK, Canada, and India — including Chase, Bank of America, Citibank, Barclays, HSBC, RBC, ICICI, HDFC, and more — plus a generic layout parser for any other bank's text-based PDF statement. Export to Excel, CSV, Tally XML, OFX, QIF, QBO, or IIF.",
   },
   {
     q: "Does it work with scanned PDFs or photos?",

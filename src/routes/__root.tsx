@@ -82,7 +82,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "LedgerLocal is a bank statement converter that turns PDF statements into clean, editable Excel spreadsheets — 100% on-device. Works with 22+ banks across the US, UK, Canada, and India.",
+          "LedgerLocal is a bank statement converter that turns PDF statements into clean, editable Excel spreadsheets — 100% on-device. Works with 23+ banks across the US, UK, Canada, and India.",
       },
       { name: "author", content: "LedgerLocal" },
       { property: "og:title", content: "LedgerLocal — Bank Statement Converter & Excel Software" },

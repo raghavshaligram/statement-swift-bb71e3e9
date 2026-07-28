@@ -34,13 +34,13 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LedgerLocal — Bank Statement to Excel Software" },
+      { title: "LedgerLocal — Bank Statement Converter (PDF to Excel & CSV)" },
       {
         name: "description",
         content:
-          "Convert PDF bank statements to clean Excel spreadsheets on your device. Free to try, unlimited pages on Pro. Works with Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more.",
+          "Convert PDF bank statements to Excel and CSV on your device — the bank statement to Excel software that works everywhere. Free to try, unlimited pages on Pro. Works with Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more.",
       },
-      { property: "og:title", content: "LedgerLocal — Bank Statement to Excel Software" },
+      { property: "og:title", content: "LedgerLocal — Bank Statement Converter (PDF to Excel & CSV)" },
       {
         property: "og:description",
         content: "100% on-device. Unlimited pages on Pro. Real software for real accountants.",
@@ -119,12 +119,12 @@ function Landing() {
               </span>
             </div>
             <h1 className="font-serif text-4xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl">
-              Bank statement to Excel <span className="text-emerald">software</span>
+              Bank Statement Converter <span className="text-emerald">to Excel & CSV</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              The bank statement converter that works everywhere — convert bank statements to
+              The bank statement to Excel software that works everywhere — convert bank statements to
               Excel, CSV, and more, entirely on your device. No signup, no credit card, works with
-              22+ banks across the US, UK, Canada, and India.
+              23+ banks across the US, UK, Canada, and India.
             </p>
           </ScrollReveal>
 
@@ -349,8 +349,8 @@ function Landing() {
                   <span className="text-sm text-muted-foreground">no signup required</span>
                 </div>
                 <p className="mt-3 text-sm text-muted-foreground">
-                  Try instantly with no signup — unlimited separate conversions, up to {ANONYMOUS_MAX_PAGES} pages
-                  each. Sign up free for a {SIGNED_IN_MAX_PAGES}-page lifetime allowance. Excel and CSV export.
+                  Try instantly with no signup — up to {ANONYMOUS_MAX_PAGES} pages per conversion, as many
+                  conversions as you like. Sign up free for a {SIGNED_IN_MAX_PAGES}-page lifetime allowance. Excel and CSV export.
                 </p>
               </div>
             </ScrollRevealItem>
@@ -362,7 +362,7 @@ function Landing() {
                   <span className="text-sm text-background/60">/ month · flat</span>
                 </div>
                 <p className="mt-3 text-sm text-background/70">
-                  Unlimited conversions, unlimited pages, all six export formats. No credits, no per-page fees.
+                  Unlimited conversions, unlimited pages, all seven export formats. No credits, no per-page fees.
                 </p>
               </div>
             </ScrollRevealItem>

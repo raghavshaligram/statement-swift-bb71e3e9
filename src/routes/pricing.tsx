@@ -21,10 +21,10 @@ export const Route = createFileRoute("/pricing")({
 });
 
 const FREE_ROWS: Array<[string, boolean]> = [
-  ["Unlimited conversions with no signup (6 pages each)", true],
+  ["6 pages per conversion, no signup needed", true],
   ["10-page lifetime allowance once signed up", true],
   ["Excel and CSV export", true],
-  ["Named detection for 22+ major banks (US, UK, Canada, India) + generic parser for any other bank", true],
+  ["Named detection for 23+ major banks (US, UK, Canada, India) + generic parser for any other bank", true],
   ["100% on-device — nothing ever uploaded", true],
   ["Tally XML, OFX, QIF, QBO, IIF export", false],
 ];
@@ -97,7 +97,7 @@ const COMPARISON_ROWS: Array<{ label: string; values: Record<string, string> }> 
   {
     label: "Bank coverage",
     values: {
-      ll: "Named detection, 22+ banks + generic parser for any bank",
+      ll: "Named detection, 23+ banks + generic parser for any bank",
       capy: '"Any bank" via AI',
       docu: '"Any bank" via AI',
       bsc: "Not confirmed",
@@ -128,7 +128,7 @@ const FAQ: Array<[string, string]> = [
   ],
   [
     "Which banks and formats are supported?",
-    "Named detection for 22+ banks across the US, UK, Canada, and India, plus a generic parser for any other bank's text-based PDF. Six export formats on Pro; Excel and CSV on Free.",
+    "Named detection for 23+ banks across the US, UK, Canada, and India, plus a generic parser for any other bank's text-based PDF. Six export formats on Pro; Excel and CSV on Free.",
   ],
   [
     "Does it work with scanned PDFs?",
@@ -161,7 +161,7 @@ function Pricing() {
             <span className="text-border">·</span>
             <span className="inline-flex items-center gap-2"><Zap className="h-4 w-4 text-emerald" /> <span className="font-semibold text-ink">Seconds</span> per statement</span>
             <span className="text-border">·</span>
-            <span className="inline-flex items-center gap-2"><Landmark className="h-4 w-4 text-emerald" /> <span className="font-semibold text-ink">22+ banks</span> named, works with any bank</span>
+            <span className="inline-flex items-center gap-2"><Landmark className="h-4 w-4 text-emerald" /> <span className="font-semibold text-ink">23+ banks</span> named, works with any bank</span>
           </div>
         </div>
 

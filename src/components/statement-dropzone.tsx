@@ -94,7 +94,7 @@ export function StatementDropzone({
       </div>
       {!compact && (
         <div className="text-center text-xs text-muted-foreground">
-          PDF, JPG, PNG, or WEBP · Up to 6 pages · Unlimited conversions
+          PDF, JPG, PNG, or WEBP · Up to 6 pages per conversion
         </div>
       )}
       <input

@@ -8,7 +8,7 @@ const ROWS: Array<[string, string]> = [
   ["Hours per statement", "Seconds per statement"],
   ["Typos and transposed digits", "Editable preview before export"],
   ["Uploaded to someone else's server", "Never leaves your device"],
-  ["One page at a time", "Batch upload, unlimited pages"],
+  ["One page at a time", "Batch upload, multiple statements at once"],
   ["No accounting-software-ready file", "Excel, CSV, Tally, OFX, QIF, QBO"],
 ];
 
