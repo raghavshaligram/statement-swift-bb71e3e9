@@ -24,7 +24,10 @@ function hashCode(s: string): number {
 }
 
 function qboEscape(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // Same reasoning as to-ofx.ts's ofxEscape -- SGML-OFX leaf tags have no
+  // closing tag, so an embedded newline would split NAME/MEMO across two
+  // lines and corrupt the field.
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/[\r\n]+/g, " ");
 }
 
 export function exportToQbo(transactions: Transaction[], fileName: string, accountId = "000000000") {

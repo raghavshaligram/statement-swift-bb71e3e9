@@ -9,9 +9,9 @@ function iifDate(iso: string): string {
   return `${parseInt(m[2], 10)}/${parseInt(m[3], 10)}/${m[1]}`;
 }
 
-/** IIF fields are tab-separated -- a stray tab inside a description would corrupt the column alignment, so strip them (a real description containing a literal tab is not a realistic case to preserve). */
+/** IIF fields are tab-separated, one record per line -- a stray tab or newline inside a description would corrupt the structure (a tab breaks column alignment; a newline splits one record into multiple malformed lines). Neither is a realistic thing to preserve literally in a single-line field. */
 function iifField(value: string): string {
-  return value.replace(/\t/g, " ");
+  return value.replace(/[\t\r\n]+/g, " ");
 }
 
 /**

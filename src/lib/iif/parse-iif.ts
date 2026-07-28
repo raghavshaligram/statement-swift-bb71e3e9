@@ -66,6 +66,12 @@ export type IifParseResult = {
 };
 
 export function parseIifText(content: string): IifParseResult {
+  // Strip a leading UTF-8 BOM if present -- confirmed as a real bug via
+  // testing: it attaches to the first header line ("!TRNS" becomes the
+  // unrecognized "\uFEFF!TRNS"), which broke the startsWith("!") check and
+  // caused every subsequent transaction to be skipped as "before its
+  // field-order header was defined."
+  if (content.charCodeAt(0) === 0xfeff) content = content.slice(1);
   const warnings: string[] = [];
   const transactions: IifParseResult["transactions"] = [];
 

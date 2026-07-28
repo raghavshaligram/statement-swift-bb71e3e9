@@ -146,6 +146,14 @@ function parseCsvDate(raw: string, dateOrder: "DMY" | "MDY"): string | null {
 
 export function parseCsvText(content: string): CsvParseResult {
   const warnings: string[] = [];
+  // Strip a leading UTF-8 BOM if present -- extremely common in real bank
+  // CSV exports (many banking systems and Excel itself prepend one so Excel
+  // reliably detects UTF-8 on open, the same reason to-csv.ts's own export
+  // now adds one). Confirmed as a real, silent failure without this: the
+  // BOM attaches to the first header cell ("Date" becomes the unrecognized
+  // "\uFEFFDate"), which broke header detection entirely and produced zero
+  // transactions with a confusing "couldn't identify columns" warning.
+  if (content.charCodeAt(0) === 0xfeff) content = content.slice(1);
   const rawLines = content.split(/\r\n|\r|\n/).filter((l) => l.trim().length > 0);
   if (rawLines.length < 2) {
     return { transactions: [], warnings: ["This file doesn't have enough rows to contain a header and any data."], mapping: null };

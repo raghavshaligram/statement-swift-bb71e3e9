@@ -25,7 +25,11 @@ function hashCode(s: string): number {
 }
 
 function ofxEscape(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // SGML-OFX leaf tags have no closing tag -- a value implicitly runs until
+  // the next recognized tag or line break, so an embedded newline would
+  // split NAME/MEMO across two lines and corrupt the field (same class of
+  // risk as the tab/newline issues found in the IIF/QIF exporters).
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/[\r\n]+/g, " ");
 }
 
 export function exportToOfx(transactions: Transaction[], fileName: string, accountId = "000000000") {

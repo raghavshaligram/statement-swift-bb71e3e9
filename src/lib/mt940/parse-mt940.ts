@@ -59,6 +59,12 @@ function splitTags(content: string): Array<{ tag: string; value: string }> {
 }
 
 export function parseMt940Text(content: string): Mt940ParseResult {
+  // Strip a leading UTF-8 BOM if present, same as every other structured-
+  // text parser in this app -- MT940's tag regex is start-anchored (^:) per
+  // line, so a BOM prefixing the first tag (typically :20:, not needed for
+  // transaction extraction) could genuinely break that one line the same
+  // way it did for IIF's header line.
+  if (content.charCodeAt(0) === 0xfeff) content = content.slice(1);
   const warnings: string[] = [];
   const tags = splitTags(content);
   const transactions: Mt940ParseResult["transactions"] = [];

@@ -35,6 +35,11 @@ export type QifParseResult = {
 };
 
 export function parseQifText(content: string): QifParseResult {
+  // Strip a leading UTF-8 BOM if present, same as every other structured-
+  // text parser in this app. The corrupted first line here would typically
+  // just be the "!Type:Bank" header, which is already ignored either way --
+  // but applied for consistency rather than relying on that reasoning alone.
+  if (content.charCodeAt(0) === 0xfeff) content = content.slice(1);
   const warnings: string[] = [];
   const lines = content.split(/\r\n|\r|\n/);
   const dateOrder = inferDateOrder(content);

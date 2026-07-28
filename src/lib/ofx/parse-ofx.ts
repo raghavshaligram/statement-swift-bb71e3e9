@@ -48,6 +48,12 @@ export type OfxParseResult = {
 };
 
 export function parseOfxText(content: string): OfxParseResult {
+  // Strip a leading UTF-8 BOM if present, same as every other structured-
+  // text parser in this app -- applied defensively here even though OFX's
+  // regex-based matching isn't anchored to the start of the string (so a
+  // BOM is less likely to break it the way it did for IIF/CSV), for
+  // consistency rather than relying on that reasoning alone.
+  if (content.charCodeAt(0) === 0xfeff) content = content.slice(1);
   const warnings: string[] = [];
 
   // <STMTTRN> blocks -- non-greedy match up to the closing tag OR the next
