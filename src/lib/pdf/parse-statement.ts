@@ -7,7 +7,7 @@ import { ocrPdfToTextItems, ocrImageToTextItems, looksLikeScannedPage } from "./
 import { findHeaderRow, headerLabelsInOrder } from "./detect-columns";
 import { detectBankFromHeaderSignature } from "./bank-header-signatures";
 import { parseIifText, iifResultToTransactions } from "../iif/parse-iif";
-import { parseCsvText } from "../csv/parse-csv";
+import { parseCsvText, csvResultToTransactions } from "../csv/parse-csv";
 import { parseOfxText, ofxResultToTransactions } from "../ofx/parse-ofx";
 import { parseQifText, qifResultToTransactions } from "../qif/parse-qif";
 import { parseMt940Text, mt940ResultToTransactions } from "../mt940/parse-mt940";
@@ -101,27 +101,7 @@ export async function parseStatementFile(
     const content = await file.text();
     const result = parseCsvText(content);
     onPageParsed?.(1, 1);
-    const transactions: Transaction[] = result.transactions.map((t, i) => ({
-      id: `${file.name}-${i}`,
-      date: t.date,
-      description: t.description,
-      amount: t.amount,
-      balance: t.balance,
-      sourceFile: file.name,
-      sourcePage: 1,
-      // Auto-detected header mapping is a real, unambiguous signal once it
-      // succeeds (unlike a layout-inferred PDF read) -- but genuinely lower
-      // confidence than IIF's fully-structured tags, since CSV column
-      // *names* are inferred from arbitrary, non-standardized header text
-      // rather than a fixed schema.
-      confidence: 88,
-      sourceLines: [],
-      valueDate: null,
-      tranType: null,
-      tranId: null,
-      chequeDetails: null,
-      drCr: t.amount >= 0 ? "Cr" : "Dr",
-    }));
+    const transactions: Transaction[] = csvResultToTransactions(result, file.name);
     return {
       fileName: file.name,
       fileSizeBytes: file.size,

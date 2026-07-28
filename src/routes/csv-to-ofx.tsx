@@ -1,5 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FormatConverterPage } from "@/components/format-converter-page";
+import { parseCsvText, csvResultToTransactions } from "@/lib/csv/parse-csv";
+import { exportToOfx } from "@/lib/export/to-ofx";
+
+function outputName(fileName: string) {
+  return fileName.replace(/\.[^.]+$/, "") + ".ofx";
+}
 
 const FAQ = [
   {
@@ -42,6 +48,14 @@ export const Route = createFileRoute("/csv-to-ofx")({
       ]}
       ctaLabel="Convert a CSV to OFX"
       faq={FAQ}
+      accept=".csv"
+      onConvert={async (file) => {
+        const content = await file.text();
+        const result = parseCsvText(content);
+        const transactions = csvResultToTransactions(result, file.name);
+        if (transactions.length > 0) exportToOfx(transactions, outputName(file.name));
+        return { count: transactions.length, warnings: result.warnings };
+      }}
     />
   ),
 });

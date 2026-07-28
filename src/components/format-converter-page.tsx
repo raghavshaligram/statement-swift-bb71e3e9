@@ -18,10 +18,10 @@ import {
   UserX,
   RefreshCw,
   BookOpen,
-  Upload,
   FileText,
 } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { InlineConverter, type InlineConvertResult } from "@/components/inline-converter";
 
 export type FormatConverterFaqItem = { q: string; a: string };
 
@@ -39,6 +39,8 @@ export function FormatConverterPage({
   freeNote,
   sourceExt,
   targetExt,
+  accept,
+  onConvert,
   whatIs,
   comparison,
   whyConvert,
@@ -55,6 +57,10 @@ export function FormatConverterPage({
   sourceExt?: string;
   /** Target file extension chip (e.g. "CSV"). */
   targetExt?: string;
+  /** File input accept string for the real dropzone, e.g. ".csv" or ".ofx,.qfx". */
+  accept: string;
+  /** Real conversion logic for this specific format pair -- reads the file, parses it, maps to Transaction[], and triggers the export/download itself. Converts and downloads right on this page; never navigates away. */
+  onConvert: (file: File) => Promise<InlineConvertResult>;
   /** Optional "What is X?" long-form section. */
   whatIs?: { heading: string; body: string };
   /** Optional side-by-side comparison table. */
@@ -93,7 +99,7 @@ export function FormatConverterPage({
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{intro}</p>
 
           {/* Dropzone card */}
-          <div className="mx-auto mt-10 max-w-xl rounded-2xl border border-border bg-card p-6 text-left shadow-sm">
+          <div id="converter" className="mx-auto mt-10 max-w-xl scroll-mt-24 rounded-2xl border border-border bg-card p-6 text-left shadow-sm">
             <div className="flex items-center gap-2 text-sm font-semibold text-ink">
               <FileText className="h-4 w-4 text-emerald" />
               Free {src} to {tgt} Converter
@@ -103,23 +109,7 @@ export function FormatConverterPage({
               your data is never uploaded to any server.
             </p>
 
-            <Link
-              to="/upload"
-              className="mt-5 flex flex-col items-center justify-center gap-3 rounded-xl border-2 border-dashed border-border bg-surface-muted/40 px-6 py-10 text-center transition hover:border-emerald hover:bg-emerald-soft/50"
-            >
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald text-primary-foreground">
-                <Upload className="h-5 w-5" />
-              </span>
-              <span className="text-sm font-semibold text-ink">
-                Drag and drop your {src} file here
-              </span>
-              <span className="text-xs text-muted-foreground">or click to browse your files</span>
-              <span className="mt-1 flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                <span className="rounded-md bg-surface-muted px-2 py-0.5">{src}</span>
-                <span className="rounded-md bg-surface-muted px-2 py-0.5">{tgt}</span>
-                <span className="rounded-md bg-surface-muted px-2 py-0.5">Max 10MB</span>
-              </span>
-            </Link>
+            <InlineConverter accept={accept} sourceLabel={src} targetLabel={tgt} onConvert={onConvert} />
 
             <div className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
               <ShieldCheck className="h-3 w-3 text-emerald" />
@@ -170,12 +160,12 @@ export function FormatConverterPage({
             ))}
           </div>
           <div className="mt-10 text-center">
-            <Link
-              to="/upload"
+            <a
+              href="#converter"
               className="inline-flex items-center gap-2 rounded-md bg-ink px-6 py-3 text-sm font-semibold text-background transition hover:bg-ink/90"
             >
               {ctaLabel} <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
           </div>
         </div>
       </section>

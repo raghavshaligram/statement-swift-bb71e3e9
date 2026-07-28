@@ -1,5 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FormatConverterPage } from "@/components/format-converter-page";
+import { parseIifText, iifResultToTransactions } from "@/lib/iif/parse-iif";
+import { exportToCsv } from "@/lib/export/to-csv";
+import { DEFAULT_EXPORT_OPTIONS } from "@/lib/export/types";
+
+function outputName(fileName: string) {
+  return fileName.replace(/\.[^.]+$/, "") + ".csv";
+}
 
 const FAQ = [
   {
@@ -42,6 +49,14 @@ export const Route = createFileRoute("/iif-to-csv")({
       ]}
       ctaLabel="Convert an IIF file to CSV"
       faq={FAQ}
+      accept=".iif"
+      onConvert={async (file) => {
+        const content = await file.text();
+        const result = parseIifText(content);
+        const transactions = iifResultToTransactions(result, file.name);
+        if (transactions.length > 0) exportToCsv(transactions, DEFAULT_EXPORT_OPTIONS, outputName(file.name), null);
+        return { count: transactions.length, warnings: result.warnings };
+      }}
     />
   ),
 });

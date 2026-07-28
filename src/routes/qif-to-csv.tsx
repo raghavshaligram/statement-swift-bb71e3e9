@@ -1,5 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FormatConverterPage } from "@/components/format-converter-page";
+import { parseQifText, qifResultToTransactions } from "@/lib/qif/parse-qif";
+import { exportToCsv } from "@/lib/export/to-csv";
+import { DEFAULT_EXPORT_OPTIONS } from "@/lib/export/types";
+
+function outputName(fileName: string) {
+  return fileName.replace(/\.[^.]+$/, "") + ".csv";
+}
 
 const FAQ = [
   {
@@ -42,6 +49,14 @@ export const Route = createFileRoute("/qif-to-csv")({
       ]}
       ctaLabel="Convert a QIF file to CSV"
       faq={FAQ}
+      accept=".qif"
+      onConvert={async (file) => {
+        const content = await file.text();
+        const result = parseQifText(content);
+        const transactions = qifResultToTransactions(result, file.name);
+        if (transactions.length > 0) exportToCsv(transactions, DEFAULT_EXPORT_OPTIONS, outputName(file.name), null);
+        return { count: transactions.length, warnings: result.warnings };
+      }}
     />
   ),
 });

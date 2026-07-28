@@ -11,6 +11,7 @@
  */
 
 import { inferDateOrder, resolveAmbiguousDate } from "../pdf/date-inference";
+import type { Transaction } from "../statement-store";
 
 export type CsvColumnRole = "date" | "description" | "amount" | "debit" | "credit" | "balance" | "ignore";
 
@@ -225,4 +226,37 @@ export function parseCsvText(content: string): CsvParseResult {
   }
 
   return { transactions, warnings, mapping };
+}
+
+/**
+ * Converts a parsed CSV result into the app's real Transaction shape --
+ * same pattern as every other structured-format parser
+ * (iifResultToTransactions, ofxResultToTransactions, etc.). Previously this
+ * mapping was only inlined once, directly in parse-statement.ts; extracted
+ * here as a proper exported helper so a second caller (the standalone
+ * csv-to-iif/qif/ofx page converters) can reuse the exact same logic
+ * instead of a second, drift-prone copy of it.
+ */
+export function csvResultToTransactions(result: CsvParseResult, sourceFile: string): Transaction[] {
+  return result.transactions.map((t, i) => ({
+    id: `${sourceFile}-${i}`,
+    date: t.date,
+    description: t.description,
+    amount: t.amount,
+    balance: t.balance,
+    sourceFile,
+    sourcePage: 1,
+    // Auto-detected header mapping is a real, unambiguous signal once it
+    // succeeds (unlike a layout-inferred PDF read) -- but genuinely lower
+    // confidence than IIF's fully-structured tags, since CSV column
+    // *names* are inferred from arbitrary, non-standardized header text
+    // rather than a fixed schema.
+    confidence: 88,
+    sourceLines: [],
+    valueDate: null,
+    tranType: null,
+    tranId: null,
+    chequeDetails: null,
+    drCr: t.amount >= 0 ? "Cr" : "Dr",
+  }));
 }

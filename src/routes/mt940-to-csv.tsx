@@ -1,5 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FormatConverterPage } from "@/components/format-converter-page";
+import { parseMt940Text, mt940ResultToTransactions } from "@/lib/mt940/parse-mt940";
+import { exportToCsv } from "@/lib/export/to-csv";
+import { DEFAULT_EXPORT_OPTIONS } from "@/lib/export/types";
+
+function outputName(fileName: string) {
+  return fileName.replace(/\.[^.]+$/, "") + ".csv";
+}
 
 const FAQ = [
   {
@@ -42,6 +49,14 @@ export const Route = createFileRoute("/mt940-to-csv")({
       ]}
       ctaLabel="Convert an MT940 file to CSV"
       faq={FAQ}
+      accept=".sta,.mt940,.940"
+      onConvert={async (file) => {
+        const content = await file.text();
+        const result = parseMt940Text(content);
+        const transactions = mt940ResultToTransactions(result, file.name);
+        if (transactions.length > 0) exportToCsv(transactions, DEFAULT_EXPORT_OPTIONS, outputName(file.name), result.currency);
+        return { count: transactions.length, warnings: result.warnings };
+      }}
     />
   ),
 });
