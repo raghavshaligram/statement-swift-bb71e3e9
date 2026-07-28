@@ -10,17 +10,29 @@ function csvEscape(value: string | number): string {
 }
 
 /**
- * Forces Excel to treat a value as literal text rather than auto-converting
- * a long digit string to scientific notation (a real reported bug: a Tran
- * ID like "202607010001" was displayed as 2.02607E+11 on open). Wrapping in
- * ="..." is the standard trick -- Excel treats it as a formula that
- * evaluates to the literal text, displayed as-is rather than reformatted as
- * a number. Only applied where it matters: values that are entirely digits
- * and long enough to trigger Excel's auto-formatting (short numeric IDs like
- * "123" display fine as plain numbers and don't need this).
+ * Forces Excel to treat a value as literal text, for two real, separate
+ * risks:
+ *
+ * 1. A long digit string gets auto-converted to scientific notation (a real
+ *    reported bug: a Tran ID like "202607010001" displayed as 2.02607E+11).
+ * 2. A value starting with =, +, -, or @ gets interpreted as a FORMULA by
+ *    Excel, not text -- the well-documented "CSV/Formula Injection" class
+ *    (OWASP). This isn't hypothetical for bank statement data specifically:
+ *    a payee name or reference is externally-controlled text that could
+ *    legitimately start with any of these characters (a payment reference
+ *    like "-142.50 REFUND", or literally anything a payee named their
+ *    transaction), and would otherwise silently get evaluated as a formula
+ *    on open rather than displayed as text.
+ *
+ * Wrapping in ="..." is the standard trick for both -- Excel treats it as a
+ * formula that evaluates to the literal text/number, displayed as-is.
+ * Skipped for short numeric IDs (under 9 digits) and any string that
+ * doesn't start with a formula-trigger character, since those display fine
+ * as-is and don't need the extra wrapping.
  */
 function forceExcelText(value: string): string {
   if (/^\d{9,}$/.test(value)) return `="${value}"`;
+  if (/^[=+\-@]/.test(value)) return `="${value.replace(/"/g, '""')}"`;
   return value;
 }
 
@@ -63,8 +75,8 @@ export function exportToCsv(
   for (const t of sorted) {
     const row: (string | number)[] = [t.date];
     if (hasValueDate) row.push(t.valueDate ?? "");
-    row.push(t.description);
-    if (hasTranType) row.push(t.tranType ?? "");
+    row.push(forceExcelText(t.description));
+    if (hasTranType) row.push(t.tranType !== null ? forceExcelText(t.tranType) : "");
     if (hasTranId) row.push(t.tranId !== null ? forceExcelText(t.tranId) : "");
     if (hasChequeDetails) row.push(t.chequeDetails !== null ? forceExcelText(t.chequeDetails) : "");
     if (options.splitDebitCredit) {
