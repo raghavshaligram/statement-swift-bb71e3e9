@@ -42,6 +42,10 @@ export const Route = createFileRoute("/qfx-to-csv")({
       title="QFX to CSV Converter"
       intro="Convert a QFX (Quicken) file to a clean CSV — free, unlimited, and entirely on your device."
       freeNote="Free and unlimited — no OCR involved, no page limits"
+      whatIs={{
+        heading: "What is a QFX file?",
+        body: "QFX is Quicken's own export format — the same underlying Open Financial Exchange (OFX) structure with Quicken-specific headers added, usually downloaded via a bank's \"Download for Quicken\" option. Works the same whether you're on Mac or Windows, since this converter runs in your browser rather than depending on Quicken itself being installed.",
+      }}
       steps={[
         "Drop your .qfx file.",
         "LedgerLocal reads each transaction record directly from the file's own structure.",

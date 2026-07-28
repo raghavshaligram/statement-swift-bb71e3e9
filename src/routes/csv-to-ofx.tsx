@@ -41,6 +41,10 @@ export const Route = createFileRoute("/csv-to-ofx")({
       title="CSV to OFX Converter"
       intro="Convert any CSV file to OFX — free, unlimited, and entirely on your device."
       freeNote="Free and unlimited — no OCR involved, no page limits"
+      whatIs={{
+        heading: "What is an OFX file?",
+        body: "OFX (Open Financial Exchange) is a standard transaction-import format supported by most accounting and personal-finance software — QuickBooks, Quicken, and many banks' own import tools accept it directly. It's an open, bank-neutral format (unlike QFX, which adds Quicken-specific headers to the same underlying structure), which is why it's often the safest choice when you're not sure which specific software you'll be importing into.",
+      }}
       steps={[
         "Drop your CSV file — headers are detected automatically, whatever the source.",
         "LedgerLocal reads the date, description, and amount columns and builds a standard OFX transaction list.",

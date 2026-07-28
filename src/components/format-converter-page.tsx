@@ -93,8 +93,7 @@ export function FormatConverterPage({
       <section className="border-b border-border bg-gradient-to-b from-surface-muted/40 to-background py-16">
         <div className="mx-auto max-w-3xl px-6 text-center">
           <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-            Free {src} to {tgt} Converter,{" "}
-            <span className="text-emerald">{title.replace(/ Converter$/i, "")}</span>
+            Free <span className="text-emerald">{title}</span>
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">{intro}</p>
 

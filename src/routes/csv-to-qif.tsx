@@ -17,6 +17,10 @@ const FAQ = [
     a: "Any CSV with a date, a description, and an amount column. Headers are detected automatically — no fixed template to match.",
   },
   {
+    q: "How do I import the QIF file into Quicken?",
+    a: "File > File Import > QIF File in Quicken, then select the file this tool downloaded and choose the account to import into.",
+  },
+  {
     q: "Does this cost anything?",
     a: "No. Structured file conversions like this are free and unlimited — there's no OCR involved, so there's no reason to gate it the way PDF/photo conversion is.",
   },
@@ -41,6 +45,10 @@ export const Route = createFileRoute("/csv-to-qif")({
       title="CSV to QIF Converter"
       intro="Convert any CSV file to QIF for Quicken import — free, unlimited, and entirely on your device."
       freeNote="Free and unlimited — no OCR involved, no page limits"
+      whatIs={{
+        heading: "What is a QIF file?",
+        body: "QIF (Quicken Interchange Format) is one of the oldest personal-finance file formats still in active use — a plain-text, line-based structure where each transaction is a short run of prefixed lines (date, amount, payee, memo) ending in a bare \"^\". Quicken still imports it directly, and it remains a common lowest-common-denominator format that many older or lightweight finance tools can read even without native CSV support.",
+      }}
       steps={[
         "Drop your CSV file — headers are detected automatically, whatever the source.",
         "LedgerLocal reads the date, description, and amount columns and builds a standard QIF bank-transaction structure.",

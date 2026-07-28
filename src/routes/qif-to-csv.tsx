@@ -42,6 +42,10 @@ export const Route = createFileRoute("/qif-to-csv")({
       title="QIF to CSV Converter"
       intro="Convert a Quicken QIF export to a clean CSV file — free, unlimited, and entirely on your device."
       freeNote="Free and unlimited — no OCR involved, no page limits"
+      whatIs={{
+        heading: "What is a QIF file?",
+        body: "QIF (Quicken Interchange Format) is one of the oldest personal-finance file formats still in active use — a plain-text, line-based structure where each transaction is a short run of prefixed lines (date, amount, payee, memo) ending in a bare \"^\". You'd have one from Quicken itself, or another finance tool that still supports exporting to it.",
+      }}
       steps={[
         "Drop your .qif file.",
         "LedgerLocal reads each transaction record (date, payee, amount, memo) directly from the file.",

@@ -42,6 +42,10 @@ export const Route = createFileRoute("/iif-to-csv")({
       title="IIF to CSV Converter"
       intro="Convert a QuickBooks Desktop IIF export to a clean CSV file — free, unlimited, and entirely on your device."
       freeNote="Free and unlimited — no OCR involved, no page limits"
+      whatIs={{
+        heading: "What is an IIF file?",
+        body: "IIF (Intuit Interchange Format) is QuickBooks Desktop's own tab-delimited format for importing and exporting transactions, accounts, and other lists. You'd have one from a QuickBooks Desktop export, or from an accountant or bank-integration tool that produced one for you.",
+      }}
       steps={[
         "Drop your .iif file — LedgerLocal reads each transaction (TRNS) record, following the file's own column order even if it changes partway through.",
         "Transaction type, reference number, and memo are extracted alongside date, description, and amount.",

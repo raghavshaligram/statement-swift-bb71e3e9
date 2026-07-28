@@ -42,6 +42,10 @@ export const Route = createFileRoute("/mt940-to-csv")({
       title="MT940 to CSV Converter"
       intro="Convert an MT940 (SWIFT) bank statement file to a clean CSV — free, unlimited, and entirely on your device."
       freeNote="Free and unlimited — no OCR involved, no page limits"
+      whatIs={{
+        heading: "What is an MT940 file?",
+        body: "MT940 is SWIFT's international bank statement format — the standard many European and international banks use for statement exports, more common outside the US, UK, and India. Each transaction is a fixed-format \"statement line\" paired with a narrative describing it, which is exactly what this converter reads directly into a clean spreadsheet row.",
+      }}
       steps={[
         "Drop your MT940 (.sta) file.",
         "LedgerLocal reads each statement line and its accompanying narrative directly from the file's own structure.",
