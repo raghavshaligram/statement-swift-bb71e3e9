@@ -34,13 +34,13 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LedgerLocal — Bank Statement Converter (PDF to Excel & CSV)" },
+      { title: "LedgerLocal — Free Bank Statement Converter (PDF to Excel & CSV)" },
       {
         name: "description",
         content:
           "Convert PDF bank statements to Excel and CSV on your device — the bank statement to Excel software that works everywhere. Free to try, unlimited pages on Pro. Works with Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more.",
       },
-      { property: "og:title", content: "LedgerLocal — Bank Statement Converter (PDF to Excel & CSV)" },
+      { property: "og:title", content: "LedgerLocal — Free Bank Statement Converter (PDF to Excel & CSV)" },
       {
         property: "og:description",
         content: "100% on-device. Unlimited pages on Pro. Real software for real accountants.",
@@ -119,7 +119,7 @@ function Landing() {
               </span>
             </div>
             <h1 className="font-serif text-4xl font-bold tracking-tight text-ink sm:text-5xl lg:text-6xl">
-              Bank Statement Converter <span className="text-emerald">to Excel & CSV</span>
+              Free Bank Statement Converter <span className="text-emerald">to Excel & CSV</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               The bank statement to Excel software that works everywhere — convert bank statements to
