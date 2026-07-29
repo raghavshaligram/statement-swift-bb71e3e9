@@ -10,6 +10,10 @@ function outputName(fileName: string) {
 
 const FAQ = [
   {
+    q: "Why convert OFX to CSV instead of just importing it into accounting software?",
+    a: "OFX is built for automated reconciliation, not eyeballing — reviewing it, sharing it with someone who doesn't use accounting software, or auditing it manually usually calls for a plain spreadsheet instead.",
+  },
+  {
     q: "Where do I get an OFX file to convert?",
     a: "OFX (Open Financial Exchange) is a standard export format many banks and finance tools support directly from online banking, or from software like Quicken or QuickBooks.",
   },

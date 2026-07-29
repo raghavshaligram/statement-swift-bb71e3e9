@@ -9,6 +9,10 @@ function outputName(fileName: string) {
 
 const FAQ = [
   {
+    q: "Why OFX instead of just importing the CSV directly?",
+    a: "Most accounting software (QuickBooks, Xero, banking-side reconciliation tools) treats OFX as a real transaction feed, not just a spreadsheet — imported transactions get matched and categorized the way a live bank connection would, rather than landing as an inert list of rows the way a raw CSV import often does.",
+  },
+  {
     q: "What software imports OFX files?",
     a: "Most accounting and personal-finance software — QuickBooks, Quicken, and many banks' own import tools — accepts OFX (Open Financial Exchange) as a standard transaction-import format.",
   },

@@ -18,6 +18,10 @@ const FAQ = [
     a: "Date, description (from the narrative line following each transaction), and amount, correctly signed for debits and credits.",
   },
   {
+    q: "My bank's narrative spans multiple lines per transaction — is that handled?",
+    a: "Yes. A real MT940 narrative can wrap across several physical lines before the next transaction starts, and all of it gets combined into one clean description rather than only capturing the first line.",
+  },
+  {
     q: "Does this cost anything?",
     a: "No. Structured file conversions like this are free and unlimited — there's no OCR involved, so there's no reason to gate it the way PDF/photo conversion is.",
   },

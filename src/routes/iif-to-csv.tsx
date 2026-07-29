@@ -10,6 +10,10 @@ function outputName(fileName: string) {
 
 const FAQ = [
   {
+    q: "Why would I need to go from IIF back to CSV?",
+    a: "Common when you're migrating off QuickBooks Desktop, sharing data with someone who doesn't have QuickBooks, or auditing historical exports in a spreadsheet rather than digging through Excel's own tab-delimited parsing quirks with IIF.",
+  },
+  {
     q: "Where do I get an IIF file to convert?",
     a: "IIF is QuickBooks Desktop's own export/import format — you'd have one if you or your accountant exported transactions from QuickBooks Desktop, or received one from a bank-to-QuickBooks integration.",
   },

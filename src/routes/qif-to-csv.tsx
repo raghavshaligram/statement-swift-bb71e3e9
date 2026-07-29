@@ -11,11 +11,15 @@ function outputName(fileName: string) {
 const FAQ = [
   {
     q: "Where do I get a QIF file to convert?",
-    a: "QIF is a Quicken export format — you'd have one from Quicken itself, or from another finance tool that supports exporting to QIF.",
+    a: "QIF is a Quicken export format — you'd have one from Quicken itself, or from another finance tool that supports exporting to QIF (Banktivity, MYOB, GnuCash, and others all read and write it).",
   },
   {
     q: "What information does it extract?",
     a: "Date, payee, amount, and memo from each transaction record.",
+  },
+  {
+    q: "My QIF file has dates like 1/15'26 — will that parse correctly?",
+    a: "Yes. That apostrophe-year notation (Quicken's own shorthand for 2000s dates) is handled directly, alongside the more common slash-separated formats — tested against real QIF exports, not assumed.",
   },
   {
     q: "Does this cost anything?",

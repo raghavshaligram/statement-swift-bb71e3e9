@@ -10,6 +10,10 @@ function outputName(fileName: string) {
 
 const FAQ = [
   {
+    q: "Why would I need to convert QFX to CSV instead of just importing it into Quicken?",
+    a: "The most common reason: Quicken stops accepting QFX files once your Quicken version is about three years old, requiring an upgrade to keep importing them. Converting to CSV sidesteps that entirely — plain CSV never expires, and works with any spreadsheet or accounting tool, not just Quicken.",
+  },
+  {
     q: "Where do I get a QFX file to convert?",
     a: "QFX is Quicken's own export format — you'd have one from Quicken, or from a bank's \"Download for Quicken\" export option.",
   },

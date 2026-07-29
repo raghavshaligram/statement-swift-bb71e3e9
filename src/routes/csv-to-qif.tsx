@@ -9,8 +9,12 @@ function outputName(fileName: string) {
 
 const FAQ = [
   {
+    q: "Why QIF instead of QFX or OFX for Quicken?",
+    a: "QIF is the only one of the three that carries categories, subcategories, and split transactions — QFX and OFX don't include category data at all, so Quicken has to re-categorize everything after import. That said, a plain bank statement or CSV usually doesn't have category data to begin with, so this converter outputs QIF without categories (D/T/P/M fields) unless your source CSV already has one — there's simply nothing to carry over from a bank export that never had it.",
+  },
+  {
     q: "What software reads QIF files?",
-    a: "Quicken, and many older or lightweight accounting tools that still support the format. It's a simple, plain-text, line-based structure — one of the older personal finance file formats still in wide use.",
+    a: "Quicken (Windows and Mac), Banktivity, MYOB, YNAB, GnuCash, and many older or lightweight accounting tools that still support the format. It's a simple, plain-text, line-based structure — one of the older personal finance file formats still in wide use.",
   },
   {
     q: "What kind of CSV works?",
@@ -18,7 +22,7 @@ const FAQ = [
   },
   {
     q: "How do I import the QIF file into Quicken?",
-    a: "File > File Import > QIF File in Quicken, then select the file this tool downloaded and choose the account to import into.",
+    a: "File > File Import > QIF File in Quicken, then select the file this tool downloaded and choose the account to import into. On Quicken Mac specifically, QIF import creates a new account rather than adding to an existing one — a real platform limitation, not something a converter can work around.",
   },
   {
     q: "Does this cost anything?",
