@@ -2,7 +2,6 @@ import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, CheckCircle2, Paperclip, ShieldAlert } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { HelpAssistant } from "@/components/help-assistant";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -87,15 +86,9 @@ function Page() {
         <div className="mx-auto max-w-2xl px-6">
           <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Contact us</h1>
           <p className="mt-4 text-muted-foreground">
-            Ask our help assistant below, or send us a message directly — including a statement that isn't
-            converting correctly, if that's what's going on.
+            Try the chat bubble in the corner for quick questions, or send us a message directly below —
+            including a statement that isn't converting correctly, if that's what's going on.
           </p>
-        </div>
-      </section>
-
-      <section className="border-b border-border py-14">
-        <div className="mx-auto max-w-2xl px-6">
-          <HelpAssistant />
         </div>
       </section>
 
