@@ -29,7 +29,7 @@ const FAQ = [
 export const Route = createFileRoute("/csv-to-qif")({
   head: () => ({
     meta: [
-      { title: "CSV to QIF Converter for Quicken: Formats and Limits — LedgerLocal" },
+      { title: "Free CSV to QIF Converter for Quicken — LedgerLocal" },
       { name: "description", content: "Free CSV to QIF converter for Quicken import. Auto-detects your CSV's columns, runs entirely in your browser." },
     ],
   }),
@@ -45,7 +45,7 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero eyebrow="Format converter" title="CSV to QIF Converter for Quicken: Formats and Limits" publishedDate="July 2026" />
+      <ArticleHero eyebrow="Format converter" title="Free CSV to QIF Converter for Quicken" publishedDate="July 2026" />
 
       <ConverterEmbed heading="Convert a CSV to QIF" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter

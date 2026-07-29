@@ -54,7 +54,7 @@ const FAQ = [
 export const Route = createFileRoute("/csv-to-iif")({
   head: () => ({
     meta: [
-      { title: "CSV to IIF Converter for QuickBooks Desktop: Formats and Limits — LedgerLocal" },
+      { title: "Free CSV to IIF Converter for QuickBooks Desktop — LedgerLocal" },
       {
         name: "description",
         content: "QuickBooks Desktop has no native CSV import. Free CSV to IIF converter — auto-detects your columns, runs entirely in your browser.",
@@ -79,7 +79,7 @@ function Page() {
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Format converter"
-        title="CSV to IIF Converter for QuickBooks Desktop: Formats and Limits"
+        title="Free CSV to IIF Converter for QuickBooks Desktop"
         publishedDate="July 2026"
       />
 

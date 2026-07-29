@@ -29,7 +29,7 @@ const FAQ = [
 export const Route = createFileRoute("/qfx-to-csv")({
   head: () => ({
     meta: [
-      { title: "QFX to CSV Converter: Why and How — LedgerLocal" },
+      { title: "Free QFX to CSV Converter — LedgerLocal" },
       { name: "description", content: "Convert a QFX (Quicken) file to CSV before your Quicken version stops accepting it. Free, runs entirely in your browser." },
     ],
   }),
@@ -45,7 +45,7 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero eyebrow="Format converter" title="QFX to CSV Converter: Why and How" publishedDate="July 2026" />
+      <ArticleHero eyebrow="Format converter" title="Free QFX to CSV Converter: Why and How" publishedDate="July 2026" />
 
       <ConverterEmbed heading="Convert a QFX file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter

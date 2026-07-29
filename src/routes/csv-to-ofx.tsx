@@ -29,7 +29,7 @@ const FAQ = [
 export const Route = createFileRoute("/csv-to-ofx")({
   head: () => ({
     meta: [
-      { title: "CSV to OFX Converter: Formats and Limits — LedgerLocal" },
+      { title: "Free CSV to OFX Converter — LedgerLocal" },
       { name: "description", content: "Free CSV to OFX converter for QuickBooks or Quicken import. Runs entirely in your browser." },
     ],
   }),
@@ -45,7 +45,7 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero eyebrow="Format converter" title="CSV to OFX Converter: Formats and Limits" publishedDate="July 2026" />
+      <ArticleHero eyebrow="Format converter" title="Free CSV to OFX Converter" publishedDate="July 2026" />
 
       <ConverterEmbed heading="Convert a CSV to OFX" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter

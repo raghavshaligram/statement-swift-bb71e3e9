@@ -31,7 +31,7 @@ const FAQ = [
 export const Route = createFileRoute("/iif-to-csv")({
   head: () => ({
     meta: [
-      { title: "IIF to CSV Converter: Formats and Limits — LedgerLocal" },
+      { title: "Free IIF to CSV Converter — LedgerLocal" },
       { name: "description", content: "Convert a QuickBooks Desktop IIF file to CSV. Free, unlimited, runs entirely in your browser." },
     ],
   }),
@@ -47,7 +47,7 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero eyebrow="Format converter" title="IIF to CSV Converter: Reading QuickBooks Desktop's Export Format" publishedDate="July 2026" />
+      <ArticleHero eyebrow="Format converter" title="Free IIF to CSV Converter: Reading QuickBooks Desktop's Export Format" publishedDate="July 2026" />
 
       <ConverterEmbed heading="Convert an IIF file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter

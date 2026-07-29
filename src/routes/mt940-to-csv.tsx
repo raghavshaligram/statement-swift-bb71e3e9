@@ -30,7 +30,7 @@ const FAQ = [
 export const Route = createFileRoute("/mt940-to-csv")({
   head: () => ({
     meta: [
-      { title: "MT940 to CSV Converter: Formats and Limits — LedgerLocal" },
+      { title: "Free MT940 to CSV Converter — LedgerLocal" },
       { name: "description", content: "Convert an MT940 SWIFT bank statement file to CSV. Free, runs entirely in your browser." },
     ],
   }),
@@ -46,7 +46,7 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero eyebrow="Format converter" title="MT940 to CSV Converter: Formats and Limits" publishedDate="July 2026" />
+      <ArticleHero eyebrow="Format converter" title="Free MT940 to CSV Converter" publishedDate="July 2026" />
 
       <ConverterEmbed heading="Convert an MT940 file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter

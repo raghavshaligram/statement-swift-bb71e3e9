@@ -30,7 +30,7 @@ const FAQ = [
 export const Route = createFileRoute("/ofx-to-csv")({
   head: () => ({
     meta: [
-      { title: "OFX to CSV Converter: Formats and Limits — LedgerLocal" },
+      { title: "Free OFX to CSV Converter — LedgerLocal" },
       { name: "description", content: "Convert an OFX or QFX file to CSV. Free, runs entirely in your browser." },
     ],
   }),
@@ -46,7 +46,7 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero eyebrow="Format converter" title="OFX to CSV Converter: Formats and Limits" publishedDate="July 2026" />
+      <ArticleHero eyebrow="Format converter" title="Free OFX to CSV Converter" publishedDate="July 2026" />
 
       <ConverterEmbed heading="Convert an OFX file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter
