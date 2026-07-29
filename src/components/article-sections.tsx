@@ -172,3 +172,24 @@ export function RelatedArticles({ articles }: { articles: Array<{ href: string; 
     </div>
   );
 }
+
+/** Embeds the real, functional converter tool within the article flow -- not a CTA pointing elsewhere, the actual working dropzone right where the article calls for it. */
+export function ConverterEmbed({
+  heading,
+  body,
+  children,
+}: {
+  heading: string;
+  body: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="mx-auto max-w-3xl px-6 py-8">
+      <div id="converter" className="scroll-mt-24 rounded-2xl border border-emerald/30 bg-emerald-soft/30 p-6 sm:p-8">
+        <div className="text-lg font-bold text-ink">{heading}</div>
+        <p className="mt-1.5 max-w-md text-sm text-ink/75">{body}</p>
+        {children}
+      </div>
+    </div>
+  );
+}
