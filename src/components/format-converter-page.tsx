@@ -9,6 +9,7 @@
  * without changes -- pages can be enriched one at a time by passing
  * `whatIs`, `comparison`, `whyConvert`, or `bottomCta` props.
  */
+import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -41,6 +42,7 @@ export function FormatConverterPage({
   targetExt,
   accept,
   onConvert,
+  illustration,
   whatIs,
   comparison,
   whyConvert,
@@ -61,6 +63,8 @@ export function FormatConverterPage({
   accept: string;
   /** Real conversion logic for this specific format pair -- reads the file, parses it, maps to Transaction[], and triggers the export/download itself. Converts and downloads right on this page; never navigates away. */
   onConvert: (file: File) => Promise<InlineConvertResult>;
+  /** Optional featured illustration, specific to this page's format -- rendered as a modest accent above the H1 rather than a full 2-column hero, since the dropzone card below needs to stay centered and prominent. */
+  illustration?: ReactNode;
   /** Optional "What is X?" long-form section. */
   whatIs?: { heading: string; body: string };
   /** Optional side-by-side comparison table. */
@@ -92,6 +96,9 @@ export function FormatConverterPage({
       {/* Hero */}
       <section className="border-b border-border bg-gradient-to-b from-surface-muted/40 to-background py-16">
         <div className="mx-auto max-w-3xl px-6 text-center">
+          {illustration && (
+            <div className="mx-auto mb-6 h-32 w-56 overflow-hidden rounded-xl shadow-sm">{illustration}</div>
+          )}
           <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
             Free <span className="text-emerald">{title}</span>
           </h1>

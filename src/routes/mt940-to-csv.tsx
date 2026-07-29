@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FormatConverterPage } from "@/components/format-converter-page";
+import { SwiftGlobeArt } from "@/components/format-art";
 import { parseMt940Text, mt940ResultToTransactions } from "@/lib/mt940/parse-mt940";
 import { exportToCsv } from "@/lib/export/to-csv";
 import { DEFAULT_EXPORT_OPTIONS } from "@/lib/export/types";
@@ -46,6 +47,7 @@ export const Route = createFileRoute("/mt940-to-csv")({
       title="MT940 to CSV Converter"
       intro="Convert an MT940 (SWIFT) bank statement file to a clean CSV — free, unlimited, and entirely on your device."
       freeNote="Free and unlimited — no OCR involved, no page limits"
+      illustration={<SwiftGlobeArt titleText="An MT940 file from SWIFT's international banking network" className="w-full h-full" />}
       whatIs={{
         heading: "What is an MT940 file?",
         body: "MT940 is SWIFT's international bank statement format — the standard many European and international banks use for statement exports, more common outside the US, UK, and India. Each transaction is a fixed-format \"statement line\" paired with a narrative describing it, which is exactly what this converter reads directly into a clean spreadsheet row.",

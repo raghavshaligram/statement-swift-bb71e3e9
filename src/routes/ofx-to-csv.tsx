@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FormatConverterPage } from "@/components/format-converter-page";
+import { ExchangeShieldArt } from "@/components/format-art";
 import { parseOfxText, ofxResultToTransactions } from "@/lib/ofx/parse-ofx";
 import { exportToCsv } from "@/lib/export/to-csv";
 import { DEFAULT_EXPORT_OPTIONS } from "@/lib/export/types";
@@ -46,6 +47,7 @@ export const Route = createFileRoute("/ofx-to-csv")({
       title="OFX to CSV Converter"
       intro="Convert an OFX (or QFX) file to a clean CSV — free, unlimited, and entirely on your device."
       freeNote="Free and unlimited — no OCR involved, no page limits"
+      illustration={<ExchangeShieldArt titleText="An OFX exchange file converting into a CSV" className="w-full h-full" />}
       whatIs={{
         heading: "What is an OFX file?",
         body: "OFX (Open Financial Exchange) is a standard transaction-export format many banks and finance tools support directly from online banking, or from software like Quicken or QuickBooks. It's a tagged, structured format — real transaction data, not a formatted report — which is exactly why it converts cleanly to CSV rather than needing OCR or layout guessing the way a PDF statement would.",

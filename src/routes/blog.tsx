@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { StatementGridArt } from "@/components/statement-grid-art";
+import { BankBuildingArt, LedgerBookArt, TaggedReceiptArt, ExchangeShieldArt, ExpiringClockArt, SwiftGlobeArt } from "@/components/format-art";
 
-type Post = { href: string; title: string; blurb: string; label: string };
+type ArtComponent = (props: { className?: string; label?: string; titleText?: string }) => ReactNode;
+type Post = { href: string; title: string; blurb: string; label: string; Art: ArtComponent };
 
 const BANK_GUIDES: Post[] = [
   {
@@ -11,33 +14,36 @@ const BANK_GUIDES: Post[] = [
     title: "NatWest bank statement to CSV",
     blurb: "NatWest's own export, plus a converter for when you only have a PDF.",
     label: "NatWest",
+    Art: BankBuildingArt,
   },
   {
     href: "/lloyds-bank-statement-to-csv",
     title: "Lloyds bank statement to CSV & Excel",
     blurb: "Lloyds' CSV export is capped at 12 months and 150 transactions — here's the rest.",
     label: "Lloyds",
+    Art: StatementGridArt,
   },
 ];
 
 const FORMAT_CONVERTERS: Post[] = [
-  { href: "/csv-to-iif", title: "CSV to IIF Converter for QuickBooks Desktop", blurb: "Any CSV, auto-detected columns, straight to IIF.", label: "CSV → IIF" },
-  { href: "/iif-to-csv", title: "IIF to CSV Converter", blurb: "A QuickBooks Desktop export, back to plain CSV.", label: "IIF → CSV" },
-  { href: "/csv-to-qif", title: "CSV to QIF Converter", blurb: "Any CSV to QIF for Quicken import.", label: "CSV → QIF" },
-  { href: "/qif-to-csv", title: "QIF to CSV Converter", blurb: "A Quicken export, back to plain CSV.", label: "QIF → CSV" },
-  { href: "/csv-to-ofx", title: "CSV to OFX Converter", blurb: "Any CSV to the bank-neutral OFX format.", label: "CSV → OFX" },
-  { href: "/ofx-to-csv", title: "OFX to CSV Converter", blurb: "An OFX or QFX file, back to plain CSV.", label: "OFX → CSV" },
-  { href: "/qfx-to-csv", title: "QFX to CSV Converter", blurb: "A Quicken QFX export, back to plain CSV.", label: "QFX → CSV" },
-  { href: "/mt940-to-csv", title: "MT940 to CSV Converter", blurb: "SWIFT's international statement format, to CSV.", label: "MT940 → CSV" },
+  { href: "/csv-to-iif", title: "CSV to IIF Converter for QuickBooks Desktop", blurb: "Any CSV, auto-detected columns, straight to IIF.", label: "CSV → IIF", Art: LedgerBookArt },
+  { href: "/iif-to-csv", title: "IIF to CSV Converter", blurb: "A QuickBooks Desktop export, back to plain CSV.", label: "IIF → CSV", Art: LedgerBookArt },
+  { href: "/csv-to-qif", title: "CSV to QIF Converter", blurb: "Any CSV to QIF for Quicken import.", label: "CSV → QIF", Art: TaggedReceiptArt },
+  { href: "/qif-to-csv", title: "QIF to CSV Converter", blurb: "A Quicken export, back to plain CSV.", label: "QIF → CSV", Art: TaggedReceiptArt },
+  { href: "/csv-to-ofx", title: "CSV to OFX Converter", blurb: "Any CSV to the bank-neutral OFX format.", label: "CSV → OFX", Art: ExchangeShieldArt },
+  { href: "/ofx-to-csv", title: "OFX to CSV Converter", blurb: "An OFX or QFX file, back to plain CSV.", label: "OFX → CSV", Art: ExchangeShieldArt },
+  { href: "/qfx-to-csv", title: "QFX to CSV Converter", blurb: "A Quicken QFX export, back to plain CSV.", label: "QFX → CSV", Art: ExpiringClockArt },
+  { href: "/mt940-to-csv", title: "MT940 to CSV Converter", blurb: "SWIFT's international statement format, to CSV.", label: "MT940 → CSV", Art: SwiftGlobeArt },
 ];
 
 function PostCard({ post }: { post: Post }) {
+  const { Art } = post;
   return (
     <Link
       to={post.href}
       className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition hover:border-emerald/50 hover:shadow-md"
     >
-      <StatementGridArt className="aspect-[16/9] w-full" label={post.label} />
+      <Art className="aspect-[16/9] w-full" label={post.label} titleText={post.title} />
       <div className="flex flex-1 flex-col p-5">
         <h3 className="font-semibold text-ink group-hover:text-emerald">{post.title}</h3>
         <p className="mt-1.5 text-sm text-muted-foreground">{post.blurb}</p>

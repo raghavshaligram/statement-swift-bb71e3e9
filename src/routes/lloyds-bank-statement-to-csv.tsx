@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ShieldCheck, AlertTriangle, Check, X } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { StatementGridArt } from "@/components/statement-grid-art";
 
 const FAQ: Array<{ q: string; a: string }> = [
   {
@@ -76,18 +77,23 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <section className="border-b border-border py-16 text-center">
-        <div className="mx-auto max-w-2xl px-6">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Bank guide
-          </span>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-            Lloyds Bank statement to CSV &amp; Excel
-          </h1>
-          <p className="mt-4 text-muted-foreground">
-            Lloyds' own CSV export is real, but limited — 12 months, 150 transactions, desktop only, and no
-            Excel option at all. Two honest options below: theirs, and what to do beyond it.
-          </p>
+      <section className="border-b border-border py-16">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Bank guide
+              </span>
+              <h1 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+                Lloyds Bank statement to CSV &amp; Excel
+              </h1>
+              <p className="mt-4 text-muted-foreground">
+                Lloyds' own CSV export is real, but limited — 12 months, 150 transactions, desktop only, and no
+                Excel option at all. Two honest options below: theirs, and what to do beyond it.
+              </p>
+            </div>
+            <StatementGridArt titleText="A Lloyds statement transforming into a structured spreadsheet" className="w-full rounded-2xl shadow-sm" />
+          </div>
         </div>
       </section>
 

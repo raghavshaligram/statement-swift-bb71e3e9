@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FormatConverterPage } from "@/components/format-converter-page";
+import { LedgerBookArt } from "@/components/format-art";
 import { parseCsvText, csvResultToTransactions } from "@/lib/csv/parse-csv";
 import { exportToIif } from "@/lib/export/to-iif";
 
@@ -61,6 +62,7 @@ export const Route = createFileRoute("/csv-to-iif")({
       title="CSV to IIF Converter for QuickBooks Desktop"
       intro="Convert any CSV file to IIF for QuickBooks Desktop import — free, unlimited, and entirely on your device."
       freeNote="Free and unlimited — no OCR involved, no page limits"
+      illustration={<LedgerBookArt titleText="A CSV converting into a QuickBooks IIF ledger" className="w-full h-full" />}
       whatIs={{
         heading: "What is an IIF file?",
         body: "IIF (Intuit Interchange Format) is QuickBooks Desktop's native tab-delimited format for importing and exporting transactions, accounts, and other lists. QuickBooks Desktop has no built-in way to import a CSV or Excel file of transactions directly — Intuit's own support community confirms this isn't a missing setting, it just doesn't exist. IIF has been the standard workaround for years: each transaction becomes a TRNS/SPL/ENDTRNS block — one line for the transaction itself, one offsetting line against an account, and a marker for where the record ends.",

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FormatConverterPage } from "@/components/format-converter-page";
+import { TaggedReceiptArt } from "@/components/format-art";
 import { parseCsvText, csvResultToTransactions } from "@/lib/csv/parse-csv";
 import { exportToQif } from "@/lib/export/to-qif";
 
@@ -49,6 +50,7 @@ export const Route = createFileRoute("/csv-to-qif")({
       title="CSV to QIF Converter"
       intro="Convert any CSV file to QIF for Quicken import — free, unlimited, and entirely on your device."
       freeNote="Free and unlimited — no OCR involved, no page limits"
+      illustration={<TaggedReceiptArt titleText="A CSV converting into a tagged Quicken QIF record" className="w-full h-full" />}
       whatIs={{
         heading: "What is a QIF file?",
         body: "QIF (Quicken Interchange Format) is one of the oldest personal-finance file formats still in active use — a plain-text, line-based structure where each transaction is a short run of prefixed lines (date, amount, payee, memo) ending in a bare \"^\". Quicken still imports it directly, and it remains a common lowest-common-denominator format that many older or lightweight finance tools can read even without native CSV support.",

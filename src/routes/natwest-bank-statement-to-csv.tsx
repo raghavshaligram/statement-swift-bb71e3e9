@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ShieldCheck, Check, X } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { BankBuildingArt } from "@/components/format-art";
 
 const FAQ: Array<{ q: string; a: string }> = [
   {
@@ -68,18 +69,23 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <section className="border-b border-border py-16 text-center">
-        <div className="mx-auto max-w-2xl px-6">
-          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Bank guide
-          </span>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-            NatWest bank statement to CSV
-          </h1>
-          <p className="mt-4 text-muted-foreground">
-            The fastest route depends on what you actually have: access to your NatWest account, or just a PDF.
-            Two honest options below.
-          </p>
+      <section className="border-b border-border py-16">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Bank guide
+              </span>
+              <h1 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+                NatWest bank statement to CSV
+              </h1>
+              <p className="mt-4 text-muted-foreground">
+                The fastest route depends on what you actually have: access to your NatWest account, or just a
+                PDF. Two honest options below.
+              </p>
+            </div>
+            <BankBuildingArt titleText="A NatWest statement being issued from the bank" className="w-full rounded-2xl shadow-sm" />
+          </div>
         </div>
       </section>
 
