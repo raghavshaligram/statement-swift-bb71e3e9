@@ -73,11 +73,12 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        IIF files are tab-delimited, but QuickBooks exports can redefine the column order partway through the
-        file — once per account section — which breaks naive parsers that assume one fixed layout. This
-        converter reads each section's own header line, extracts transaction type, reference number, and memo
-        alongside date, description, and amount, and reports exactly how many rows were skipped and why if
-        anything doesn't parse cleanly.
+        Migrating off QuickBooks Desktop or auditing old records without retyping years of transactions
+        starts with getting a clean CSV out of the IIF export. IIF files are tab-delimited, but QuickBooks
+        exports can redefine the column order partway through the file — once per account section — which
+        breaks naive parsers that assume one fixed layout. This converter reads each section's own header
+        line, extracts transaction type, reference number, and memo alongside date, description, and amount,
+        and reports exactly how many rows were skipped and why if anything doesn't parse cleanly.
       </QuickSummary>
 
       <ArticleH2>What's Inside an IIF File</ArticleH2>

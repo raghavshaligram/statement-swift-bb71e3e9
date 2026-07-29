@@ -102,11 +102,13 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        NatWest's own export genuinely covers CSV, Excel, and OFX directly from online banking — often the
-        fastest route if you can log in. The real gaps: current-account history export goes back up to 7 years,
-        but credit card transaction export is limited to about 3 months, and the CSV's comma-delimited version
-        has a documented Excel-opening issue (NatWest's own fix: try the tab-delimited download instead). For
-        anything older, a closed account, or a scanned statement, convert the PDF with LedgerLocal.
+        Getting NatWest transactions into your books without manual entry usually starts with NatWest's own
+        export — it genuinely covers CSV, Excel, and OFX directly from online banking, often the fastest
+        route if you can log in. The real gaps: current-account history export goes back up to 7 years,
+        but credit card transaction export is limited to about 3 months, and the CSV's comma-delimited
+        version has a documented Excel-opening issue (NatWest's own fix: try the tab-delimited download
+        instead). For anything older, a closed account, or a scanned statement, convert the PDF with
+        LedgerLocal instead of typing it in by hand.
       </QuickSummary>
 
       <ArticleH2>How to Export a NatWest Bank Statement as CSV</ArticleH2>

@@ -71,9 +71,11 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        Converts any bank's PDF statement — named detection for 23+ major banks, plus a generic parser for any
-        other text-based PDF — into a standard OFX transaction file, ready to import into QuickBooks, Quicken,
-        Xero, and most accounting software.
+        Getting a bank statement into QuickBooks, Quicken, or Xero as a real transaction feed — not a
+        spreadsheet you have to reshape by hand — is what OFX is for. Converts any bank's PDF statement —
+        named detection for 23+ major banks, plus a generic parser for any other text-based PDF — into a
+        standard OFX transaction file, ready to import into QuickBooks, Quicken, Xero, and most accounting
+        software.
       </QuickSummary>
 
       <ArticleH2>How It Works</ArticleH2>

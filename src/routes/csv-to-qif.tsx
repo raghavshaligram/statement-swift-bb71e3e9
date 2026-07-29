@@ -72,10 +72,12 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        QIF beats QFX and OFX for one real reason: it's the only format that carries category and split data
-        into Quicken. This converter reads any CSV with a date, description, and amount column, handles
-        Quicken's real apostrophe-year date shorthand (1/15'26), and outputs a clean QIF file — without
-        inventing categories a plain bank CSV never had to begin with.
+        Getting a bank statement into Quicken without losing your categories, or retyping them back in
+        afterward, is the real reason to pick QIF over the alternatives. QIF beats QFX and OFX for one real
+        reason: it's the only format that carries category and split data into Quicken. This converter reads
+        any CSV with a date, description, and amount column, handles Quicken's real apostrophe-year date
+        shorthand (1/15'26), and outputs a clean QIF file — without inventing categories a plain bank CSV
+        never had to begin with.
       </QuickSummary>
 
       <ArticleH2>What's Inside a QIF File</ArticleH2>

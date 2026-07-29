@@ -70,8 +70,10 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        Converts any bank's PDF statement — named detection for 23+ major banks, plus a generic parser for any
-        other text-based PDF — into a standard QIF file, ready to import into Quicken.
+        If Quicken is where your bookkeeping actually happens, getting a bank statement into it without
+        retyping every transaction means converting to QIF first. Converts any bank's PDF statement — named
+        detection for 23+ major banks, plus a generic parser for any other text-based PDF — into a standard
+        QIF file, ready to import into Quicken.
       </QuickSummary>
 
       <ArticleH2>How It Works</ArticleH2>

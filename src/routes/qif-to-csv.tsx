@@ -72,9 +72,11 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        QIF files use single-letter field codes (D for date, T for amount, P for payee, M for memo) with each
-        record ending in a bare "^". A real quirk: Quicken's own apostrophe-year date shorthand (1/15'26) trips
-        up parsers that only expect slash-separated dates — this converter handles both.
+        Auditing old Quicken records or moving them into a spreadsheet without retyping every line means
+        reading the QIF file's own real quirks correctly first. QIF files use single-letter field codes (D
+        for date, T for amount, P for payee, M for memo) with each record ending in a bare "^". A real
+        quirk: Quicken's own apostrophe-year date shorthand (1/15'26) trips up parsers that only expect
+        slash-separated dates — this converter handles both.
       </QuickSummary>
 
       <ArticleH2>What's Inside a QIF File</ArticleH2>

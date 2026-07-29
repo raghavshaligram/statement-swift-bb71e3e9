@@ -71,9 +71,11 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        Quicken's own real behavior: QFX import stops working once your Quicken version is roughly three years
-        old, forcing an upgrade. CSV has no such expiry and works with any spreadsheet or accounting tool, not
-        just Quicken. This reads QFX (and plain OFX, the same underlying format) and converts to a clean CSV.
+        Not being locked out of your own transaction history by software you no longer run is the real
+        reason to convert QFX now rather than later. Quicken's own real behavior: QFX import stops working
+        once your Quicken version is roughly three years old, forcing an upgrade. CSV has no such expiry and
+        works with any spreadsheet or accounting tool, not just Quicken. This reads QFX (and plain OFX, the
+        same underlying format) and converts to a clean CSV.
       </QuickSummary>
 
       <ArticleH2>Why QFX Files Stop Working</ArticleH2>

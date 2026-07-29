@@ -78,9 +78,10 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        Since no bank offers native Tally XML export, this converts any bank's PDF statement directly —
-        named detection for 23+ major banks, plus a generic parser for any other text-based PDF. Import the
-        resulting XML file straight into Tally via Gateway of Tally, Import Data, Vouchers.
+        Getting a bank statement into Tally without keying in every voucher by hand means converting it
+        first, since no bank offers native Tally XML export. This converts any bank's PDF statement directly
+        — named detection for 23+ major banks, plus a generic parser for any other text-based PDF. Import
+        the resulting XML file straight into Tally via Gateway of Tally, Import Data, Vouchers.
       </QuickSummary>
 
       <ArticleH2>How It Works</ArticleH2>

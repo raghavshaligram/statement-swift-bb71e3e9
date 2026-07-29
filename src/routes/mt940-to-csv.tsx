@@ -72,10 +72,12 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        Each MT940 transaction is a fixed-format statement line (tag :61:) paired with a narrative (tag :86:)
-        that can span multiple physical lines before the next transaction starts. This converter combines the
-        full narrative into one clean description rather than only capturing the first line — this direction
-        only; converting CSV to MT940 isn't currently supported.
+        Reconciling an international account without retyping every SWIFT statement line by hand means
+        reading MT940's real structure correctly. Each MT940 transaction is a fixed-format statement line
+        (tag :61:) paired with a narrative (tag :86:) that can span multiple physical lines before the next
+        transaction starts. This converter combines the full narrative into one clean description rather
+        than only capturing the first line — this direction only; converting CSV to MT940 isn't currently
+        supported.
       </QuickSummary>
 
       <ArticleH2>What's Inside an MT940 File</ArticleH2>

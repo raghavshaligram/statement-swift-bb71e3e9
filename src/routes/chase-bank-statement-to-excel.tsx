@@ -93,10 +93,11 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        Chase's Activity page exports CSV, QFX, and QBO directly — free, and the fastest option if the
-        transactions you need are recent. The real limit: roughly the last 90 days on checking and savings
-        accounts. PDF statements go back 7 years, but Chase provides no structured export for them at all — the
-        gap this page covers.
+        Getting a full year of Chase transactions into a spreadsheet without retyping them means knowing
+        where Chase's own export actually stops. Chase's Activity page exports CSV, QFX, and QBO directly —
+        free, and the fastest option if the transactions you need are recent. The real limit: roughly the
+        last 90 days on checking and savings accounts. PDF statements go back 7 years, but Chase provides no
+        structured export for them at all — the gap this page covers.
       </QuickSummary>
 
       <section className="border-b border-border py-16">

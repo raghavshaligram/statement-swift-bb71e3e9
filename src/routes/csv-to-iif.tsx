@@ -108,10 +108,11 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        QuickBooks Desktop can't import CSV or Excel directly — IIF is the real path in. This tool reads any CSV
-        with a date, description, and amount column, and builds a standard TRNS/SPL/ENDTRNS block per
-        transaction. It won't invent categories or vendor names that weren't in your source file, and unlike
-        QuickBooks' own QBO format, IIF never expires.
+        Closing the books in QuickBooks Desktop without hand-entering every transaction depends on getting
+        past a real limitation: QuickBooks Desktop can't import CSV or Excel directly — IIF is the real path
+        in. This tool reads any CSV with a date, description, and amount column, and builds a standard
+        TRNS/SPL/ENDTRNS block per transaction. It won't invent categories or vendor names that weren't in
+        your source file, and unlike QuickBooks' own QBO format, IIF never expires.
       </QuickSummary>
 
       <ArticleH2>What an IIF File Looks Like</ArticleH2>

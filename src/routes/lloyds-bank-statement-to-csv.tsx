@@ -115,11 +115,13 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        Lloyds lets you download transactions as a CSV from online banking, but only the last 12 months, capped
-        at 150 transactions per download, and only on the desktop site. Lloyds keeps PDF statements for 7 years
-        (10+ years in the app), but offers no native Excel export at all. For anything the CSV export can't
-        reach — older statements, more than 150 transactions, or an Excel file — upload the PDFs to LedgerLocal
-        and export CSV, Excel, Tally XML, or IIF.
+        Getting Lloyds transactions into a spreadsheet without retyping them by hand comes down to two
+        paths. Lloyds lets you download transactions as a CSV from online banking, but only the last 12
+        months, capped at 150 transactions per download, and only on the desktop site. Lloyds keeps PDF
+        statements for 7 years (10+ years in the app), but offers no native Excel export at all. For
+        anything the CSV export can't reach — older statements, more than 150 transactions, or an Excel
+        file — upload the PDFs to LedgerLocal and export CSV, Excel, Tally XML, or IIF, without typing a
+        single row by hand.
       </QuickSummary>
 
       <ArticleH2>How to Download a Lloyds Bank Statement as CSV</ArticleH2>

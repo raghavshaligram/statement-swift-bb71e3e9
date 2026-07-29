@@ -72,9 +72,10 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        This reader handles both real-world OFX styles — older SGML-style files and newer XML-style files with
-        proper closing tags — and QFX files too, since QFX is the same underlying format with Quicken-specific
-        headers.
+        Reviewing an OFX export yourself, or handing it to someone without accounting software, means
+        turning it into a real spreadsheet first — this reader handles both real-world OFX styles — older
+        SGML-style files and newer XML-style files with proper closing tags — and QFX files too, since QFX
+        is the same underlying format with Quicken-specific headers.
       </QuickSummary>
 
       <ArticleH2>What's Inside an OFX File</ArticleH2>

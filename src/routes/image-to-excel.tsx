@@ -88,11 +88,13 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        LedgerLocal reads JPG, PNG, and WEBP images directly, using on-device OCR — no server involved. Every
-        extracted transaction gets a confidence score, so a blurry or angled photo doesn't silently produce wrong
-        numbers; it flags exactly which rows are worth double-checking. Converting photos and scans requires a
-        free account (unlike PDF conversion, which needs no signup) — a real, deliberate limit, not an
-        oversight.
+        A photo is often the only record you have of a statement — printed, mailed, or screenshotted — and
+        turning it into real spreadsheet rows without retyping every line is the whole point of this tool.
+        LedgerLocal reads JPG, PNG, and WEBP images directly, using on-device OCR — no server involved.
+        Every extracted transaction gets a confidence score, so a blurry or angled photo doesn't silently
+        produce wrong numbers; it flags exactly which rows are worth double-checking. Converting photos and
+        scans requires a free account (unlike PDF conversion, which needs no signup) — a real, deliberate
+        limit, not an oversight.
       </QuickSummary>
 
       <ArticleH2>How It Works</ArticleH2>

@@ -71,9 +71,11 @@ function Page() {
       </ArticleProse>
 
       <QuickSummary>
-        OFX is built for automated reconciliation, not eyeballing — accounting software matches and categorizes
-        OFX imports the way it would a live bank connection. This converter reads any CSV with a date,
-        description, and amount column, and builds a standard STMTTRN transaction list.
+        Getting a CSV to actually reconcile itself against a bank feed in QuickBooks or Xero, instead of
+        landing as an inert list you have to categorize by hand, is what OFX is for. OFX is built for
+        automated reconciliation, not eyeballing — accounting software matches and categorizes OFX imports
+        the way it would a live bank connection. This converter reads any CSV with a date, description, and
+        amount column, and builds a standard STMTTRN transaction list.
       </QuickSummary>
 
       <ArticleH2>What's Inside an OFX File</ArticleH2>
