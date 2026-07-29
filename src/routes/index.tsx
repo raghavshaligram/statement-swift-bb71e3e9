@@ -32,7 +32,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Convert PDF bank statements to CSV and Excel on your device — the bank statement to Excel software that works everywhere. Free to try, unlimited pages on Pro. Works with Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more.",
+          "Close your books without retyping transactions — the bank statement to Excel software that works everywhere. Convert PDF bank statements to CSV and Excel on your device, free to try, unlimited pages on Pro. Works with Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more.",
       },
       { property: "og:title", content: "LedgerLocal — Free Bank Statement Converter (PDF to CSV & Excel)" },
       {
@@ -116,9 +116,9 @@ function Landing() {
               Free Bank Statement Converter <span className="text-emerald">to Excel & CSV</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              PDF to CSV, PDF to Excel, and more — the bank statement to Excel software that works
-              everywhere. Convert bank statements entirely on your device. No signup, no credit card,
-              works with 23+ banks across the US, UK, Canada, and India.
+              Close your books without retyping a single transaction. Convert bank statement to Excel or
+              CSV, convert PDF to CSV, PDF to Excel, and more — entirely on your device, for any of 23+
+              banks across the US, UK, Canada, and India.
             </p>
           </ScrollReveal>
 
@@ -130,7 +130,7 @@ function Landing() {
             <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground">
               <TrustPill icon={Check} label="No signup required" />
               <TrustPill icon={Lock} label="Bank-grade encryption on-device" />
-              <TrustPill icon={InfinityIcon} label="Unlimited pages on Pro" />
+              <TrustPill icon={InfinityIcon} label="No page cap on Pro — do a full year at once" />
             </div>
           </ScrollReveal>
 
@@ -343,8 +343,9 @@ function Landing() {
                   <span className="text-sm text-muted-foreground">no signup required</span>
                 </div>
                 <p className="mt-3 text-sm text-muted-foreground">
-                  Try instantly with no signup — up to {ANONYMOUS_MAX_PAGES} pages per conversion, as many
-                  conversions as you like. Sign up free for a {SIGNED_IN_MAX_PAGES}-page lifetime allowance. Excel and CSV export.
+                  Try it free — prove it works on a real statement, no signup needed, up to {ANONYMOUS_MAX_PAGES} pages
+                  per conversion, as many conversions as you like. Sign up free for a {SIGNED_IN_MAX_PAGES}-page
+                  lifetime allowance. Excel and CSV export.
                 </p>
               </div>
             </ScrollRevealItem>
@@ -356,7 +357,8 @@ function Landing() {
                   <span className="text-sm text-background/60">/ month · flat</span>
                 </div>
                 <p className="mt-3 text-sm text-background/70">
-                  Unlimited conversions, unlimited pages, all seven export formats. No credits, no per-page fees.
+                  No page cap, ever, and unlimited conversions — convert a full year, every account, or a
+                  whole software migration in one sitting. All seven export formats, no credits, no per-page fees.
                 </p>
               </div>
             </ScrollRevealItem>
