@@ -36,6 +36,11 @@ const entries = [
   { path: "/ofx-to-csv", changefreq: "monthly", priority: "0.6" },
   { path: "/qfx-to-csv", changefreq: "monthly", priority: "0.6" },
   { path: "/mt940-to-csv", changefreq: "monthly", priority: "0.5" },
+  { path: "/qbo-to-csv", changefreq: "monthly", priority: "0.7" },
+  { path: "/csv-to-qbo", changefreq: "monthly", priority: "0.6" },
+  { path: "/qfx-to-qbo", changefreq: "monthly", priority: "0.6" },
+  { path: "/qif-to-qbo", changefreq: "monthly", priority: "0.6" },
+  { path: "/ofx-to-qbo", changefreq: "monthly", priority: "0.6" },
 ];
 
 export const Route = createFileRoute("/sitemap.xml")({
