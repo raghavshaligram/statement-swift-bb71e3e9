@@ -13,7 +13,7 @@ export function ArticleBackLink() {
   );
 }
 
-/** Featured-image hero: a card-style image (not full-bleed), eyebrow, H1, byline -- matches a real editorial article layout rather than a landing-page hero. */
+/** Featured-image hero: a card-style image (not full-bleed), eyebrow, H1, byline -- matches a real editorial article layout rather than a landing-page hero. Illustration is optional -- format-converter pages skip it in favor of the real converter tool above the fold instead. */
 export function ArticleHero({
   eyebrow,
   title,
@@ -23,12 +23,12 @@ export function ArticleHero({
   eyebrow: string;
   title: string;
   publishedDate: string;
-  illustration: ReactNode;
+  illustration?: ReactNode;
 }) {
   return (
     <div className="mx-auto max-w-3xl px-6 pb-10 pt-6">
-      <div className="overflow-hidden rounded-2xl border border-border shadow-sm">{illustration}</div>
-      <span className="mt-8 inline-flex items-center gap-2 rounded-full bg-emerald-soft px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald">
+      {illustration && <div className="overflow-hidden rounded-2xl border border-border shadow-sm">{illustration}</div>}
+      <span className={`${illustration ? "mt-8" : ""} inline-flex items-center gap-2 rounded-full bg-emerald-soft px-3 py-1 text-xs font-semibold uppercase tracking-wider text-emerald`}>
         {eyebrow}
       </span>
       <h1 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">{title}</h1>

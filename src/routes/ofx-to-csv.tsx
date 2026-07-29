@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { FeaturedArt } from "@/components/featured-art";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseOfxText, ofxResultToTransactions } from "@/lib/ofx/parse-ofx";
 import { exportToCsv } from "@/lib/export/to-csv";
@@ -22,22 +21,10 @@ function outputName(fileName: string) {
 }
 
 const FAQ = [
-  {
-    q: "Where do I get an OFX file to convert?",
-    a: "OFX (Open Financial Exchange) is a standard export format many banks and finance tools support directly from online banking, or from software like Quicken or QuickBooks.",
-  },
-  {
-    q: "Does this also work with QFX files?",
-    a: "Yes — QFX is the same underlying format with Quicken-specific headers, and the same reader handles both.",
-  },
-  {
-    q: "What information does it extract?",
-    a: "Date, description, amount, transaction ID, and transaction type from each record. Handles both real-world OFX styles (older SGML-style files and newer XML-style files with closing tags).",
-  },
-  {
-    q: "Is my data uploaded anywhere?",
-    a: "No. The conversion runs entirely in your browser — nothing is sent to a server.",
-  },
+  { q: "Where do I get an OFX file to convert?", a: "OFX (Open Financial Exchange) is a standard export format many banks and finance tools support directly from online banking, or from software like Quicken or QuickBooks." },
+  { q: "Does this also work with QFX files?", a: "Yes — QFX is the same underlying format with Quicken-specific headers, and the same reader handles both." },
+  { q: "What information does it extract?", a: "Date, description, amount, transaction ID, and transaction type from each record. Handles both real-world OFX styles (older SGML-style files and newer XML-style files with closing tags)." },
+  { q: "Is my data uploaded anywhere?", a: "No. The conversion runs entirely in your browser — nothing is sent to a server." },
 ];
 
 export const Route = createFileRoute("/ofx-to-csv")({
@@ -51,11 +38,7 @@ export const Route = createFileRoute("/ofx-to-csv")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
-  };
+  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
 
   return (
     <div className="min-h-screen bg-background">
@@ -63,34 +46,7 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero
-        eyebrow="Format converter"
-        title="OFX to CSV Converter: Formats and Limits"
-        publishedDate="July 2026"
-        illustration={
-          <FeaturedArt
-            titleText="An OFX exchange file converting into a CSV"
-            eyebrow="Format converter"
-            sourceLabel="OFX"
-            destinations={[{ label: "CSV", color: "#0e5a40" }]}
-            className="w-full"
-          />
-        }
-      />
-
-      <ArticleProse>
-        <p>
-          OFX is built for automated reconciliation, not manual review — which is exactly why converting it to
-          CSV is useful when you actually want to look at the data yourself, or hand it to someone who doesn't
-          use accounting software.
-        </p>
-      </ArticleProse>
-
-      <QuickSummary>
-        This reader handles both real-world OFX styles — older SGML-style files and newer XML-style files with
-        proper closing tags — and QFX files too, since QFX is the same underlying format with Quicken-specific
-        headers.
-      </QuickSummary>
+      <ArticleHero eyebrow="Format converter" title="OFX to CSV Converter: Formats and Limits" publishedDate="July 2026" />
 
       <ConverterEmbed heading="Convert an OFX file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter
@@ -106,6 +62,20 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <ArticleProse>
+        <p>
+          OFX is built for automated reconciliation, not manual review — which is exactly why converting it to
+          CSV is useful when you actually want to look at the data yourself, or hand it to someone who doesn't
+          use accounting software.
+        </p>
+      </ArticleProse>
+
+      <QuickSummary>
+        This reader handles both real-world OFX styles — older SGML-style files and newer XML-style files with
+        proper closing tags — and QFX files too, since QFX is the same underlying format with Quicken-specific
+        headers.
+      </QuickSummary>
 
       <ArticleH2>What's Inside an OFX File</ArticleH2>
       <ArticleTable

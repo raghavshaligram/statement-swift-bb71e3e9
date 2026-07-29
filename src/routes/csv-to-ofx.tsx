@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { FeaturedArt } from "@/components/featured-art";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseCsvText, csvResultToTransactions } from "@/lib/csv/parse-csv";
 import { exportToOfx } from "@/lib/export/to-ofx";
@@ -21,22 +20,10 @@ function outputName(fileName: string) {
 }
 
 const FAQ = [
-  {
-    q: "Why OFX instead of just importing the CSV directly?",
-    a: "Most accounting software (QuickBooks, Xero, banking-side reconciliation tools) treats OFX as a real transaction feed, not just a spreadsheet — imported transactions get matched and categorized the way a live bank connection would.",
-  },
-  {
-    q: "What software imports OFX files?",
-    a: "Most accounting and personal-finance software — QuickBooks, Quicken, and many banks' own import tools — accepts OFX as a standard transaction-import format.",
-  },
-  {
-    q: "What kind of CSV works?",
-    a: "Any CSV with a date, a description, and an amount column. Headers are detected automatically.",
-  },
-  {
-    q: "Is my data uploaded anywhere?",
-    a: "No. The conversion runs entirely in your browser — nothing is sent to a server.",
-  },
+  { q: "Why OFX instead of just importing the CSV directly?", a: "Most accounting software (QuickBooks, Xero, banking-side reconciliation tools) treats OFX as a real transaction feed, not just a spreadsheet — imported transactions get matched and categorized the way a live bank connection would." },
+  { q: "What software imports OFX files?", a: "Most accounting and personal-finance software — QuickBooks, Quicken, and many banks' own import tools — accepts OFX as a standard transaction-import format." },
+  { q: "What kind of CSV works?", a: "Any CSV with a date, a description, and an amount column. Headers are detected automatically." },
+  { q: "Is my data uploaded anywhere?", a: "No. The conversion runs entirely in your browser — nothing is sent to a server." },
 ];
 
 export const Route = createFileRoute("/csv-to-ofx")({
@@ -50,11 +37,7 @@ export const Route = createFileRoute("/csv-to-ofx")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
-  };
+  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
 
   return (
     <div className="min-h-screen bg-background">
@@ -62,34 +45,7 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero
-        eyebrow="Format converter"
-        title="CSV to OFX Converter: Formats and Limits"
-        publishedDate="July 2026"
-        illustration={
-          <FeaturedArt
-            titleText="A CSV converting into the bank-neutral OFX exchange format"
-            eyebrow="Format converter"
-            sourceLabel="CSV"
-            destinations={[{ label: "OFX", color: "#0e5a40" }]}
-            className="w-full"
-          />
-        }
-      />
-
-      <ArticleProse>
-        <p>
-          OFX (Open Financial Exchange) is a bank-neutral, standardized transaction-import format that most
-          accounting software treats as a live feed rather than a static file. This guide covers what's inside
-          an OFX file and when it's genuinely the better choice over a plain CSV.
-        </p>
-      </ArticleProse>
-
-      <QuickSummary>
-        OFX is built for automated reconciliation, not eyeballing — accounting software matches and categorizes
-        OFX imports the way it would a live bank connection. This converter reads any CSV with a date,
-        description, and amount column, and builds a standard STMTTRN transaction list.
-      </QuickSummary>
+      <ArticleHero eyebrow="Format converter" title="CSV to OFX Converter: Formats and Limits" publishedDate="July 2026" />
 
       <ConverterEmbed heading="Convert a CSV to OFX" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter
@@ -105,6 +61,20 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <ArticleProse>
+        <p>
+          OFX (Open Financial Exchange) is a bank-neutral, standardized transaction-import format that most
+          accounting software treats as a live feed rather than a static file. This guide covers what's inside
+          an OFX file and when it's genuinely the better choice over a plain CSV.
+        </p>
+      </ArticleProse>
+
+      <QuickSummary>
+        OFX is built for automated reconciliation, not eyeballing — accounting software matches and categorizes
+        OFX imports the way it would a live bank connection. This converter reads any CSV with a date,
+        description, and amount column, and builds a standard STMTTRN transaction list.
+      </QuickSummary>
 
       <ArticleH2>What's Inside an OFX File</ArticleH2>
       <ArticleTable

@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { FeaturedArt } from "@/components/featured-art";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseMt940Text, mt940ResultToTransactions } from "@/lib/mt940/parse-mt940";
 import { exportToCsv } from "@/lib/export/to-csv";
@@ -22,22 +21,10 @@ function outputName(fileName: string) {
 }
 
 const FAQ = [
-  {
-    q: "What is an MT940 file?",
-    a: "MT940 is SWIFT's international bank statement format — common outside the US/UK/India, used by many European and international banks for statement exports.",
-  },
-  {
-    q: "What information does it extract?",
-    a: "Date, description (from the narrative line following each transaction), and amount, correctly signed for debits and credits.",
-  },
-  {
-    q: "My bank's narrative spans multiple lines per transaction — is that handled?",
-    a: "Yes. A real MT940 narrative can wrap across several physical lines before the next transaction starts, and all of it gets combined into one clean description.",
-  },
-  {
-    q: "Is my data uploaded anywhere?",
-    a: "No. The conversion runs entirely in your browser — nothing is sent to a server.",
-  },
+  { q: "What is an MT940 file?", a: "MT940 is SWIFT's international bank statement format — common outside the US/UK/India, used by many European and international banks for statement exports." },
+  { q: "What information does it extract?", a: "Date, description (from the narrative line following each transaction), and amount, correctly signed for debits and credits." },
+  { q: "My bank's narrative spans multiple lines per transaction — is that handled?", a: "Yes. A real MT940 narrative can wrap across several physical lines before the next transaction starts, and all of it gets combined into one clean description." },
+  { q: "Is my data uploaded anywhere?", a: "No. The conversion runs entirely in your browser — nothing is sent to a server." },
 ];
 
 export const Route = createFileRoute("/mt940-to-csv")({
@@ -51,11 +38,7 @@ export const Route = createFileRoute("/mt940-to-csv")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
-  };
+  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
 
   return (
     <div className="min-h-screen bg-background">
@@ -63,35 +46,7 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero
-        eyebrow="Format converter"
-        title="MT940 to CSV Converter: Formats and Limits"
-        publishedDate="July 2026"
-        illustration={
-          <FeaturedArt
-            titleText="An MT940 file from SWIFT's international banking network converting into a CSV"
-            eyebrow="Format converter"
-            sourceLabel="MT940"
-            destinations={[{ label: "CSV", color: "#0e5a40" }]}
-            className="w-full"
-          />
-        }
-      />
-
-      <ArticleProse>
-        <p>
-          MT940 is SWIFT's international bank statement format, common outside the US, UK, and India. This guide
-          covers what's inside the file and a real structural quirk — multi-line narratives — that trips up
-          naive parsers.
-        </p>
-      </ArticleProse>
-
-      <QuickSummary>
-        Each MT940 transaction is a fixed-format statement line (tag :61:) paired with a narrative (tag :86:)
-        that can span multiple physical lines before the next transaction starts. This converter combines the
-        full narrative into one clean description rather than only capturing the first line — this direction
-        only; converting CSV to MT940 isn't currently supported.
-      </QuickSummary>
+      <ArticleHero eyebrow="Format converter" title="MT940 to CSV Converter: Formats and Limits" publishedDate="July 2026" />
 
       <ConverterEmbed heading="Convert an MT940 file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter
@@ -107,6 +62,21 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <ArticleProse>
+        <p>
+          MT940 is SWIFT's international bank statement format, common outside the US, UK, and India. This guide
+          covers what's inside the file and a real structural quirk — multi-line narratives — that trips up
+          naive parsers.
+        </p>
+      </ArticleProse>
+
+      <QuickSummary>
+        Each MT940 transaction is a fixed-format statement line (tag :61:) paired with a narrative (tag :86:)
+        that can span multiple physical lines before the next transaction starts. This converter combines the
+        full narrative into one clean description rather than only capturing the first line — this direction
+        only; converting CSV to MT940 isn't currently supported.
+      </QuickSummary>
 
       <ArticleH2>What's Inside an MT940 File</ArticleH2>
       <ArticleTable

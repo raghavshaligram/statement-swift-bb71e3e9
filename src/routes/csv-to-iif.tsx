@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { FeaturedArt } from "@/components/featured-art";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseCsvText, csvResultToTransactions } from "@/lib/csv/parse-csv";
 import { exportToIif } from "@/lib/export/to-iif";
@@ -82,16 +81,22 @@ function Page() {
         eyebrow="Format converter"
         title="CSV to IIF Converter for QuickBooks Desktop: Formats and Limits"
         publishedDate="July 2026"
-        illustration={
-          <FeaturedArt
-            titleText="A CSV converting into a QuickBooks IIF ledger"
-            eyebrow="Format converter"
-            sourceLabel="CSV"
-            destinations={[{ label: "IIF", color: "#0e5a40" }]}
-            className="w-full"
-          />
-        }
       />
+
+      <ConverterEmbed heading="Convert a CSV to IIF" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
+        <InlineConverter
+          accept=".csv"
+          sourceLabel="CSV"
+          targetLabel="IIF"
+          onConvert={async (file) => {
+            const content = await file.text();
+            const result = parseCsvText(content);
+            const transactions = csvResultToTransactions(result, file.name);
+            if (transactions.length > 0) exportToIif(transactions, outputName(file.name));
+            return { count: transactions.length, warnings: result.warnings };
+          }}
+        />
+      </ConverterEmbed>
 
       <ArticleProse>
         <p>
@@ -108,21 +113,6 @@ function Page() {
         transaction. It won't invent categories or vendor names that weren't in your source file, and unlike
         QuickBooks' own QBO format, IIF never expires.
       </QuickSummary>
-
-      <ConverterEmbed heading="Convert a CSV to IIF" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
-        <InlineConverter
-          accept=".csv"
-          sourceLabel="CSV"
-          targetLabel="IIF"
-          onConvert={async (file) => {
-            const content = await file.text();
-            const result = parseCsvText(content);
-            const transactions = csvResultToTransactions(result, file.name);
-            if (transactions.length > 0) exportToIif(transactions, outputName(file.name));
-            return { count: transactions.length, warnings: result.warnings };
-          }}
-        />
-      </ConverterEmbed>
 
       <ArticleH2>What an IIF File Looks Like</ArticleH2>
       <ArticleProse>

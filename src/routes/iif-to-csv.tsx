@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { FeaturedArt } from "@/components/featured-art";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseIifText, iifResultToTransactions } from "@/lib/iif/parse-iif";
 import { exportToCsv } from "@/lib/export/to-csv";
@@ -11,7 +10,6 @@ import {
   QuickSummary,
   ArticleProse,
   ArticleH2,
-  NumberedSteps,
   ArticleTable,
   LimitsList,
   ConverterEmbed,
@@ -23,26 +21,11 @@ function outputName(fileName: string) {
 }
 
 const FAQ = [
-  {
-    q: "Why would I need to go from IIF back to CSV?",
-    a: "Common when you're migrating off QuickBooks Desktop, sharing data with someone who doesn't have QuickBooks, or auditing historical exports in a spreadsheet.",
-  },
-  {
-    q: "Where do I get an IIF file to convert?",
-    a: "IIF is QuickBooks Desktop's own export/import format — you'd have one if you or your accountant exported transactions from QuickBooks Desktop.",
-  },
-  {
-    q: "What if my IIF file has multiple accounts or a different column order?",
-    a: "Handled. Real QuickBooks exports can redefine the field order partway through the file (e.g. once per account section) — LedgerLocal reads each section's own header line rather than assuming one fixed layout for the whole file.",
-  },
-  {
-    q: "What if a row is missing a date or amount?",
-    a: "It's skipped, and you're told exactly how many rows were skipped and why — never silently dropped or guessed at.",
-  },
-  {
-    q: "Is my data uploaded anywhere?",
-    a: "No. The conversion runs entirely in your browser — nothing is sent to a server.",
-  },
+  { q: "Why would I need to go from IIF back to CSV?", a: "Common when you're migrating off QuickBooks Desktop, sharing data with someone who doesn't have QuickBooks, or auditing historical exports in a spreadsheet." },
+  { q: "Where do I get an IIF file to convert?", a: "IIF is QuickBooks Desktop's own export/import format — you'd have one if you or your accountant exported transactions from QuickBooks Desktop." },
+  { q: "What if my IIF file has multiple accounts or a different column order?", a: "Handled. Real QuickBooks exports can redefine the field order partway through the file (e.g. once per account section) — LedgerLocal reads each section's own header line rather than assuming one fixed layout for the whole file." },
+  { q: "What if a row is missing a date or amount?", a: "It's skipped, and you're told exactly how many rows were skipped and why — never silently dropped or guessed at." },
+  { q: "Is my data uploaded anywhere?", a: "No. The conversion runs entirely in your browser — nothing is sent to a server." },
 ];
 
 export const Route = createFileRoute("/iif-to-csv")({
@@ -56,11 +39,7 @@ export const Route = createFileRoute("/iif-to-csv")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
-  };
+  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
 
   return (
     <div className="min-h-screen bg-background">
@@ -68,20 +47,22 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero
-        eyebrow="Format converter"
-        title="IIF to CSV Converter: Reading QuickBooks Desktop's Export Format"
-        publishedDate="July 2026"
-        illustration={
-          <FeaturedArt
-            titleText="A QuickBooks IIF ledger converting into a CSV"
-            eyebrow="Format converter"
-            sourceLabel="IIF"
-            destinations={[{ label: "CSV", color: "#0e5a40" }]}
-            className="w-full"
-          />
-        }
-      />
+      <ArticleHero eyebrow="Format converter" title="IIF to CSV Converter: Reading QuickBooks Desktop's Export Format" publishedDate="July 2026" />
+
+      <ConverterEmbed heading="Convert an IIF file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
+        <InlineConverter
+          accept=".iif"
+          sourceLabel="IIF"
+          targetLabel="CSV"
+          onConvert={async (file) => {
+            const content = await file.text();
+            const result = parseIifText(content);
+            const transactions = iifResultToTransactions(result, file.name);
+            if (transactions.length > 0) exportToCsv(transactions, DEFAULT_EXPORT_OPTIONS, outputName(file.name), null);
+            return { count: transactions.length, warnings: result.warnings };
+          }}
+        />
+      </ConverterEmbed>
 
       <ArticleProse>
         <p>
@@ -98,21 +79,6 @@ function Page() {
         alongside date, description, and amount, and reports exactly how many rows were skipped and why if
         anything doesn't parse cleanly.
       </QuickSummary>
-
-      <ConverterEmbed heading="Convert an IIF file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
-        <InlineConverter
-          accept=".iif"
-          sourceLabel="IIF"
-          targetLabel="CSV"
-          onConvert={async (file) => {
-            const content = await file.text();
-            const result = parseIifText(content);
-            const transactions = iifResultToTransactions(result, file.name);
-            if (transactions.length > 0) exportToCsv(transactions, DEFAULT_EXPORT_OPTIONS, outputName(file.name), null);
-            return { count: transactions.length, warnings: result.warnings };
-          }}
-        />
-      </ConverterEmbed>
 
       <ArticleH2>What's Inside an IIF File</ArticleH2>
       <ArticleTable

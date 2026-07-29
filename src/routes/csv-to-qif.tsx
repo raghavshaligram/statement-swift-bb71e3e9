@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { FeaturedArt } from "@/components/featured-art";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseCsvText, csvResultToTransactions } from "@/lib/csv/parse-csv";
 import { exportToQif } from "@/lib/export/to-qif";
@@ -21,22 +20,10 @@ function outputName(fileName: string) {
 }
 
 const FAQ = [
-  {
-    q: "Why QIF instead of QFX or OFX for Quicken?",
-    a: "QIF is the only one of the three that carries categories, subcategories, and split transactions — QFX and OFX don't include category data at all. That said, a plain bank statement or CSV usually doesn't have category data to begin with, so this converter outputs QIF without categories unless your source CSV already has one.",
-  },
-  {
-    q: "What software reads QIF files?",
-    a: "Quicken (Windows and Mac), Banktivity, MYOB, YNAB, GnuCash, and many older or lightweight accounting tools.",
-  },
-  {
-    q: "How do I import the QIF file into Quicken?",
-    a: "File > File Import > QIF File in Quicken, then select the file and choose the account to import into. On Quicken Mac specifically, QIF import creates a new account rather than adding to an existing one.",
-  },
-  {
-    q: "Is my data uploaded anywhere?",
-    a: "No. The conversion runs entirely in your browser — nothing is sent to a server.",
-  },
+  { q: "Why QIF instead of QFX or OFX for Quicken?", a: "QIF is the only one of the three that carries categories, subcategories, and split transactions — QFX and OFX don't include category data at all. That said, a plain bank statement or CSV usually doesn't have category data to begin with, so this converter outputs QIF without categories unless your source CSV already has one." },
+  { q: "What software reads QIF files?", a: "Quicken (Windows and Mac), Banktivity, MYOB, YNAB, GnuCash, and many older or lightweight accounting tools." },
+  { q: "How do I import the QIF file into Quicken?", a: "File > File Import > QIF File in Quicken, then select the file and choose the account to import into. On Quicken Mac specifically, QIF import creates a new account rather than adding to an existing one." },
+  { q: "Is my data uploaded anywhere?", a: "No. The conversion runs entirely in your browser — nothing is sent to a server." },
 ];
 
 export const Route = createFileRoute("/csv-to-qif")({
@@ -50,11 +37,7 @@ export const Route = createFileRoute("/csv-to-qif")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
-  };
+  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
 
   return (
     <div className="min-h-screen bg-background">
@@ -62,20 +45,22 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero
-        eyebrow="Format converter"
-        title="CSV to QIF Converter for Quicken: Formats and Limits"
-        publishedDate="July 2026"
-        illustration={
-          <FeaturedArt
-            titleText="A CSV converting into a tagged Quicken QIF record"
-            eyebrow="Format converter"
-            sourceLabel="CSV"
-            destinations={[{ label: "QIF", color: "#0e5a40" }]}
-            className="w-full"
-          />
-        }
-      />
+      <ArticleHero eyebrow="Format converter" title="CSV to QIF Converter for Quicken: Formats and Limits" publishedDate="July 2026" />
+
+      <ConverterEmbed heading="Convert a CSV to QIF" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
+        <InlineConverter
+          accept=".csv"
+          sourceLabel="CSV"
+          targetLabel="QIF"
+          onConvert={async (file) => {
+            const content = await file.text();
+            const result = parseCsvText(content);
+            const transactions = csvResultToTransactions(result, file.name);
+            if (transactions.length > 0) exportToQif(transactions, outputName(file.name));
+            return { count: transactions.length, warnings: result.warnings };
+          }}
+        />
+      </ConverterEmbed>
 
       <ArticleProse>
         <p>
@@ -92,21 +77,6 @@ function Page() {
         Quicken's real apostrophe-year date shorthand (1/15'26), and outputs a clean QIF file — without
         inventing categories a plain bank CSV never had to begin with.
       </QuickSummary>
-
-      <ConverterEmbed heading="Convert a CSV to QIF" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
-        <InlineConverter
-          accept=".csv"
-          sourceLabel="CSV"
-          targetLabel="QIF"
-          onConvert={async (file) => {
-            const content = await file.text();
-            const result = parseCsvText(content);
-            const transactions = csvResultToTransactions(result, file.name);
-            if (transactions.length > 0) exportToQif(transactions, outputName(file.name));
-            return { count: transactions.length, warnings: result.warnings };
-          }}
-        />
-      </ConverterEmbed>
 
       <ArticleH2>What's Inside a QIF File</ArticleH2>
       <ArticleTable

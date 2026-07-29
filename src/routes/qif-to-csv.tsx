@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { FeaturedArt } from "@/components/featured-art";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseQifText, qifResultToTransactions } from "@/lib/qif/parse-qif";
 import { exportToCsv } from "@/lib/export/to-csv";
@@ -22,22 +21,10 @@ function outputName(fileName: string) {
 }
 
 const FAQ = [
-  {
-    q: "Where do I get a QIF file to convert?",
-    a: "QIF is a Quicken export format — you'd have one from Quicken itself, or from another finance tool that supports exporting to QIF (Banktivity, MYOB, GnuCash, and others).",
-  },
-  {
-    q: "What information does it extract?",
-    a: "Date, payee, amount, and memo from each transaction record.",
-  },
-  {
-    q: "My QIF file has dates like 1/15'26 — will that parse correctly?",
-    a: "Yes. That apostrophe-year notation (Quicken's own shorthand for 2000s dates) is handled directly, alongside the more common slash-separated formats — tested against real QIF exports, not assumed.",
-  },
-  {
-    q: "Is my data uploaded anywhere?",
-    a: "No. The conversion runs entirely in your browser — nothing is sent to a server.",
-  },
+  { q: "Where do I get a QIF file to convert?", a: "QIF is a Quicken export format — you'd have one from Quicken itself, or from another finance tool that supports exporting to QIF (Banktivity, MYOB, GnuCash, and others)." },
+  { q: "What information does it extract?", a: "Date, payee, amount, and memo from each transaction record." },
+  { q: "My QIF file has dates like 1/15'26 — will that parse correctly?", a: "Yes. That apostrophe-year notation (Quicken's own shorthand for 2000s dates) is handled directly, alongside the more common slash-separated formats — tested against real QIF exports, not assumed." },
+  { q: "Is my data uploaded anywhere?", a: "No. The conversion runs entirely in your browser — nothing is sent to a server." },
 ];
 
 export const Route = createFileRoute("/qif-to-csv")({
@@ -51,11 +38,7 @@ export const Route = createFileRoute("/qif-to-csv")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
-  };
+  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
 
   return (
     <div className="min-h-screen bg-background">
@@ -63,34 +46,7 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <ArticleBackLink />
-      <ArticleHero
-        eyebrow="Format converter"
-        title="QIF to CSV Converter: Reading Quicken's Export Format"
-        publishedDate="July 2026"
-        illustration={
-          <FeaturedArt
-            titleText="A Quicken QIF record converting into a CSV"
-            eyebrow="Format converter"
-            sourceLabel="QIF"
-            destinations={[{ label: "CSV", color: "#0e5a40" }]}
-            className="w-full"
-          />
-        }
-      />
-
-      <ArticleProse>
-        <p>
-          QIF is a plain-text, line-based format where each transaction is a short run of prefixed lines. This
-          guide covers what's actually in the file and a real date-format quirk worth knowing about before it
-          silently breaks a naive parser.
-        </p>
-      </ArticleProse>
-
-      <QuickSummary>
-        QIF files use single-letter field codes (D for date, T for amount, P for payee, M for memo) with each
-        record ending in a bare "^". A real quirk: Quicken's own apostrophe-year date shorthand (1/15'26) trips
-        up parsers that only expect slash-separated dates — this converter handles both.
-      </QuickSummary>
+      <ArticleHero eyebrow="Format converter" title="QIF to CSV Converter: Reading Quicken's Export Format" publishedDate="July 2026" />
 
       <ConverterEmbed heading="Convert a QIF file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter
@@ -106,6 +62,20 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <ArticleProse>
+        <p>
+          QIF is a plain-text, line-based format where each transaction is a short run of prefixed lines. This
+          guide covers what's actually in the file and a real date-format quirk worth knowing about before it
+          silently breaks a naive parser.
+        </p>
+      </ArticleProse>
+
+      <QuickSummary>
+        QIF files use single-letter field codes (D for date, T for amount, P for payee, M for memo) with each
+        record ending in a bare "^". A real quirk: Quicken's own apostrophe-year date shorthand (1/15'26) trips
+        up parsers that only expect slash-separated dates — this converter handles both.
+      </QuickSummary>
 
       <ArticleH2>What's Inside a QIF File</ArticleH2>
       <ArticleTable
