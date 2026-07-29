@@ -1,16 +1,17 @@
 /**
- * A "search our help articles" widget -- deliberately NOT an AI chat
- * interface. This does plain client-side keyword scoring against a
- * curated set of real answers already established across the site (pulled
- * from the actual FAQs on the bank guide and format-converter pages, not
- * invented for this widget), and shows the best matches. No API call, no
- * LLM, nothing sent anywhere -- the framing in the UI ("Search our help
- * articles") is chosen specifically not to imply this is conversational
- * AI, since it isn't one.
+ * A chat-style help assistant -- explicitly NOT connected to any AI/LLM
+ * API. Every answer comes from plain client-side keyword scoring against a
+ * curated set of real answers already established across the site's own
+ * FAQs, not invented for this widget. Presented as a conversation (greeting,
+ * suggested questions, chat bubbles) rather than a search bar, since that's
+ * what actually reads as "an assistant" rather than "a search box." The
+ * subtitle says outright that this is pattern-matched, not real AI --
+ * honest framing rather than letting the chat-like presentation imply
+ * something it isn't.
  */
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
-import { Search } from "lucide-react";
+import { Bot, Send, User } from "lucide-react";
 
 type Entry = { q: string; a: string; href?: string; hrefLabel?: string };
 
@@ -33,6 +34,16 @@ const ENTRIES: Entry[] = [
   { q: "How accurate is converting a photo of a statement?", a: "It depends on the photo — a clean, well-lit, straight-on scan reads nearly as well as a real PDF. Blur, poor lighting, or an angled shot increases how many rows get flagged as low-confidence, which is why every row is scored rather than silently accepted.", href: "/image-to-excel", hrefLabel: "Image to Excel guide" },
 ];
 
+const STARTER_QUESTIONS = [
+  "Is my data uploaded anywhere?",
+  "How much does it cost?",
+  "What banks are supported?",
+  "What formats can I export to?",
+];
+
+const FALLBACK =
+  "I don't have an article on that specific question yet. Send us a message below with a bit more detail and we'll get back to you directly.";
+
 function score(entry: Entry, queryWords: string[]): number {
   const haystack = (entry.q + " " + entry.a).toLowerCase();
   let s = 0;
@@ -43,55 +54,119 @@ function score(entry: Entry, queryWords: string[]): number {
   return s;
 }
 
-export function HelpAssistant() {
-  const [query, setQuery] = useState("");
+function bestMatch(query: string): Entry | null {
+  const words = query.trim().toLowerCase().split(/\s+/).filter((w) => w.length > 1);
+  if (words.length === 0) return null;
+  const ranked = ENTRIES.map((e) => ({ entry: e, s: score(e, words) }))
+    .filter((r) => r.s > 0)
+    .sort((a, b) => b.s - a.s);
+  return ranked[0]?.entry ?? null;
+}
 
-  const results = useMemo(() => {
-    const trimmed = query.trim().toLowerCase();
-    if (trimmed.length < 2) return [];
-    const words = trimmed.split(/\s+/).filter((w) => w.length > 1);
-    return ENTRIES.map((e) => ({ entry: e, s: score(e, words) }))
-      .filter((r) => r.s > 0)
-      .sort((a, b) => b.s - a.s)
-      .slice(0, 3)
-      .map((r) => r.entry);
-  }, [query]);
+type Message = { role: "assistant" | "user"; text: string; href?: string; hrefLabel?: string };
+
+export function HelpAssistant() {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: "assistant",
+      text: "Hi! I can answer common questions about converting statements, pricing, security, and export formats. Ask me anything, or tap a question below to get started.",
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages]);
+
+  function ask(question: string) {
+    const trimmed = question.trim();
+    if (!trimmed) return;
+    const match = bestMatch(trimmed);
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: trimmed },
+      match
+        ? { role: "assistant", text: match.a, href: match.href, hrefLabel: match.hrefLabel }
+        : { role: "assistant", text: FALLBACK },
+    ]);
+    setInput("");
+  }
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-6">
-      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Search our help articles</div>
-      <div className="mt-3 flex items-center gap-2 rounded-lg border border-border bg-surface px-3.5 py-2.5">
-        <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="e.g. is my data uploaded, why is a row low confidence, what banks are supported…"
-          className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-muted-foreground"
-        />
+    <div className="rounded-2xl border border-border bg-card">
+      <div className="flex items-center gap-2.5 border-b border-border px-5 py-4">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-soft">
+          <Bot className="h-4 w-4 text-emerald" />
+        </div>
+        <div>
+          <div className="text-sm font-bold text-ink">Ledger Assistant</div>
+          <div className="text-xs text-muted-foreground">Answers matched from our help articles — not AI, just search</div>
+        </div>
       </div>
 
-      {query.trim().length >= 2 && (
-        <div className="mt-4 space-y-3">
-          {results.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              No matching help article — send us a message below and we'll get back to you directly.
-            </p>
-          ) : (
-            results.map((r) => (
-              <div key={r.q} className="rounded-lg border border-border bg-surface p-4">
-                <div className="font-semibold text-ink">{r.q}</div>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{r.a}</p>
-                {r.href && (
-                  <Link to={r.href} className="mt-2 inline-block text-xs font-semibold text-emerald hover:underline">
-                    {r.hrefLabel} →
-                  </Link>
-                )}
-              </div>
-            ))
-          )}
+      <div ref={scrollRef} className="max-h-96 space-y-4 overflow-y-auto px-5 py-5">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex gap-2.5 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
+            <div
+              className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${
+                m.role === "user" ? "bg-ink" : "bg-emerald-soft"
+              }`}
+            >
+              {m.role === "user" ? <User className="h-3.5 w-3.5 text-background" /> : <Bot className="h-3.5 w-3.5 text-emerald" />}
+            </div>
+            <div
+              className={`max-w-[80%] rounded-xl px-4 py-2.5 text-sm leading-relaxed ${
+                m.role === "user" ? "bg-ink text-background" : "bg-surface-muted text-ink"
+              }`}
+            >
+              {m.text}
+              {m.href && (
+                <Link to={m.href} className="mt-1.5 block text-xs font-semibold text-emerald hover:underline">
+                  {m.hrefLabel} →
+                </Link>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {messages.length <= 1 && (
+        <div className="flex flex-wrap gap-2 px-5 pb-4">
+          {STARTER_QUESTIONS.map((q) => (
+            <button
+              key={q}
+              onClick={() => ask(q)}
+              className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-ink transition hover:border-emerald/50 hover:text-emerald"
+            >
+              {q}
+            </button>
+          ))}
         </div>
       )}
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          ask(input);
+        }}
+        className="flex items-center gap-2 border-t border-border p-3"
+      >
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask a question…"
+          className="w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-sm text-ink outline-none focus:border-emerald"
+        />
+        <button
+          type="submit"
+          aria-label="Send"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-ink text-background transition hover:bg-ink/90"
+        >
+          <Send className="h-4 w-4" />
+        </button>
+      </form>
     </div>
   );
 }

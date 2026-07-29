@@ -87,7 +87,7 @@ function Page() {
         <div className="mx-auto max-w-2xl px-6">
           <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Contact us</h1>
           <p className="mt-4 text-muted-foreground">
-            Search our help articles below, or send us a message directly — including a statement that isn't
+            Ask our help assistant below, or send us a message directly — including a statement that isn't
             converting correctly, if that's what's going on.
           </p>
         </div>
