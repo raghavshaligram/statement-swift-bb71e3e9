@@ -1,9 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FormatConverterPage } from "@/components/format-converter-page";
-import { SwiftGlobeArt } from "@/components/format-art";
+import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { FeaturedArt } from "@/components/featured-art";
+import { InlineConverter } from "@/components/inline-converter";
 import { parseMt940Text, mt940ResultToTransactions } from "@/lib/mt940/parse-mt940";
 import { exportToCsv } from "@/lib/export/to-csv";
 import { DEFAULT_EXPORT_OPTIONS } from "@/lib/export/types";
+import {
+  ArticleBackLink,
+  ArticleHero,
+  QuickSummary,
+  ArticleProse,
+  ArticleH2,
+  ArticleTable,
+  LimitsList,
+  ConverterEmbed,
+  RelatedArticles,
+} from "@/components/article-sections";
 
 function outputName(fileName: string) {
   return fileName.replace(/\.[^.]+$/, "") + ".csv";
@@ -20,11 +32,7 @@ const FAQ = [
   },
   {
     q: "My bank's narrative spans multiple lines per transaction — is that handled?",
-    a: "Yes. A real MT940 narrative can wrap across several physical lines before the next transaction starts, and all of it gets combined into one clean description rather than only capturing the first line.",
-  },
-  {
-    q: "Does this cost anything?",
-    a: "No. Structured file conversions like this are free and unlimited — there's no OCR involved, so there's no reason to gate it the way PDF/photo conversion is.",
+    a: "Yes. A real MT940 narrative can wrap across several physical lines before the next transaction starts, and all of it gets combined into one clean description.",
   },
   {
     q: "Is my data uploaded anywhere?",
@@ -35,38 +43,110 @@ const FAQ = [
 export const Route = createFileRoute("/mt940-to-csv")({
   head: () => ({
     meta: [
-      { title: "MT940 to CSV Converter — Free — LedgerLocal" },
-      {
-        name: "description",
-        content: "Free MT940 (SWIFT) bank statement to CSV converter. Reads every transaction line and its narrative. Nothing uploaded, runs entirely in your browser.",
-      },
+      { title: "MT940 to CSV Converter: Formats and Limits — LedgerLocal" },
+      { name: "description", content: "Convert an MT940 SWIFT bank statement file to CSV. Free, runs entirely in your browser." },
     ],
   }),
-  component: () => (
-    <FormatConverterPage
-      title="MT940 to CSV Converter"
-      intro="Convert an MT940 (SWIFT) bank statement file to a clean CSV — free, unlimited, and entirely on your device."
-      freeNote="Free and unlimited — no OCR involved, no page limits"
-      illustration={<SwiftGlobeArt titleText="An MT940 file from SWIFT's international banking network" className="w-full h-full" />}
-      whatIs={{
-        heading: "What is an MT940 file?",
-        body: "MT940 is SWIFT's international bank statement format — the standard many European and international banks use for statement exports, more common outside the US, UK, and India. Each transaction is a fixed-format \"statement line\" paired with a narrative describing it, which is exactly what this converter reads directly into a clean spreadsheet row.",
-      }}
-      steps={[
-        "Drop your MT940 (.sta) file.",
-        "LedgerLocal reads each statement line and its accompanying narrative directly from the file's own structure.",
-        "Export a clean CSV file, ready for a spreadsheet or any other tool.",
-      ]}
-      ctaLabel="Convert an MT940 file to CSV"
-      faq={FAQ}
-      accept=".sta,.mt940,.940"
-      onConvert={async (file) => {
-        const content = await file.text();
-        const result = parseMt940Text(content);
-        const transactions = mt940ResultToTransactions(result, file.name);
-        if (transactions.length > 0) exportToCsv(transactions, DEFAULT_EXPORT_OPTIONS, outputName(file.name), result.currency);
-        return { count: transactions.length, warnings: result.warnings };
-      }}
-    />
-  ),
+  component: Page,
 });
+
+function Page() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <ArticleBackLink />
+      <ArticleHero
+        eyebrow="Format converter"
+        title="MT940 to CSV Converter: Formats and Limits"
+        publishedDate="July 2026"
+        illustration={
+          <FeaturedArt
+            titleText="An MT940 file from SWIFT's international banking network converting into a CSV"
+            eyebrow="Format converter"
+            sourceLabel="MT940"
+            destinations={[{ label: "CSV", color: "#0e5a40" }]}
+            className="w-full"
+          />
+        }
+      />
+
+      <ArticleProse>
+        <p>
+          MT940 is SWIFT's international bank statement format, common outside the US, UK, and India. This guide
+          covers what's inside the file and a real structural quirk — multi-line narratives — that trips up
+          naive parsers.
+        </p>
+      </ArticleProse>
+
+      <QuickSummary>
+        Each MT940 transaction is a fixed-format statement line (tag :61:) paired with a narrative (tag :86:)
+        that can span multiple physical lines before the next transaction starts. This converter combines the
+        full narrative into one clean description rather than only capturing the first line — this direction
+        only; converting CSV to MT940 isn't currently supported.
+      </QuickSummary>
+
+      <ConverterEmbed heading="Convert an MT940 file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
+        <InlineConverter
+          accept=".sta,.mt940,.940"
+          sourceLabel="MT940"
+          targetLabel="CSV"
+          onConvert={async (file) => {
+            const content = await file.text();
+            const result = parseMt940Text(content);
+            const transactions = mt940ResultToTransactions(result, file.name);
+            if (transactions.length > 0) exportToCsv(transactions, DEFAULT_EXPORT_OPTIONS, outputName(file.name), result.currency);
+            return { count: transactions.length, warnings: result.warnings };
+          }}
+        />
+      </ConverterEmbed>
+
+      <ArticleH2>What's Inside an MT940 File</ArticleH2>
+      <ArticleTable
+        headers={["Tag", "What It Contains"]}
+        rows={[
+          [":61:", "The statement line itself — date and signed amount"],
+          [":86:", "The narrative describing the transaction, which can span multiple lines"],
+          [":60F:", "Opening balance for the statement"],
+          [":62F:", "Closing balance for the statement"],
+        ]}
+      />
+
+      <ArticleH2>A Real Parsing Issue This Handles</ArticleH2>
+      <LimitsList
+        limits={[
+          { lead: "Multi-line narratives", body: "a real narrative can wrap across several physical lines before the next :61: tag starts — only capturing the first line loses part of the real description." },
+        ]}
+      />
+
+      <ArticleH2>Frequently Asked Questions</ArticleH2>
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <div className="space-y-4">
+          {FAQ.map(({ q, a }) => (
+            <div key={q} className="rounded-lg border border-border bg-card p-5">
+              <div className="font-semibold text-ink">{q}</div>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{a}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <RelatedArticles
+        articles={[
+          { href: "/ofx-to-csv", title: "OFX to CSV Converter", blurb: "A more common bank-neutral exchange format." },
+          { href: "/lloyds-bank-statement-to-csv", title: "Lloyds Bank Statement to CSV", blurb: "A UK-specific bank guide." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+        ]}
+      />
+
+      <SiteFooter />
+    </div>
+  );
+}

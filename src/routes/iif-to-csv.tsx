@@ -1,9 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FormatConverterPage } from "@/components/format-converter-page";
-import { LedgerBookArt } from "@/components/format-art";
+import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { FeaturedArt } from "@/components/featured-art";
+import { InlineConverter } from "@/components/inline-converter";
 import { parseIifText, iifResultToTransactions } from "@/lib/iif/parse-iif";
 import { exportToCsv } from "@/lib/export/to-csv";
 import { DEFAULT_EXPORT_OPTIONS } from "@/lib/export/types";
+import {
+  ArticleBackLink,
+  ArticleHero,
+  QuickSummary,
+  ArticleProse,
+  ArticleH2,
+  NumberedSteps,
+  ArticleTable,
+  LimitsList,
+  ConverterEmbed,
+  RelatedArticles,
+} from "@/components/article-sections";
 
 function outputName(fileName: string) {
   return fileName.replace(/\.[^.]+$/, "") + ".csv";
@@ -12,11 +25,11 @@ function outputName(fileName: string) {
 const FAQ = [
   {
     q: "Why would I need to go from IIF back to CSV?",
-    a: "Common when you're migrating off QuickBooks Desktop, sharing data with someone who doesn't have QuickBooks, or auditing historical exports in a spreadsheet rather than digging through Excel's own tab-delimited parsing quirks with IIF.",
+    a: "Common when you're migrating off QuickBooks Desktop, sharing data with someone who doesn't have QuickBooks, or auditing historical exports in a spreadsheet.",
   },
   {
     q: "Where do I get an IIF file to convert?",
-    a: "IIF is QuickBooks Desktop's own export/import format — you'd have one if you or your accountant exported transactions from QuickBooks Desktop, or received one from a bank-to-QuickBooks integration.",
+    a: "IIF is QuickBooks Desktop's own export/import format — you'd have one if you or your accountant exported transactions from QuickBooks Desktop.",
   },
   {
     q: "What if my IIF file has multiple accounts or a different column order?",
@@ -27,46 +40,119 @@ const FAQ = [
     a: "It's skipped, and you're told exactly how many rows were skipped and why — never silently dropped or guessed at.",
   },
   {
-    q: "Does this cost anything?",
-    a: "No. Structured file conversions like this are free and unlimited — there's no OCR involved, so there's no reason to gate it the way PDF/photo conversion is.",
+    q: "Is my data uploaded anywhere?",
+    a: "No. The conversion runs entirely in your browser — nothing is sent to a server.",
   },
 ];
 
 export const Route = createFileRoute("/iif-to-csv")({
   head: () => ({
     meta: [
-      { title: "IIF to CSV Converter — Free, On-Device — LedgerLocal" },
-      {
-        name: "description",
-        content: "Convert a QuickBooks Desktop IIF file to CSV. Free, unlimited, nothing uploaded — runs entirely in your browser.",
-      },
+      { title: "IIF to CSV Converter: Formats and Limits — LedgerLocal" },
+      { name: "description", content: "Convert a QuickBooks Desktop IIF file to CSV. Free, unlimited, runs entirely in your browser." },
     ],
   }),
-  component: () => (
-    <FormatConverterPage
-      title="IIF to CSV Converter"
-      intro="Convert a QuickBooks Desktop IIF export to a clean CSV file — free, unlimited, and entirely on your device."
-      freeNote="Free and unlimited — no OCR involved, no page limits"
-      illustration={<LedgerBookArt titleText="A QuickBooks IIF ledger converting into a CSV" className="w-full h-full" />}
-      whatIs={{
-        heading: "What is an IIF file?",
-        body: "IIF (Intuit Interchange Format) is QuickBooks Desktop's own tab-delimited format for importing and exporting transactions, accounts, and other lists. You'd have one from a QuickBooks Desktop export, or from an accountant or bank-integration tool that produced one for you.",
-      }}
-      steps={[
-        "Drop your .iif file — LedgerLocal reads each transaction (TRNS) record, following the file's own column order even if it changes partway through.",
-        "Transaction type, reference number, and memo are extracted alongside date, description, and amount.",
-        "Export a clean CSV file, ready for a spreadsheet or any other tool.",
-      ]}
-      ctaLabel="Convert an IIF file to CSV"
-      faq={FAQ}
-      accept=".iif"
-      onConvert={async (file) => {
-        const content = await file.text();
-        const result = parseIifText(content);
-        const transactions = iifResultToTransactions(result, file.name);
-        if (transactions.length > 0) exportToCsv(transactions, DEFAULT_EXPORT_OPTIONS, outputName(file.name), null);
-        return { count: transactions.length, warnings: result.warnings };
-      }}
-    />
-  ),
+  component: Page,
 });
+
+function Page() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <ArticleBackLink />
+      <ArticleHero
+        eyebrow="Format converter"
+        title="IIF to CSV Converter: Reading QuickBooks Desktop's Export Format"
+        publishedDate="July 2026"
+        illustration={
+          <FeaturedArt
+            titleText="A QuickBooks IIF ledger converting into a CSV"
+            eyebrow="Format converter"
+            sourceLabel="IIF"
+            destinations={[{ label: "CSV", color: "#0e5a40" }]}
+            className="w-full"
+          />
+        }
+      />
+
+      <ArticleProse>
+        <p>
+          IIF (Intuit Interchange Format) is QuickBooks Desktop's own tab-delimited transaction format —
+          straightforward for QuickBooks to read, considerably less so to open directly in a spreadsheet. This
+          guide covers what's actually in an IIF file and how to get a clean CSV out of one.
+        </p>
+      </ArticleProse>
+
+      <QuickSummary>
+        IIF files are tab-delimited, but QuickBooks exports can redefine the column order partway through the
+        file — once per account section — which breaks naive parsers that assume one fixed layout. This
+        converter reads each section's own header line, extracts transaction type, reference number, and memo
+        alongside date, description, and amount, and reports exactly how many rows were skipped and why if
+        anything doesn't parse cleanly.
+      </QuickSummary>
+
+      <ConverterEmbed heading="Convert an IIF file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
+        <InlineConverter
+          accept=".iif"
+          sourceLabel="IIF"
+          targetLabel="CSV"
+          onConvert={async (file) => {
+            const content = await file.text();
+            const result = parseIifText(content);
+            const transactions = iifResultToTransactions(result, file.name);
+            if (transactions.length > 0) exportToCsv(transactions, DEFAULT_EXPORT_OPTIONS, outputName(file.name), null);
+            return { count: transactions.length, warnings: result.warnings };
+          }}
+        />
+      </ConverterEmbed>
+
+      <ArticleH2>What's Inside an IIF File</ArticleH2>
+      <ArticleTable
+        headers={["Line", "What It Contains"]}
+        rows={[
+          ["TRNS", "The transaction itself — date, amount, account, and description"],
+          ["SPL", "The offsetting split line completing the double-entry structure"],
+          ["ENDTRNS", "A marker closing the record"],
+        ]}
+      />
+
+      <ArticleH2>Real Parsing Issues This Handles</ArticleH2>
+      <LimitsList
+        limits={[
+          { lead: "Field order can change mid-file", body: "a real QuickBooks export can redefine column order once per account section — treating the whole file as one fixed layout silently misreads later sections." },
+          { lead: "Missing dates or amounts", body: "rows that can't be parsed are skipped and reported, not guessed at or silently dropped." },
+        ]}
+      />
+
+      <ArticleH2>Frequently Asked Questions</ArticleH2>
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <div className="space-y-4">
+          {FAQ.map(({ q, a }) => (
+            <div key={q} className="rounded-lg border border-border bg-card p-5">
+              <div className="font-semibold text-ink">{q}</div>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{a}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <RelatedArticles
+        articles={[
+          { href: "/csv-to-iif", title: "CSV to IIF Converter", blurb: "Convert a plain CSV into a QuickBooks Desktop-ready IIF file." },
+          { href: "/qif-to-csv", title: "QIF to CSV Converter", blurb: "Same idea for a Quicken export." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+        ]}
+      />
+
+      <SiteFooter />
+    </div>
+  );
+}
