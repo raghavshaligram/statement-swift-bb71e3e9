@@ -85,7 +85,7 @@ export function SiteFooter() {
           <ul className="space-y-2">
             <li><Link to="/privacy" className="hover:text-ink">Privacy policy</Link></li>
             <li><Link to="/terms" className="hover:text-ink">Terms & conditions</Link></li>
-            <li><a href="mailto:hello@ledgerlocal.app" className="hover:text-ink">Contact</a></li>
+            <li><Link to="/contact" className="hover:text-ink">Contact</Link></li>
           </ul>
         </div>
       </div>
