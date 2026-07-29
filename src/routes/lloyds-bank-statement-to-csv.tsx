@@ -1,7 +1,18 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ShieldCheck, AlertTriangle, Check, X } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { StatementGridArt } from "@/components/statement-grid-art";
+import {
+  ArticleBackLink,
+  ArticleHero,
+  QuickSummary,
+  ArticleProse,
+  ArticleH2,
+  NumberedSteps,
+  ArticleTable,
+  LimitsList,
+  ArticleCta,
+  RelatedArticles,
+} from "@/components/article-sections";
 
 const FAQ: Array<{ q: string; a: string }> = [
   {
@@ -26,11 +37,11 @@ const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "Will the dates come out right, or will Excel flip day and month?",
-    a: "Lloyds statements use DD/MM/YYYY. LedgerLocal infers the date order from the statement itself rather than assuming a fixed format, and normalises output dates to ISO (YYYY-MM-DD) by default, which Excel reads unambiguously regardless of your system's regional settings — the usual cause of 03/04 silently becoming April 3rd instead of March 4th.",
+    a: "Lloyds statements use DD/MM/YYYY. LedgerLocal infers the date order from the statement itself rather than assuming a fixed format, and normalises output dates to ISO (YYYY-MM-DD) by default, which Excel reads unambiguously regardless of your system's regional settings.",
   },
   {
     q: "What if my statement is a scan or a photo, not a proper PDF?",
-    a: "It still works — LedgerLocal falls back to on-device OCR automatically when a page has no real text layer, and flags it clearly in the results so you know to double-check those specific rows before exporting. Signing in is required for scans and photos specifically (not for text-based PDFs), since OCR runs longer and needs the lifetime-usage tracking.",
+    a: "It still works — LedgerLocal falls back to on-device OCR automatically when a page has no real text layer, and flags it clearly in the results so you know to double-check those specific rows before exporting.",
   },
   {
     q: "Can I combine Lloyds statements with other banks?",
@@ -45,16 +56,16 @@ const FAQ: Array<{ q: string; a: string }> = [
 export const Route = createFileRoute("/lloyds-bank-statement-to-csv")({
   head: () => ({
     meta: [
-      { title: "Lloyds Bank Statement to CSV & Excel — LedgerLocal" },
+      { title: "Lloyds Bank Statement to CSV: Formats and Limits — LedgerLocal" },
       {
         name: "description",
         content:
           "Lloyds' own CSV export is capped at 12 months and 150 transactions, with no native Excel option at all. Convert any Lloyds PDF statement to CSV or Excel on-device — free to try, nothing uploaded.",
       },
-      { property: "og:title", content: "Lloyds Bank Statement to CSV & Excel — LedgerLocal" },
+      { property: "og:title", content: "Lloyds Bank Statement to CSV: Formats and Limits — LedgerLocal" },
       {
         property: "og:description",
-        content: "Lloyds' native export has real limits. Here's both that and a converter for what it doesn't cover.",
+        content: "How the Lloyds CSV export actually works, where it falls short, and how to get data out of the PDF statements it can't reach.",
       },
     ],
   }),
@@ -77,186 +88,198 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <section className="border-b border-border py-16">
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Bank guide
-              </span>
-              <h1 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-                Lloyds Bank statement to CSV &amp; Excel
-              </h1>
-              <p className="mt-4 text-muted-foreground">
-                Lloyds' own CSV export is real, but limited — 12 months, 150 transactions, desktop only, and no
-                Excel option at all. Two honest options below: theirs, and what to do beyond it.
-              </p>
+      <ArticleBackLink />
+      <ArticleHero
+        eyebrow="Bank guide"
+        title="Lloyds Bank Statement to CSV: Formats and Limits"
+        publishedDate="July 2026"
+        illustration={<StatementGridArt titleText="A Lloyds statement transforming into a structured spreadsheet" className="w-full" />}
+      />
+
+      <ArticleProse>
+        <p>
+          Lloyds is one of the largest retail banks in the UK, and Lloyds Banking Group's infrastructure also
+          underpins Halifax and Bank of Scotland — over 23 million customers between the three brands eventually
+          need the same thing: their transactions in a spreadsheet, not locked inside a PDF. This guide covers
+          exactly how the Lloyds CSV export works, what the file looks like column by column, where it falls
+          short, and how to get data out of the PDF statements that hold everything the download can't reach.
+        </p>
+        <p>
+          This article covers Lloyds personal and business current accounts. If you bank with Halifax or Bank of
+          Scotland, the same export mechanics apply — both share the same underlying online banking platform and
+          the same real limits described below.
+        </p>
+      </ArticleProse>
+
+      <QuickSummary>
+        Lloyds lets you download transactions as a CSV from online banking, but only the last 12 months, capped
+        at 150 transactions per download, and only on the desktop site. Lloyds keeps PDF statements for 7 years
+        (10+ years in the app), but offers no native Excel export at all. For anything the CSV export can't
+        reach — older statements, more than 150 transactions, or an Excel file — upload the PDFs to LedgerLocal
+        and export CSV, Excel, Tally XML, or IIF.
+      </QuickSummary>
+
+      <ArticleH2>How to Download a Lloyds Bank Statement as CSV</ArticleH2>
+      <ArticleProse>
+        <p>
+          The built-in export works, it's free, and for recent transactions it's the fastest option available.
+          Here's the process on Lloyds Internet Banking.
+        </p>
+      </ArticleProse>
+      <NumberedSteps
+        steps={[
+          {
+            title: "Log in on desktop",
+            body: "Sign in to Lloyds Internet Banking at lloydsbank.com. The CSV export specifically is not available in the mobile app — you'll need the desktop site for this step.",
+          },
+          {
+            title: "Open the account and find Statement options",
+            body: "Select the account you want, then look for Statement options in the account view.",
+          },
+          {
+            title: "Choose the CSV export",
+            body: "Pick CSV if you want to work in Excel or Google Sheets. Lloyds also offers PDF statements from the same menu, and Online for Business accounts can export QIF as well as CSV.",
+          },
+          {
+            title: "Set your date range",
+            body: "You can pick a custom range, but only within the last 12 months — anything older simply isn't offered as an export option, regardless of the range you try to set.",
+          },
+          {
+            title: "Download and open",
+            body: "The file saves to your computer. Double-click to open it in Excel, or import it into Google Sheets via File, then Import.",
+          },
+        ]}
+      />
+
+      <ArticleH2>What the Lloyds CSV Export Looks Like</ArticleH2>
+      <ArticleProse>
+        <p>
+          The Lloyds CSV export contains six columns. Unlike some banks that use a single signed Amount column,
+          Lloyds splits money in and money out into two separate columns.
+        </p>
+      </ArticleProse>
+      <ArticleTable
+        headers={["Column", "What It Contains"]}
+        rows={[
+          ["Date", "The transaction date, in DD/MM/YYYY format"],
+          ["Description", "The payee or merchant name as it appears on the transaction"],
+          ["Type", "A short code for the transaction type (e.g. DEB for debit card, DD for direct debit, BGC for bank giro credit)"],
+          ["Money In (£)", "Populated only for credits — empty for any row that's a debit"],
+          ["Money Out (£)", "Populated only for debits — empty for any row that's a credit"],
+          ["Balance (£)", "The running balance after that transaction"],
+        ]}
+      />
+      <ArticleProse>
+        <p>
+          The Type column is worth paying attention to if you're categorizing transactions — codes like DEB, DD,
+          SO, and BGC map to real transaction mechanisms (debit card, direct debit, standing order, bank giro
+          credit) rather than spending categories, so treat it as a mechanism hint, not a bookkeeping category.
+        </p>
+      </ArticleProse>
+
+      <ArticleH2>The Limits of Lloyds' Native CSV Export</ArticleH2>
+      <ArticleProse>
+        <p>
+          The CSV download is genuinely useful for recent activity. It also has hard edges that show up exactly
+          when the stakes are highest: tax season, a mortgage application, or catching up on a year of
+          bookkeeping.
+        </p>
+      </ArticleProse>
+      <LimitsList
+        limits={[
+          { lead: "Limited lookback", body: "the export covers roughly the last 12 months. PDF statements, by contrast, are available for up to 7 years online and 10+ years in the app." },
+          { lead: "Hard transaction cap", body: "capped at 150 transactions per download. A busy account over a full year can easily exceed that, requiring multiple downloads stitched back together by hand." },
+          { lead: "Desktop only", body: "the CSV export isn't available in the Lloyds mobile app at all — only the desktop site." },
+          { lead: "No Excel format", body: "Lloyds offers PDF and CSV. There's no native .xlsx export, so getting a real Excel workbook means converting the PDF or reformatting the CSV yourself." },
+          { lead: "One account, logged in", body: "the export works per account, per session — no bulk export across every account you hold, and no way to pull data for an account you can no longer log into." },
+        ]}
+      />
+
+      <ArticleCta
+        heading="Convert Your Lloyds Bank Statements"
+        body="Upload a Lloyds PDF statement and get a clean CSV, Excel, Tally XML, or IIF file in seconds. Free to try, up to 6 pages with no signup."
+        buttonLabel="Convert a Lloyds Statement"
+      />
+
+      <ArticleH2>Converting Lloyds PDF Statements</ArticleH2>
+      <ArticleProse>
+        <p>
+          Lloyds keeps up to 7 years of PDF statements available under Statement options, and even longer in the
+          app. Converting them to a spreadsheet takes three steps.
+        </p>
+      </ArticleProse>
+      <NumberedSteps
+        steps={[
+          {
+            title: "Download the PDF statements from Lloyds",
+            body: "Log in, open the account, and download each monthly statement as a PDF. For a full year, that's up to 12 files.",
+          },
+          {
+            title: "Upload to LedgerLocal",
+            body: "Drop your Lloyds PDFs into the converter — batch upload works, and each statement is processed on its own.",
+          },
+          {
+            title: "Review, then export",
+            body: "LedgerLocal detects Lloyds' layout automatically and shows every extracted transaction with a confidence score before you export, so anything worth double-checking is flagged rather than silently guessed at. Export to CSV, Excel, Tally XML, or IIF.",
+          },
+        ]}
+      />
+      <ArticleProse>
+        <p>
+          One accuracy point worth calling out directly: Lloyds statements print dates as DD/MM/YYYY, the
+          reverse of the US convention. A converter that assumes MM/DD would silently swap day and month for
+          any date under the 13th. LedgerLocal infers the real date order from the statement itself rather than
+          assuming one, and normalises output dates to ISO (YYYY-MM-DD) by default — a format Excel reads
+          unambiguously no matter what regional settings your spreadsheet software is using.
+        </p>
+      </ArticleProse>
+
+      <ArticleH2>Import Into QuickBooks, Excel, or Google Sheets</ArticleH2>
+      <ArticleProse>
+        <p>
+          <strong className="text-ink">QuickBooks Desktop:</strong> QuickBooks Desktop has no native CSV import
+          for transactions. Export IIF from LedgerLocal instead — File &gt; Utilities &gt; Import &gt; IIF Files
+          reads it directly.
+        </p>
+        <p>
+          <strong className="text-ink">Excel:</strong> Both the Lloyds CSV and the LedgerLocal CSV or Excel
+          export open directly in Excel. If you're combining files from multiple Lloyds CSV downloads, watch for
+          the Money In/Money Out split — summing both columns correctly (rather than just one) is what keeps
+          your total reconciling against the statement.
+        </p>
+        <p>
+          <strong className="text-ink">Google Sheets:</strong> Use File, then Import, and let Sheets detect the
+          separator automatically. Dates come through cleanly once normalised to ISO, ready for filtering or a
+          shared budget tracker.
+        </p>
+      </ArticleProse>
+
+      <ArticleH2>Frequently Asked Questions</ArticleH2>
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <div className="space-y-4">
+          {FAQ.map(({ q, a }) => (
+            <div key={q} className="rounded-lg border border-border bg-card p-5">
+              <div className="font-semibold text-ink">{q}</div>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{a}</p>
             </div>
-            <StatementGridArt titleText="A Lloyds statement transforming into a structured spreadsheet" className="w-full rounded-2xl shadow-sm" />
-          </div>
+          ))}
         </div>
-      </section>
+      </div>
 
-      {/* Two real options, side by side */}
-      <section className="border-b border-border py-16">
-        <div className="mx-auto max-w-5xl px-6">
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="flex flex-col rounded-2xl border border-border bg-card p-7">
-              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Option 1</div>
-              <h2 className="mt-2 text-xl font-bold tracking-tight text-ink">Lloyds' own export</h2>
-              <p className="mt-2 text-sm text-muted-foreground">Fastest, within its real limits.</p>
-              <ol className="mt-5 space-y-3 text-sm text-ink">
-                <li className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">1</span>
-                  Log in to Lloyds Internet Banking on desktop — the CSV export isn't in the app.
-                </li>
-                <li className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">2</span>
-                  Go to <span className="font-semibold">Statement options</span> and choose the CSV export.
-                </li>
-                <li className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">3</span>
-                  Set your date range — capped at the last 12 months, up to 150 transactions.
-                </li>
-              </ol>
-              <div className="mt-6 space-y-2 border-t border-border pt-5 text-sm">
-                <div className="flex items-center gap-2 text-ink">
-                  <Check className="h-4 w-4 shrink-0 text-emerald" /> Free, no third-party tool
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <X className="h-4 w-4 shrink-0 text-rose-400" /> Last 12 months only
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <X className="h-4 w-4 shrink-0 text-rose-400" /> Capped at 150 transactions
-                </div>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <X className="h-4 w-4 shrink-0 text-rose-400" /> No Excel format
-                </div>
-              </div>
-            </div>
+      <ArticleCta
+        heading="Ready to Get Your Lloyds Data Into a Spreadsheet?"
+        body="Use the Lloyds CSV export for the last 12 months, and LedgerLocal for everything else. Free to try."
+        buttonLabel="Try LedgerLocal Free"
+      />
 
-            <div className="flex flex-col rounded-2xl border-2 border-emerald bg-card p-7">
-              <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Option 2</div>
-              <h2 className="mt-2 text-xl font-bold tracking-tight text-ink">Convert a PDF statement</h2>
-              <p className="mt-2 text-sm text-muted-foreground">Covers what Lloyds' own export doesn't.</p>
-              <ol className="mt-5 space-y-3 text-sm text-ink">
-                <li className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">1</span>
-                  Download the PDF from Lloyds Internet Banking or the app — no account needed for up to 6 pages.
-                </li>
-                <li className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">2</span>
-                  LedgerLocal detects Lloyds' layout automatically and extracts every transaction, with a
-                  confidence score for anything worth double-checking.
-                </li>
-                <li className="flex gap-3">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">3</span>
-                  Export to Excel, CSV, or a format Lloyds doesn't offer at all — Tally XML, IIF, and more.
-                </li>
-              </ol>
-              <div className="mt-6 space-y-2 border-t border-border pt-5 text-sm">
-                <div className="flex items-center gap-2 text-ink">
-                  <Check className="h-4 w-4 shrink-0 text-emerald" /> Any statement age — 7+ years back
-                </div>
-                <div className="flex items-center gap-2 text-ink">
-                  <Check className="h-4 w-4 shrink-0 text-emerald" /> No transaction cap
-                </div>
-                <div className="flex items-center gap-2 text-ink">
-                  <Check className="h-4 w-4 shrink-0 text-emerald" /> Real Excel output, not just CSV
-                </div>
-              </div>
-              <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
-                <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald" />
-                Processed on your device — nothing uploaded, ever
-              </div>
-            </div>
-          </div>
-
-          <div className="mx-auto mt-8 flex max-w-3xl gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-            <p>
-              Needing this for proof of address? Keep the original Lloyds PDF for that — a converted file isn't
-              what gets accepted. See the FAQ below for why.
-            </p>
-          </div>
-
-          <div className="mt-6 text-center">
-            <Link
-              to="/upload"
-              className="inline-flex items-center gap-2 rounded-md bg-ink px-6 py-3 text-sm font-semibold text-background transition hover:bg-ink/90"
-            >
-              Convert a Lloyds statement <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* What you actually get */}
-      <section className="border-b border-border py-16">
-        <div className="mx-auto max-w-2xl px-6">
-          <h2 className="text-2xl font-bold tracking-tight text-ink">What you actually get in the output</h2>
-          <p className="mt-3 text-muted-foreground">
-            Every Lloyds transaction converts into a real row with Date, Description, Amount, Dr/Cr, and Balance
-            columns — split into separate Debit and Credit columns if you'd rather have that than a signed Amount
-            column. Dates are read directly from the statement's own DD/MM/YYYY format and normalised to
-            unambiguous ISO dates by default (a real, common failure point: opening a US-formatted CSV in a
-            UK-regional Excel, or vice versa, silently swaps day and month for any date under the 13th). If your
-            Lloyds statement includes a reference number or cheque detail, that comes through as its own column
-            too, rather than getting folded into the description text.
-          </p>
-        </div>
-      </section>
-
-      {/* Which format */}
-      <section className="border-b border-border py-16">
-        <div className="mx-auto max-w-2xl px-6">
-          <h2 className="text-2xl font-bold tracking-tight text-ink">Which format should you actually use?</h2>
-          <div className="mt-5 space-y-4 text-sm">
-            <div className="rounded-lg border border-border bg-card p-4">
-              <div className="font-semibold text-ink">CSV or Excel — for spreadsheet work</div>
-              <p className="mt-1 text-muted-foreground">
-                Budgeting, reconciliation, or anything you'll sort, filter, or pivot yourself. Excel keeps your
-                formatting; CSV is the more universal choice if you're feeding it into another tool afterward.
-              </p>
-            </div>
-            <div className="rounded-lg border border-border bg-card p-4">
-              <div className="font-semibold text-ink">OFX or QBO — for QuickBooks</div>
-              <p className="mt-1 text-muted-foreground">
-                If the end goal is an accounting-software import rather than manual review, OFX (or QBO for
-                QuickBooks specifically) usually lands more cleanly than reshaping a CSV by hand.
-              </p>
-            </div>
-            <div className="rounded-lg border border-border bg-card p-4">
-              <div className="font-semibold text-ink">Tally XML — for Tally users</div>
-              <p className="mt-1 text-muted-foreground">
-                Common for accountants working with Indian clients or subsidiaries alongside UK accounts — Tally
-                XML isn't something Lloyds (or most UK banks) offer natively at all.
-              </p>
-            </div>
-            <div className="rounded-lg border border-border bg-card p-4">
-              <div className="font-semibold text-ink">IIF or QIF — for QuickBooks Desktop or Quicken</div>
-              <p className="mt-1 text-muted-foreground">
-                Older but still common desktop accounting software that expects its own native import format
-                rather than a generic CSV.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16">
-        <div className="mx-auto max-w-2xl px-6">
-          <h2 className="text-2xl font-bold tracking-tight text-ink text-center">Frequently asked questions</h2>
-          <div className="mt-8 space-y-4">
-            {FAQ.map(({ q, a }) => (
-              <div key={q} className="rounded-lg border border-border bg-card p-5">
-                <div className="font-semibold text-ink">{q}</div>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{a}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <RelatedArticles
+        articles={[
+          { href: "/natwest-bank-statement-to-csv", title: "NatWest Bank Statement to CSV", blurb: "How NatWest's native export compares, and converting older PDFs." },
+          { href: "/csv-to-iif", title: "CSV to IIF Converter for QuickBooks Desktop", blurb: "Turn any CSV export into a QuickBooks Desktop-ready IIF file." },
+          { href: "/csv-to-ofx", title: "CSV to OFX Converter", blurb: "For accounting software that prefers a real transaction feed over a spreadsheet." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+        ]}
+      />
 
       <SiteFooter />
     </div>
