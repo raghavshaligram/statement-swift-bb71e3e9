@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { StatementGridArt } from "@/components/statement-grid-art";
+import { FeaturedArt } from "@/components/featured-art";
 import {
   ArticleBackLink,
   ArticleHero,
@@ -93,7 +93,18 @@ function Page() {
         eyebrow="Bank guide"
         title="Lloyds Bank Statement to CSV: Formats and Limits"
         publishedDate="July 2026"
-        illustration={<StatementGridArt titleText="A Lloyds statement transforming into a structured spreadsheet" className="w-full" />}
+        illustration={
+          <FeaturedArt
+            titleText="A Lloyds statement converting into CSV and Excel"
+            eyebrow="Bank guide"
+            sourceLabel="PDF"
+            destinations={[
+              { label: "CSV", color: "#0e5a40" },
+              { label: "XLSX", color: "#2563eb" },
+            ]}
+            className="w-full"
+          />
+        }
       />
 
       <ArticleProse>
