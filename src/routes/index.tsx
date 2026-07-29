@@ -116,9 +116,9 @@ function Landing() {
               Free Bank Statement Converter <span className="text-emerald">to Excel & CSV</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Close your books without retyping a single transaction. Convert bank statement to Excel or
-              CSV, convert PDF to CSV, PDF to Excel, and more — entirely on your device, for any of 23+
-              banks across the US, UK, Canada, and India.
+              Close your books without retyping a single transaction — the bank statement to Excel
+              software that works everywhere. Convert bank statement to Excel, convert PDF to CSV, PDF to
+              Excel, and more, entirely on your device, for 23+ banks across the US, UK, Canada, and India.
             </p>
           </ScrollReveal>
 
