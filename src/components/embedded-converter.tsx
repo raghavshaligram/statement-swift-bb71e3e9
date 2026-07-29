@@ -38,6 +38,20 @@ export function EmbeddedConverter({ className }: { className?: string }) {
   const [usageRefresh, setUsageRefresh] = useState(0);
   const pageUsage = usePageUsage(usageRefresh);
 
+  // This widget is embedded on many separate marketing/content pages that all
+  // share one global store. Without this, a completed conversion on page A
+  // (or the homepage) stays visible when landing on page B's dropzone --
+  // including via the browser back button after visiting /preview -- which
+  // reads as stale/broken rather than a fresh instance of the tool. Each
+  // mount treats itself as a new, isolated session; the real multi-step
+  // /upload -> /preview -> /export app flow doesn't use this component, so
+  // it's unaffected.
+  useEffect(() => {
+    reset();
+    setPageLimitError(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const wasSignedIn = useRef(false);
   useEffect(() => {
     if (user) {
