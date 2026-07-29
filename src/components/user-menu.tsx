@@ -25,14 +25,15 @@ export function AuthActions({ variant = "dark" }: { variant?: Variant }) {
     const textCls = variant === "dark" ? "text-background/85 hover:text-background" : "text-ink/80 hover:text-ink";
     return (
       <div className="flex items-center gap-4">
-        <Link to="/signin" className={`text-sm font-semibold transition-colors ${textCls}`}>
+        <Link to="/signin" className={`whitespace-nowrap text-sm font-semibold transition-colors ${textCls}`}>
           Log In
         </Link>
         <Link
           to="/signup"
-          className="inline-flex items-center rounded-lg bg-emerald px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-emerald/90"
+          className="inline-flex items-center whitespace-nowrap rounded-lg bg-emerald px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-emerald/90"
         >
-          Sign up for free
+          <span className="sm:hidden">Sign up</span>
+          <span className="hidden sm:inline">Sign up for free</span>
         </Link>
       </div>
     );
