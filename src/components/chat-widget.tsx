@@ -118,12 +118,34 @@ export function ChatWidget() {
     if (open) scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, open]);
 
+  const lastMatchedQuery = useRef<string | null>(null);
+
   function ask(question: string) {
     const trimmed = question.trim();
     if (!trimmed) return;
     const isGreeting = GREETING_WORDS.has(trimmed.toLowerCase().replace(/[!.?]+$/, ""));
     const isSomethingElse = trimmed.toLowerCase() === "something else";
-    const match = isGreeting || isSomethingElse ? null : bestMatch(trimmed);
+
+    let match = isGreeting || isSomethingElse ? null : bestMatch(trimmed);
+    let effectiveQuery = trimmed;
+
+    // A short follow-up like "per month" or "what about india" doesn't carry
+    // enough of its own topic words to match anything on its own -- real
+    // conversations lean on what was just said. Without a real
+    // conversation-understanding model, the closest honest approximation is:
+    // if the query alone doesn't match, retry it appended to the last
+    // question that DID match, and see if that combined context resolves it.
+    if (!match && !isGreeting && !isSomethingElse && lastMatchedQuery.current) {
+      const combined = `${lastMatchedQuery.current} ${trimmed}`;
+      const combinedMatch = bestMatch(combined);
+      if (combinedMatch) {
+        match = combinedMatch;
+        effectiveQuery = combined;
+      }
+    }
+
+    if (match) lastMatchedQuery.current = effectiveQuery;
+
     setMessages((prev) => [
       ...prev,
       { role: "user", text: trimmed },
