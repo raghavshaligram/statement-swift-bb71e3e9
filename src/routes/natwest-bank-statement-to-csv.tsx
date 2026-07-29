@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FeaturedArt } from "@/components/featured-art";
+import { EmbeddedConverter } from "@/components/embedded-converter";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import {
   ArticleBackLink,
@@ -85,19 +85,11 @@ function Page() {
         eyebrow="Bank guide"
         title="NatWest Bank Statement to CSV: Formats and Limits"
         publishedDate="July 2026"
-        illustration={
-          <FeaturedArt
-            titleText="A NatWest statement converting into CSV and OFX"
-            eyebrow="Bank guide"
-            sourceLabel="PDF"
-            destinations={[
-              { label: "CSV", color: "#0e5a40" },
-              { label: "OFX", color: "#2563eb" },
-            ]}
-            className="w-full"
-          />
-        }
       />
+
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <EmbeddedConverter />
+      </div>
 
       <ArticleProse>
         <p>
@@ -166,12 +158,6 @@ function Page() {
           { lead: "Search windows can be capped", body: "some views limit date-range search to a few months at a time, requiring repeated exports stitched together for a full year." },
           { lead: "Business layouts aren't guaranteed", body: "business account statements can use a different structure than the personal layout described here." },
         ]}
-      />
-
-      <ArticleCta
-        heading="Convert Your NatWest Bank Statements"
-        body="Upload a NatWest PDF statement and get a clean CSV, Excel, Tally XML, or IIF file in seconds. Free to try, up to 6 pages with no signup."
-        buttonLabel="Convert a NatWest Statement"
       />
 
       <ArticleH2>Converting NatWest PDF Statements</ArticleH2>

@@ -64,6 +64,10 @@ function Page() {
       <ArticleBackLink />
       <ArticleHero eyebrow="Bank guide" title="Free Bank Statement to Tally XML Converter" publishedDate="July 2026" />
 
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <EmbeddedConverter />
+      </div>
+
       <ArticleProse>
         <p>
           No bank exports directly to Tally XML — it's simply not one of the formats banks offer (CSV, Excel,
@@ -78,10 +82,6 @@ function Page() {
         named detection for 23+ major banks, plus a generic parser for any other text-based PDF. Import the
         resulting XML file straight into Tally via Gateway of Tally, Import Data, Vouchers.
       </QuickSummary>
-
-      <div className="mx-auto max-w-3xl px-6 pb-4">
-        <EmbeddedConverter />
-      </div>
 
       <ArticleH2>How It Works</ArticleH2>
       <NumberedSteps

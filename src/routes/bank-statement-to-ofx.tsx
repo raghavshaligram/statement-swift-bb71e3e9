@@ -57,6 +57,10 @@ function Page() {
       <ArticleBackLink />
       <ArticleHero eyebrow="Bank guide" title="Free Bank Statement to OFX Converter" publishedDate="July 2026" />
 
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <EmbeddedConverter />
+      </div>
+
       <ArticleProse>
         <p>
           Some banks offer OFX export natively — worth checking your specific bank's own guide on this site
@@ -71,10 +75,6 @@ function Page() {
         other text-based PDF — into a standard OFX transaction file, ready to import into QuickBooks, Quicken,
         Xero, and most accounting software.
       </QuickSummary>
-
-      <div className="mx-auto max-w-3xl px-6 pb-4">
-        <EmbeddedConverter />
-      </div>
 
       <ArticleH2>How It Works</ArticleH2>
       <NumberedSteps

@@ -79,6 +79,10 @@ function Page() {
         publishedDate="July 2026"
       />
 
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <EmbeddedConverter />
+      </div>
+
       <ArticleProse>
         <p>
           Chase is the largest bank in the United States, so getting Chase transactions into a spreadsheet comes
@@ -149,10 +153,6 @@ function Page() {
                 <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald" /> Processed on your device — nothing uploaded, ever
               </div>
             </div>
-          </div>
-
-          <div className="mx-auto mt-6 max-w-md">
-            <EmbeddedConverter />
           </div>
         </div>
       </section>

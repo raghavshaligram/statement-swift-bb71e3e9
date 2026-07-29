@@ -79,6 +79,10 @@ function Page() {
         publishedDate="July 2026"
       />
 
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <EmbeddedConverter />
+      </div>
+
       <ArticleProse>
         <p>
           ICICI is one of India's largest private banks, and unlike some competitors, its internet banking
@@ -149,10 +153,6 @@ function Page() {
                 <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald" /> Processed on your device — nothing uploaded, ever
               </div>
             </div>
-          </div>
-
-          <div className="mx-auto mt-6 max-w-md">
-            <EmbeddedConverter />
           </div>
         </div>
       </section>

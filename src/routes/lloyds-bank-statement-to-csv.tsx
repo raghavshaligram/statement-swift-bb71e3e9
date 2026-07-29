@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { FeaturedArt } from "@/components/featured-art";
+import { EmbeddedConverter } from "@/components/embedded-converter";
 import {
   ArticleBackLink,
   ArticleHero,
@@ -93,19 +93,11 @@ function Page() {
         eyebrow="Bank guide"
         title="Lloyds Bank Statement to CSV: Formats and Limits"
         publishedDate="July 2026"
-        illustration={
-          <FeaturedArt
-            titleText="A Lloyds statement converting into CSV and Excel"
-            eyebrow="Bank guide"
-            sourceLabel="PDF"
-            destinations={[
-              { label: "CSV", color: "#0e5a40" },
-              { label: "XLSX", color: "#2563eb" },
-            ]}
-            className="w-full"
-          />
-        }
       />
+
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <EmbeddedConverter />
+      </div>
 
       <ArticleProse>
         <p>
@@ -204,12 +196,6 @@ function Page() {
           { lead: "No Excel format", body: "Lloyds offers PDF and CSV. There's no native .xlsx export, so getting a real Excel workbook means converting the PDF or reformatting the CSV yourself." },
           { lead: "One account, logged in", body: "the export works per account, per session — no bulk export across every account you hold, and no way to pull data for an account you can no longer log into." },
         ]}
-      />
-
-      <ArticleCta
-        heading="Convert Your Lloyds Bank Statements"
-        body="Upload a Lloyds PDF statement and get a clean CSV, Excel, Tally XML, or IIF file in seconds. Free to try, up to 6 pages with no signup."
-        buttonLabel="Convert a Lloyds Statement"
       />
 
       <ArticleH2>Converting Lloyds PDF Statements</ArticleH2>

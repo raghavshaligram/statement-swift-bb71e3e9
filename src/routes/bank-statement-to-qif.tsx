@@ -57,6 +57,10 @@ function Page() {
       <ArticleBackLink />
       <ArticleHero eyebrow="Bank guide" title="Free Bank Statement to QIF Converter" publishedDate="July 2026" />
 
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <EmbeddedConverter />
+      </div>
+
       <ArticleProse>
         <p>
           QIF is one of the oldest personal-finance file formats still in active use, but very few banks export
@@ -69,10 +73,6 @@ function Page() {
         Converts any bank's PDF statement — named detection for 23+ major banks, plus a generic parser for any
         other text-based PDF — into a standard QIF file, ready to import into Quicken.
       </QuickSummary>
-
-      <div className="mx-auto max-w-3xl px-6 pb-4">
-        <EmbeddedConverter />
-      </div>
 
       <ArticleH2>How It Works</ArticleH2>
       <NumberedSteps

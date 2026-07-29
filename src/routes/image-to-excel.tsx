@@ -74,6 +74,10 @@ function Page() {
         publishedDate="July 2026"
       />
 
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <EmbeddedConverter />
+      </div>
+
       <ArticleProse>
         <p>
           A photo of a bank statement — a printed copy, an old paper statement, a screenshot from an app that
@@ -90,10 +94,6 @@ function Page() {
         free account (unlike PDF conversion, which needs no signup) — a real, deliberate limit, not an
         oversight.
       </QuickSummary>
-
-      <div className="mx-auto max-w-3xl px-6 pb-4">
-        <EmbeddedConverter />
-      </div>
 
       <ArticleH2>How It Works</ArticleH2>
       <NumberedSteps
