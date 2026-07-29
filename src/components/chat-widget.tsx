@@ -16,7 +16,7 @@ type Entry = { q: string; a: string; href?: string; hrefLabel?: string };
 const ENTRIES: Entry[] = [
   { q: "Is my data uploaded anywhere? What about security and privacy?", a: "No. Every conversion — PDF, photo, or scan — runs entirely in your browser, on your device. Nothing is sent to a server. You can confirm this yourself by opening your browser's DevTools Network tab during a conversion and watching for outbound requests. There won't be any." },
   { q: "Do I need to sign up to use LedgerLocal?", a: "Not for PDF statements — up to 6 pages per conversion, unlimited conversions, no account needed. Signing up gets you a 10-page lifetime allowance total (PDFs and photos/scans combined, not per conversion). Converting a photo or scanned image specifically does require a free account, since OCR takes real processing time." },
-  { q: "How much does LedgerLocal cost? What are the pricing plans?", a: "Free to try — 6 pages per conversion with no signup, or a 10-page lifetime allowance total once you sign up (that's a cumulative pool across every statement, not 10 pages each time). Pro is $19/month flat: unlimited conversions, no page cap, all seven export formats, no per-page fees." },
+  { q: "How much does LedgerLocal cost? What is the price, and what are the pricing plans?", a: "Free to try — 6 pages per conversion with no signup, or a 10-page lifetime allowance total once you sign up (that's a cumulative pool across every statement, not 10 pages each time). Pro is $19/month flat: unlimited conversions, no page cap, all seven export formats, no per-page fees." },
   { q: "What file formats can I export to?", a: "Excel (.xlsx), CSV, OFX, QFX, QBO, QIF, IIF, and Tally XML — covering QuickBooks Desktop, QuickBooks Online, Quicken, Xero, and Tally." },
   { q: "What banks does LedgerLocal support?", a: "23+ banks with named layout detection across the US, UK, Canada, and India — including Chase, Bank of America, Wells Fargo, Lloyds, NatWest, ICICI, HDFC, SBI, Axis, and Kotak. Any other bank's text-based PDF falls back to a generic layout parser." },
   { q: "Why is a row marked low confidence?", a: "Every extracted transaction gets a confidence score. Low-confidence rows usually come from a blurry photo, an unusual layout, or a merged/split line the parser had to make a judgment call on — worth checking that specific row against the original statement before exporting." },
@@ -83,18 +83,31 @@ const STOP_WORDS = new Set([
   "it", "this", "that", "there", "about",
 ]);
 
-function bestMatch(query: string): Entry | null {
+function rankEntries(query: string): Array<{ entry: Entry; s: number }> {
   const words = query
     .trim()
     .toLowerCase()
     .split(/\s+/)
     .map((w) => w.replace(/[^\w]/g, ""))
     .filter((w) => w.length > 2 && !STOP_WORDS.has(w));
-  if (words.length === 0) return null;
-  const ranked = ENTRIES.map((e) => ({ entry: e, s: score(e, words) }))
-    .filter((r) => r.s >= MIN_MATCH_SCORE)
-    .sort((a, b) => b.s - a.s);
-  return ranked[0]?.entry ?? null;
+  if (words.length === 0) return [];
+  return ENTRIES.map((e) => ({ entry: e, s: score(e, words) })).sort((a, b) => b.s - a.s);
+}
+
+function bestMatch(query: string): Entry | null {
+  const top = rankEntries(query)[0];
+  return top && top.s >= MIN_MATCH_SCORE ? top.entry : null;
+}
+
+// Distinguishes "scored something, just not enough to clear the threshold"
+// from "scored literally zero, shares no real word with any entry" -- only
+// the former is a reasonable candidate for context-carrying. A query that
+// shares nothing with any entry on its own is a fresh, unrelated topic, not
+// a continuation of the last one, even if the last topic's own words alone
+// would happen to clear the threshold when blindly combined.
+function hasAnyStandaloneSignal(query: string): boolean {
+  const top = rankEntries(query)[0];
+  return !!top && top.s > 0;
 }
 
 type Message = { role: "assistant" | "user"; text: string; href?: string; hrefLabel?: string; chips?: string[] };
@@ -129,13 +142,17 @@ export function ChatWidget() {
     let match = isGreeting || isSomethingElse ? null : bestMatch(trimmed);
     let effectiveQuery = trimmed;
 
-    // A short follow-up like "per month" or "what about india" doesn't carry
-    // enough of its own topic words to match anything on its own -- real
-    // conversations lean on what was just said. Without a real
-    // conversation-understanding model, the closest honest approximation is:
-    // if the query alone doesn't match, retry it appended to the last
-    // question that DID match, and see if that combined context resolves it.
-    if (!match && !isGreeting && !isSomethingElse && lastMatchedQuery.current) {
+    // A short follow-up like "per month" doesn't carry enough of its own
+    // topic words to match anything alone -- real conversations lean on
+    // what was just said. But this must be gated on the new query showing
+    // SOME real relevance on its own first: a genuinely fresh, unrelated
+    // topic (zero shared words with anything) should never inherit the
+    // previous topic just because the old question's own words alone
+    // would clear the threshold when blindly combined -- confirmed this
+    // was a real bug ("what is price" inheriting the previous
+    // export-formats topic purely because "export formats" alone scores
+    // high, with "price" contributing nothing).
+    if (!match && !isGreeting && !isSomethingElse && lastMatchedQuery.current && hasAnyStandaloneSignal(trimmed)) {
       const combined = `${lastMatchedQuery.current} ${trimmed}`;
       const combinedMatch = bestMatch(combined);
       if (combinedMatch) {
@@ -154,7 +171,7 @@ export function ChatWidget() {
         : isSomethingElse
           ? { role: "assistant", text: SOMETHING_ELSE_REPLY, href: "/contact", hrefLabel: "Contact us" }
           : match
-            ? { role: "assistant", text: match.a, href: match.href, hrefLabel: match.hrefLabel }
+            ? { role: "assistant", text: match.a, href: match.href, hrefLabel: match.hrefLabel, chips: CLARIFY_CHIPS }
             : { role: "assistant", text: FALLBACK, chips: CLARIFY_CHIPS },
     ]);
     setInput("");
