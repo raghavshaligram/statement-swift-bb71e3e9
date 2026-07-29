@@ -119,7 +119,7 @@ const COMPARISON_ROWS: Array<{ label: string; values: Record<string, string> }> 
 const FAQ: Array<[string, string]> = [
   [
     "How do the free pages work?",
-    "6 pages per statement with no signup, or 10 pages per statement free once you sign up — no credit card, no expiry, no daily reset. Convert as many statements as you want; the limit is per file, not a running total.",
+    "6 pages per statement with no signup at all, and no persistent tracking on that anonymous tier — convert as many separate statements as you like. Signing up gives you 10 pages total, but as a lifetime pool shared across every PDF page and photo/scan you convert combined, not a per-statement allowance — once those 10 pages are used, you'll need Pro for anything more.",
   ],
   ["What counts as a \"page\"?", "Each page of the PDF you upload, counted before any processing starts."],
   [

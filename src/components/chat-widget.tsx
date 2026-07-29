@@ -14,9 +14,9 @@ import { Bot, MessageCircle, Send, User, X } from "lucide-react";
 type Entry = { q: string; a: string; href?: string; hrefLabel?: string };
 
 const ENTRIES: Entry[] = [
-  { q: "Is my data uploaded anywhere?", a: "No. Every conversion — PDF, photo, or scan — runs entirely in your browser, on your device. Nothing is sent to a server. You can confirm this yourself by opening your browser's DevTools Network tab during a conversion and watching for outbound requests. There won't be any." },
-  { q: "Do I need to sign up to use LedgerLocal?", a: "Not for PDF statements — up to 6 pages per conversion, unlimited conversions, no account needed. Signing up gets you a 10-page lifetime allowance (PDFs and photos/scans combined). Converting a photo or scanned image specifically does require a free account, since OCR takes real processing time." },
-  { q: "How much does LedgerLocal cost?", a: "Free to try — 6 pages per conversion with no signup, or a 10-page lifetime allowance once you sign up. Pro is $19/month flat: unlimited conversions, no page cap, all seven export formats, no per-page fees." },
+  { q: "Is my data uploaded anywhere? What about security and privacy?", a: "No. Every conversion — PDF, photo, or scan — runs entirely in your browser, on your device. Nothing is sent to a server. You can confirm this yourself by opening your browser's DevTools Network tab during a conversion and watching for outbound requests. There won't be any." },
+  { q: "Do I need to sign up to use LedgerLocal?", a: "Not for PDF statements — up to 6 pages per conversion, unlimited conversions, no account needed. Signing up gets you a 10-page lifetime allowance total (PDFs and photos/scans combined, not per conversion). Converting a photo or scanned image specifically does require a free account, since OCR takes real processing time." },
+  { q: "How much does LedgerLocal cost? What are the pricing plans?", a: "Free to try — 6 pages per conversion with no signup, or a 10-page lifetime allowance total once you sign up (that's a cumulative pool across every statement, not 10 pages each time). Pro is $19/month flat: unlimited conversions, no page cap, all seven export formats, no per-page fees." },
   { q: "What file formats can I export to?", a: "Excel (.xlsx), CSV, OFX, QFX, QBO, QIF, IIF, and Tally XML — covering QuickBooks Desktop, QuickBooks Online, Quicken, Xero, and Tally." },
   { q: "What banks does LedgerLocal support?", a: "23+ banks with named layout detection across the US, UK, Canada, and India — including Chase, Bank of America, Wells Fargo, Lloyds, NatWest, ICICI, HDFC, SBI, Axis, and Kotak. Any other bank's text-based PDF falls back to a generic layout parser." },
   { q: "Why is a row marked low confidence?", a: "Every extracted transaction gets a confidence score. Low-confidence rows usually come from a blurry photo, an unusual layout, or a merged/split line the parser had to make a judgment call on — worth checking that specific row against the original statement before exporting." },
@@ -30,7 +30,7 @@ const ENTRIES: Entry[] = [
   { q: "Does any bank export directly to Tally XML?", a: "No — it isn't one of the formats banks offer at all (CSV, Excel, OFX, QIF, and QBO cover almost everyone's native export list, but never Tally). Converting a PDF statement is the real path in.", href: "/bank-statement-to-tally", hrefLabel: "Bank statement to Tally guide" },
   { q: "What is a QBO file, and how is it different from IIF?", a: "QBO is QuickBooks' Web Connect format, built on the same underlying structure as OFX — it imports as a live bank-feed match on both QuickBooks Desktop and Online. IIF is a QuickBooks Desktop-only format with simpler, unmatched transaction entries.", href: "/qbo-to-csv", hrefLabel: "QBO to CSV guide" },
   { q: "How accurate is converting a photo of a statement?", a: "It depends on the photo — a clean, well-lit, straight-on scan reads nearly as well as a real PDF. Blur, poor lighting, or an angled shot increases how many rows get flagged as low-confidence, which is why every row is scored rather than silently accepted.", href: "/image-to-excel", hrefLabel: "Image to Excel guide" },
-  { q: "How do I contact support or report a statement that isn't converting?", a: "Head to our Contact page — you can attach the actual statement that's giving you trouble, which helps us diagnose it much faster than a description alone.", href: "/contact", hrefLabel: "Contact us" },
+  { q: "How do I report a conversion issue or contact support if a statement isn't converting?", a: "Head to our Contact page — you can attach the actual statement that's giving you trouble, which helps us diagnose it much faster than a description alone.", href: "/contact", hrefLabel: "Contact us" },
 ];
 
 const STARTER_QUESTIONS = [
@@ -41,7 +41,7 @@ const STARTER_QUESTIONS = [
 ];
 
 const FALLBACK =
-  "I don't have an article on that specific question yet. Head to Contact with a bit more detail and we'll get back to you directly.";
+  "I'm not sure I have an article on that specific question. Is it about one of these, or something else entirely?";
 
 const GREETING = "Hi there! Ask me a question about converting statements, pricing, security, or export formats — or tap one of the suggestions below.";
 const GREETING_WORDS = new Set(["hi", "hello", "hey", "hiya", "yo", "sup", "howdy", "hola"]);
@@ -70,8 +70,26 @@ function score(entry: Entry, queryWords: string[]): number {
 // isn't enough confidence to hand back an answer.
 const MIN_MATCH_SCORE = 3;
 
+// Generic words like "what"/"are"/"does" appearing in nearly every FAQ
+// question were causing false ties -- confirmed directly: "What banks are
+// supported?" scored equally against the banks FAQ and the pricing FAQ,
+// purely because "what" and "are" both happen to appear in the pricing
+// question's wording too, and the stable sort's tie-break (array order)
+// picked the wrong one. Excluding these from scoring means only the
+// actual topic words drive a match.
+const STOP_WORDS = new Set([
+  "what", "are", "is", "does", "do", "the", "a", "an", "to", "for", "of",
+  "in", "on", "and", "or", "can", "how", "much", "with", "my", "me", "you",
+  "it", "this", "that", "there", "about",
+]);
+
 function bestMatch(query: string): Entry | null {
-  const words = query.trim().toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+  const words = query
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .map((w) => w.replace(/[^\w]/g, ""))
+    .filter((w) => w.length > 2 && !STOP_WORDS.has(w));
   if (words.length === 0) return null;
   const ranked = ENTRIES.map((e) => ({ entry: e, s: score(e, words) }))
     .filter((r) => r.s >= MIN_MATCH_SCORE)
@@ -79,7 +97,10 @@ function bestMatch(query: string): Entry | null {
   return ranked[0]?.entry ?? null;
 }
 
-type Message = { role: "assistant" | "user"; text: string; href?: string; hrefLabel?: string };
+type Message = { role: "assistant" | "user"; text: string; href?: string; hrefLabel?: string; chips?: string[] };
+
+const CLARIFY_CHIPS = ["Pricing", "Security & privacy", "Supported banks", "Export formats", "Report a conversion issue", "Something else"];
+const SOMETHING_ELSE_REPLY = "No problem — head to Contact and tell us a bit more. We read every message.";
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -87,6 +108,7 @@ export function ChatWidget() {
     {
       role: "assistant",
       text: "Hi! I can answer common questions about converting statements, pricing, security, and export formats. Ask me anything, or tap a question below to get started.",
+      chips: STARTER_QUESTIONS,
     },
   ]);
   const [input, setInput] = useState("");
@@ -100,15 +122,18 @@ export function ChatWidget() {
     const trimmed = question.trim();
     if (!trimmed) return;
     const isGreeting = GREETING_WORDS.has(trimmed.toLowerCase().replace(/[!.?]+$/, ""));
-    const match = isGreeting ? null : bestMatch(trimmed);
+    const isSomethingElse = trimmed.toLowerCase() === "something else";
+    const match = isGreeting || isSomethingElse ? null : bestMatch(trimmed);
     setMessages((prev) => [
       ...prev,
       { role: "user", text: trimmed },
       isGreeting
-        ? { role: "assistant", text: GREETING }
-        : match
-          ? { role: "assistant", text: match.a, href: match.href, hrefLabel: match.hrefLabel }
-          : { role: "assistant", text: FALLBACK },
+        ? { role: "assistant", text: GREETING, chips: STARTER_QUESTIONS }
+        : isSomethingElse
+          ? { role: "assistant", text: SOMETHING_ELSE_REPLY, href: "/contact", hrefLabel: "Contact us" }
+          : match
+            ? { role: "assistant", text: match.a, href: match.href, hrefLabel: match.hrefLabel }
+            : { role: "assistant", text: FALLBACK, chips: CLARIFY_CHIPS },
     ]);
     setInput("");
   }
@@ -138,42 +163,44 @@ export function ChatWidget() {
 
           <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
             {messages.map((m, i) => (
-              <div key={i} className={`flex gap-2 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
-                <div
-                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
-                    m.role === "user" ? "bg-ink" : "bg-emerald-soft"
-                  }`}
-                >
-                  {m.role === "user" ? <User className="h-3 w-3 text-background" /> : <Bot className="h-3 w-3 text-emerald" />}
+              <div key={i}>
+                <div className={`flex gap-2 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
+                  <div
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${
+                      m.role === "user" ? "bg-ink" : "bg-emerald-soft"
+                    }`}
+                  >
+                    {m.role === "user" ? <User className="h-3 w-3 text-background" /> : <Bot className="h-3 w-3 text-emerald" />}
+                  </div>
+                  <div
+                    className={`max-w-[82%] rounded-xl px-3.5 py-2 text-sm leading-relaxed ${
+                      m.role === "user" ? "bg-ink text-background" : "bg-surface-muted text-ink"
+                    }`}
+                  >
+                    {m.text}
+                    {m.href && (
+                      <Link to={m.href} className="mt-1.5 block text-xs font-semibold text-emerald hover:underline">
+                        {m.hrefLabel} →
+                      </Link>
+                    )}
+                  </div>
                 </div>
-                <div
-                  className={`max-w-[82%] rounded-xl px-3.5 py-2 text-sm leading-relaxed ${
-                    m.role === "user" ? "bg-ink text-background" : "bg-surface-muted text-ink"
-                  }`}
-                >
-                  {m.text}
-                  {m.href && (
-                    <Link to={m.href} className="mt-1.5 block text-xs font-semibold text-emerald hover:underline">
-                      {m.hrefLabel} →
-                    </Link>
-                  )}
-                </div>
+
+                {m.chips && i === messages.length - 1 && (
+                  <div className="ml-8 mt-2 flex flex-wrap gap-1.5">
+                    {m.chips.map((c) => (
+                      <button
+                        key={c}
+                        onClick={() => ask(c)}
+                        className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] font-medium text-ink transition hover:border-emerald/50 hover:text-emerald"
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
-
-            {messages.length <= 1 && (
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {STARTER_QUESTIONS.map((q) => (
-                  <button
-                    key={q}
-                    onClick={() => ask(q)}
-                    className="rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] font-medium text-ink transition hover:border-emerald/50 hover:text-emerald"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           <form
