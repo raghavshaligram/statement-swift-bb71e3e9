@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, X, ShieldCheck } from "lucide-react";
+import { EmbeddedConverter } from "@/components/embedded-converter";
 
 /** Back-to-blog link, shown at the top of every long-form article page. */
 export function ArticleBackLink() {
@@ -142,14 +143,8 @@ export function ArticleCta({ heading, body, buttonLabel }: { heading: string; bo
       <div className="rounded-2xl border border-emerald/30 bg-emerald-soft/50 p-8 text-center">
         <div className="text-lg font-bold text-ink">{heading}</div>
         <p className="mx-auto mt-2 max-w-md text-sm text-ink/75">{body}</p>
-        <Link
-          to="/upload"
-          className="mt-5 inline-flex items-center gap-2 rounded-md bg-ink px-6 py-3 text-sm font-semibold text-background transition hover:bg-ink/90"
-        >
-          {buttonLabel} <ArrowRight className="h-4 w-4" />
-        </Link>
-        <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
-          <ShieldCheck className="h-3 w-3 text-emerald" /> Processed on your device — nothing uploaded, ever
+        <div className="mx-auto mt-5 max-w-md text-left">
+          <EmbeddedConverter />
         </div>
       </div>
     </div>

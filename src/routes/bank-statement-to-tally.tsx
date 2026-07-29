@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { EmbeddedConverter } from "@/components/embedded-converter";
 import {
   ArticleBackLink,
   ArticleHero,
@@ -80,12 +80,7 @@ function Page() {
       </QuickSummary>
 
       <div className="mx-auto max-w-3xl px-6 pb-4">
-        <Link to="/upload" className="inline-flex items-center gap-2 rounded-md bg-ink px-6 py-3 text-sm font-semibold text-background transition hover:bg-ink/90">
-          Convert a statement to Tally XML <ArrowRight className="h-4 w-4" />
-        </Link>
-        <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <ShieldCheck className="h-3.5 w-3.5 text-emerald" /> Processed on your device — nothing uploaded, ever
-        </div>
+        <EmbeddedConverter />
       </div>
 
       <ArticleH2>How It Works</ArticleH2>

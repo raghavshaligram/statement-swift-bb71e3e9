@@ -11,22 +11,16 @@ import {
   Layers,
   FileOutput,
   Shield,
-  AlertTriangle,
 } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ScrollReveal, ScrollRevealGroup, ScrollRevealItem } from "@/components/scroll-reveal";
-import { StatementDropzone } from "@/components/statement-dropzone";
-import { ParseQueue } from "@/components/parse-queue";
+import { EmbeddedConverter } from "@/components/embedded-converter";
 import { HowItWorksTimeline } from "@/components/how-it-works-timeline";
 import { TransactionSideBySide } from "@/components/transaction-side-by-side";
 import { CapabilityGrid } from "@/components/capability-grid";
 import { ComparisonSection } from "@/components/comparison-section";
 import { HomepageFaq } from "@/components/homepage-faq";
 import { BANK_LABELS } from "@/lib/pdf/bank-detection";
-import { useStatementStore } from "@/lib/statement-store";
-import { parseStatementFile } from "@/lib/pdf/parse-statement";
-import { validateUploadBatch } from "@/lib/pdf/upload-validation";
-import { usePageUsage } from "@/hooks/use-page-usage";
 import { ANONYMOUS_MAX_PAGES, SIGNED_IN_MAX_PAGES } from "@/lib/pricing-constants";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
@@ -129,7 +123,7 @@ function Landing() {
           </ScrollReveal>
 
           <ScrollReveal className="mx-auto mt-10 max-w-2xl" delay={0.1}>
-            <HeroUploadCard />
+            <EmbeddedConverter />
           </ScrollReveal>
 
           <ScrollReveal className="mx-auto mt-8 max-w-3xl" delay={0.2}>
@@ -412,145 +406,6 @@ function Landing() {
     </div>
   );
 }
-
-function HeroUploadCard() {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const maxPages = user ? SIGNED_IN_MAX_PAGES : ANONYMOUS_MAX_PAGES;
-  const phase = useStatementStore((s) => s.phase);
-  const pendingFiles = useStatementStore((s) => s.pendingFiles);
-  const reset = useStatementStore((s) => s.reset);
-  const removePendingFile = useStatementStore((s) => s.removePendingFile);
-  const setPendingFiles = useStatementStore((s) => s.setPendingFiles);
-  const startProcessing = useStatementStore((s) => s.startProcessing);
-  const setProgress = useStatementStore((s) => s.setProgress);
-  const finishProcessing = useStatementStore((s) => s.finishProcessing);
-  const failProcessing = useStatementStore((s) => s.failProcessing);
-  const [, setLiveFileName] = useState("");
-  const [pageLimitError, setPageLimitError] = useState<{ message: string; requiresSignIn: boolean } | null>(null);
-  const [usageRefresh, setUsageRefresh] = useState(0);
-  const pageUsage = usePageUsage(usageRefresh);
-
-  // Reset any leftover processed/queued statement state on an actual
-  // sign-out -- previously, logging out left the widget showing a stale
-  // "Parsing complete, ready to review" card from the signed-in session,
-  // and clicking Review still navigated into the app shell despite no
-  // longer being signed in. Deliberately tracks the SIGNED-IN -> SIGNED-OUT
-  // transition specifically (via a ref), not just "user is currently
-  // null" -- firing on every mount would also wipe legitimate results
-  // when navigating back to the homepage from elsewhere in the app.
-  const wasSignedIn = useRef(false);
-  useEffect(() => {
-    if (user) {
-      wasSignedIn.current = true;
-    } else if (wasSignedIn.current) {
-      wasSignedIn.current = false;
-      reset();
-      setPageLimitError(null);
-    }
-  }, [user]);
-
-  async function handleFiles(files: File[]) {
-    setPageLimitError(null);
-
-    const validation = await validateUploadBatch(files, !!user);
-    if (!validation.ok) {
-      setPageLimitError({ message: validation.message, requiresSignIn: validation.requiresSignIn });
-      return;
-    }
-
-    reset();
-    setPendingFiles(files);
-    startProcessing();
-    const parsed = [];
-    try {
-      for (let i = 0; i < files.length; i++) {
-        setLiveFileName(files[i].name);
-        const statement = await parseStatementFile(files[i], (page, total) =>
-          setProgress(i, page, total)
-        );
-        parsed.push(statement);
-      }
-      finishProcessing(parsed);
-      setUsageRefresh((n) => n + 1);
-    } catch (err) {
-      failProcessing(err instanceof Error ? err.message : "Something went wrong while parsing.");
-    }
-  }
-
-  const showQueue = phase !== "idle" && pendingFiles.length > 0;
-
-  return (
-    <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-2 shadow-lg shadow-slate-900/5">
-      {!showQueue && (
-        <div className="absolute right-4 top-4 hidden text-emerald/20 sm:block" aria-hidden>
-          <Upload className="h-16 w-16 animate-bounce-slow" />
-        </div>
-      )}
-      {showQueue ? (
-        <>
-          <ParseQueue
-            onReview={() => navigate({ to: "/preview" })}
-            onRemove={(i) => removePendingFile(i)}
-          />
-          {(phase === "done" || phase === "error") && (
-            <div className="px-3 pb-3 pt-1 text-center">
-              <button
-                onClick={() => reset()}
-                className="text-xs font-medium text-muted-foreground hover:text-ink"
-              >
-                Convert another statement
-              </button>
-            </div>
-          )}
-        </>
-      ) : (
-        <>
-          <StatementDropzone
-            variant="full"
-            onFiles={handleFiles}
-            className="border-2 border-dashed border-border/80 bg-surface/50"
-          />
-          {pageLimitError ? (
-            <div className="mx-2 mt-3 flex items-center justify-between gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3">
-              <div className="flex items-start gap-2.5 text-left">
-                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-                <div>
-                  <div className="text-sm font-semibold text-amber-900">
-                    {pageLimitError.requiresSignIn
-                      ? "Sign in required for photos and scans"
-                      : `Your current plan supports up to ${maxPages} pages`}
-                  </div>
-                  <div className="text-xs text-amber-800">{pageLimitError.message}</div>
-                </div>
-              </div>
-              <Link
-                to={user ? "/account/billing" : "/signup"}
-                className="shrink-0 rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-600"
-              >
-                {user ? "Upgrade to Pro" : "Sign up free"}
-              </Link>
-            </div>
-          ) : null}
-          {pageUsage.isSignedIn && pageUsage.used !== null && (
-            <p className="mt-2 px-2 text-center text-xs text-muted-foreground">
-              {pageUsage.used} of {pageUsage.limit} free lifetime pages used (PDFs and photos/scans combined)
-              {pageUsage.used >= pageUsage.limit && (
-                <>
-                  {" — "}
-                  <Link to="/account/billing" className="font-semibold text-emerald underline hover:no-underline">
-                    upgrade to Pro
-                  </Link>
-                </>
-              )}
-            </p>
-          )}
-        </>
-      )}
-    </div>
-  );
-}
-
 
 function TrustPill({ icon: Icon, label }: { icon: any; label: string }) {
   return (

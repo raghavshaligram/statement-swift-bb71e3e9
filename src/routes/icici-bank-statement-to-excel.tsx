@@ -1,6 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ShieldCheck, Check, X } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { ShieldCheck, Check, X } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { EmbeddedConverter } from "@/components/embedded-converter";
 import {
   ArticleBackLink,
   ArticleHero,
@@ -150,10 +151,8 @@ function Page() {
             </div>
           </div>
 
-          <div className="mt-6 text-center">
-            <Link to="/upload" className="inline-flex items-center gap-2 rounded-md bg-ink px-6 py-3 text-sm font-semibold text-background transition hover:bg-ink/90">
-              Convert an ICICI statement <ArrowRight className="h-4 w-4" />
-            </Link>
+          <div className="mx-auto mt-6 max-w-md">
+            <EmbeddedConverter />
           </div>
         </div>
       </section>
