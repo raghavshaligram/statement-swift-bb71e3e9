@@ -75,9 +75,9 @@ export function SiteFooter() {
         <div>
           <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-ink">Formats</div>
           <ul className="space-y-2">
-            <li>Excel (.xlsx)</li>
-            <li>CSV · OFX · QIF</li>
-            <li>Tally XML · QBO</li>
+            <li><Link to="/upload" className="hover:text-ink">Excel (.xlsx)</Link></li>
+            <li><Link to="/csv-to-ofx" className="hover:text-ink">CSV</Link> · <Link to="/csv-to-ofx" className="hover:text-ink">OFX</Link> · <Link to="/csv-to-qif" className="hover:text-ink">QIF</Link></li>
+            <li><Link to="/bank-statement-to-tally" className="hover:text-ink">Tally XML</Link> · <Link to="/qbo-to-csv" className="hover:text-ink">QBO</Link></li>
           </ul>
         </div>
         <div>
