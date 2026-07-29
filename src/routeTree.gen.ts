@@ -22,6 +22,7 @@ import { Route as ExportRouteImport } from './routes/export'
 import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as IciciBankStatementToExcelRouteImport } from './routes/icici-bank-statement-to-excel'
 import { Route as IifToCsvRouteImport } from './routes/iif-to-csv'
+import { Route as ImageToExcelRouteImport } from './routes/image-to-excel'
 import { Route as LloydsBankStatementToCsvRouteImport } from './routes/lloyds-bank-statement-to-csv'
 import { Route as Mt940ToCsvRouteImport } from './routes/mt940-to-csv'
 import { Route as NatwestBankStatementToCsvRouteImport } from './routes/natwest-bank-statement-to-csv'
@@ -107,6 +108,11 @@ const IciciBankStatementToExcelRoute =
 const IifToCsvRoute = IifToCsvRouteImport.update({
   id: '/iif-to-csv',
   path: '/iif-to-csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImageToExcelRoute = ImageToExcelRouteImport.update({
+  id: '/image-to-excel',
+  path: '/image-to-excel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LloydsBankStatementToCsvRoute =
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/forgot-password': typeof ForgotPasswordRoute
   '/icici-bank-statement-to-excel': typeof IciciBankStatementToExcelRoute
   '/iif-to-csv': typeof IifToCsvRoute
+  '/image-to-excel': typeof ImageToExcelRoute
   '/lloyds-bank-statement-to-csv': typeof LloydsBankStatementToCsvRoute
   '/mt940-to-csv': typeof Mt940ToCsvRoute
   '/natwest-bank-statement-to-csv': typeof NatwestBankStatementToCsvRoute
@@ -255,6 +262,7 @@ export interface FileRoutesByTo {
   '/forgot-password': typeof ForgotPasswordRoute
   '/icici-bank-statement-to-excel': typeof IciciBankStatementToExcelRoute
   '/iif-to-csv': typeof IifToCsvRoute
+  '/image-to-excel': typeof ImageToExcelRoute
   '/lloyds-bank-statement-to-csv': typeof LloydsBankStatementToCsvRoute
   '/mt940-to-csv': typeof Mt940ToCsvRoute
   '/natwest-bank-statement-to-csv': typeof NatwestBankStatementToCsvRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/forgot-password': typeof ForgotPasswordRoute
   '/icici-bank-statement-to-excel': typeof IciciBankStatementToExcelRoute
   '/iif-to-csv': typeof IifToCsvRoute
+  '/image-to-excel': typeof ImageToExcelRoute
   '/lloyds-bank-statement-to-csv': typeof LloydsBankStatementToCsvRoute
   '/mt940-to-csv': typeof Mt940ToCsvRoute
   '/natwest-bank-statement-to-csv': typeof NatwestBankStatementToCsvRoute
@@ -326,6 +335,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/icici-bank-statement-to-excel'
     | '/iif-to-csv'
+    | '/image-to-excel'
     | '/lloyds-bank-statement-to-csv'
     | '/mt940-to-csv'
     | '/natwest-bank-statement-to-csv'
@@ -360,6 +370,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/icici-bank-statement-to-excel'
     | '/iif-to-csv'
+    | '/image-to-excel'
     | '/lloyds-bank-statement-to-csv'
     | '/mt940-to-csv'
     | '/natwest-bank-statement-to-csv'
@@ -394,6 +405,7 @@ export interface FileRouteTypes {
     | '/forgot-password'
     | '/icici-bank-statement-to-excel'
     | '/iif-to-csv'
+    | '/image-to-excel'
     | '/lloyds-bank-statement-to-csv'
     | '/mt940-to-csv'
     | '/natwest-bank-statement-to-csv'
@@ -429,6 +441,7 @@ export interface RootRouteChildren {
   ForgotPasswordRoute: typeof ForgotPasswordRoute
   IciciBankStatementToExcelRoute: typeof IciciBankStatementToExcelRoute
   IifToCsvRoute: typeof IifToCsvRoute
+  ImageToExcelRoute: typeof ImageToExcelRoute
   LloydsBankStatementToCsvRoute: typeof LloydsBankStatementToCsvRoute
   Mt940ToCsvRoute: typeof Mt940ToCsvRoute
   NatwestBankStatementToCsvRoute: typeof NatwestBankStatementToCsvRoute
@@ -541,6 +554,13 @@ declare module '@tanstack/react-router' {
       path: '/iif-to-csv'
       fullPath: '/iif-to-csv'
       preLoaderRoute: typeof IifToCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/image-to-excel': {
+      id: '/image-to-excel'
+      path: '/image-to-excel'
+      fullPath: '/image-to-excel'
+      preLoaderRoute: typeof ImageToExcelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lloyds-bank-statement-to-csv': {
@@ -693,6 +713,7 @@ const rootRouteChildren: RootRouteChildren = {
   ForgotPasswordRoute: ForgotPasswordRoute,
   IciciBankStatementToExcelRoute: IciciBankStatementToExcelRoute,
   IifToCsvRoute: IifToCsvRoute,
+  ImageToExcelRoute: ImageToExcelRoute,
   LloydsBankStatementToCsvRoute: LloydsBankStatementToCsvRoute,
   Mt940ToCsvRoute: Mt940ToCsvRoute,
   NatwestBankStatementToCsvRoute: NatwestBankStatementToCsvRoute,

@@ -37,6 +37,7 @@ const FORMAT_CONVERTERS: Post[] = [
   { href: "/ofx-to-csv", title: "OFX to CSV Converter", blurb: "An OFX or QFX file, back to plain CSV.", eyebrow: "Format converter", sourceLabel: "OFX", destinations: [{ label: "CSV", color: EMERALD }] },
   { href: "/qfx-to-csv", title: "QFX to CSV Converter", blurb: "A Quicken QFX export, back to plain CSV.", eyebrow: "Format converter", sourceLabel: "QFX", destinations: [{ label: "CSV", color: EMERALD }] },
   { href: "/mt940-to-csv", title: "MT940 to CSV Converter", blurb: "SWIFT's international statement format, to CSV.", eyebrow: "Format converter", sourceLabel: "MT940", destinations: [{ label: "CSV", color: EMERALD }] },
+  { href: "/image-to-excel", title: "Image to Excel Converter", blurb: "A photo or scan of a statement, converted with on-device OCR.", eyebrow: "Converter guide", sourceLabel: "Photo", destinations: [{ label: "XLSX", color: EMERALD }] },
 ];
 
 function PostCard({ post }: { post: Post }) {
