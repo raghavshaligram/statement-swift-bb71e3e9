@@ -26,6 +26,22 @@ const BANK_GUIDES: Post[] = [
     sourceLabel: "PDF",
     destinations: [{ label: "CSV", color: EMERALD }, { label: "XLSX", color: BLUE }],
   },
+  {
+    href: "/chase-bank-statement-to-excel",
+    title: "Chase bank statement to Excel",
+    blurb: "Chase's own export covers ~90 days — here's the rest, back to 7 years.",
+    eyebrow: "Bank guide",
+    sourceLabel: "PDF",
+    destinations: [{ label: "XLSX", color: EMERALD }, { label: "CSV", color: BLUE }],
+  },
+  {
+    href: "/icici-bank-statement-to-excel",
+    title: "ICICI bank statement to Excel",
+    blurb: "ICICI's own export works well — but older statements can incur a charge.",
+    eyebrow: "Bank guide",
+    sourceLabel: "PDF",
+    destinations: [{ label: "XLSX", color: EMERALD }, { label: "CSV", color: BLUE }],
+  },
 ];
 
 const FORMAT_CONVERTERS: Post[] = [
@@ -38,6 +54,9 @@ const FORMAT_CONVERTERS: Post[] = [
   { href: "/qfx-to-csv", title: "QFX to CSV Converter", blurb: "A Quicken QFX export, back to plain CSV.", eyebrow: "Format converter", sourceLabel: "QFX", destinations: [{ label: "CSV", color: EMERALD }] },
   { href: "/mt940-to-csv", title: "MT940 to CSV Converter", blurb: "SWIFT's international statement format, to CSV.", eyebrow: "Format converter", sourceLabel: "MT940", destinations: [{ label: "CSV", color: EMERALD }] },
   { href: "/image-to-excel", title: "Image to Excel Converter", blurb: "A photo or scan of a statement, converted with on-device OCR.", eyebrow: "Converter guide", sourceLabel: "Photo", destinations: [{ label: "XLSX", color: EMERALD }] },
+  { href: "/bank-statement-to-tally", title: "Bank Statement to Tally XML", blurb: "No bank exports Tally XML natively — convert any PDF statement directly.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "XML", color: EMERALD }] },
+  { href: "/bank-statement-to-ofx", title: "Bank Statement to OFX", blurb: "For QuickBooks, Xero, and other accounting software, from any bank's PDF.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "OFX", color: EMERALD }] },
+  { href: "/bank-statement-to-qif", title: "Bank Statement to QIF", blurb: "For Quicken import, from any bank's PDF statement.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "QIF", color: EMERALD }] },
 ];
 
 function PostCard({ post }: { post: Post }) {

@@ -1,18 +1,134 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoonPage } from "@/components/coming-soon";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, ShieldCheck } from "lucide-react";
+import { SiteHeader, SiteFooter } from "@/components/site-header";
+import {
+  ArticleBackLink,
+  ArticleHero,
+  QuickSummary,
+  ArticleProse,
+  ArticleH2,
+  NumberedSteps,
+  ArticleTable,
+  RelatedArticles,
+} from "@/components/article-sections";
 
-// TODO: replace with a full bank-statement-to-Tally-XML import guide.
+const FAQ: Array<{ q: string; a: string }> = [
+  {
+    q: "Does any bank export directly to Tally XML?",
+    a: "No — banks export to CSV, Excel, OFX, QIF, or QBO, never Tally XML directly. Getting a bank statement into Tally means either manual entry or converting the PDF or CSV export into Tally's XML format first.",
+  },
+  {
+    q: "Which banks does this work with?",
+    a: "Any bank whose PDF statement is text-based — named detection covers 23+ major banks across the US, UK, Canada, and India, with a generic layout parser handling any other bank's text-based PDF.",
+  },
+  {
+    q: "How do I import the XML file into Tally?",
+    a: "Gateway of Tally > Import Data > Vouchers, then select the XML file this tool downloaded.",
+  },
+  {
+    q: "What if my statement is a scan or a photo, not a proper PDF?",
+    a: "It still works — LedgerLocal falls back to on-device OCR automatically when a page has no real text layer. Signing in is required for scans and photos specifically, since OCR takes real processing time.",
+  },
+  {
+    q: "Is my statement data safe?",
+    a: "Nothing is uploaded, ever. The PDF is read and converted entirely on your device — you can confirm this yourself by opening your browser's DevTools Network tab during a conversion and watching for outbound requests. There won't be any.",
+  },
+];
+
 export const Route = createFileRoute("/bank-statement-to-tally")({
   head: () => ({
     meta: [
-      { title: "Bank Statement to Tally — LedgerLocal" },
-      { name: "description", content: "Convert a PDF bank statement to Tally-ready XML, on-device." },
+      { title: "Free Bank Statement to Tally XML Converter — LedgerLocal" },
+      {
+        name: "description",
+        content: "Convert any bank's PDF statement to Tally-ready XML. Free to try, on-device — nothing uploaded.",
+      },
+      { property: "og:title", content: "Free Bank Statement to Tally XML Converter — LedgerLocal" },
     ],
   }),
-  component: () => (
-    <ComingSoonPage
-      title="Bank statement to Tally"
-      blurb="A step-by-step guide for exporting your bank statement as Tally XML and importing it is on the way. LedgerLocal already exports Tally XML today."
-    />
-  ),
+  component: Page,
 });
+
+function Page() {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <ArticleBackLink />
+      <ArticleHero eyebrow="Bank guide" title="Free Bank Statement to Tally XML Converter" publishedDate="July 2026" />
+
+      <ArticleProse>
+        <p>
+          No bank exports directly to Tally XML — it's simply not one of the formats banks offer (CSV, Excel,
+          OFX, QIF, and QBO cover almost everyone's native export list, but never Tally). For accountants
+          working with Tally, that means either re-keying every transaction by hand or converting a bank
+          statement into Tally's XML format first. This guide covers the second option.
+        </p>
+      </ArticleProse>
+
+      <QuickSummary>
+        Since no bank offers native Tally XML export, this converts any bank's PDF statement directly —
+        named detection for 23+ major banks, plus a generic parser for any other text-based PDF. Import the
+        resulting XML file straight into Tally via Gateway of Tally, Import Data, Vouchers.
+      </QuickSummary>
+
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <Link to="/upload" className="inline-flex items-center gap-2 rounded-md bg-ink px-6 py-3 text-sm font-semibold text-background transition hover:bg-ink/90">
+          Convert a statement to Tally XML <ArrowRight className="h-4 w-4" />
+        </Link>
+        <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <ShieldCheck className="h-3.5 w-3.5 text-emerald" /> Processed on your device — nothing uploaded, ever
+        </div>
+      </div>
+
+      <ArticleH2>How It Works</ArticleH2>
+      <NumberedSteps
+        steps={[
+          { title: "Download the PDF statement from your bank", body: "No account needed for up to 6 pages." },
+          { title: "Upload to LedgerLocal", body: "Named detection recognizes 23+ major banks automatically; any other bank falls back to the generic layout parser." },
+          { title: "Review the extracted transactions", body: "Every row gets a confidence score, so anything worth double-checking is flagged before you export." },
+          { title: "Export as Tally XML", body: "Import the resulting file into Tally via Gateway of Tally, Import Data, Vouchers." },
+        ]}
+      />
+
+      <ArticleH2>What's Inside the Tally XML Export</ArticleH2>
+      <ArticleTable
+        headers={["Element", "What It Contains"]}
+        rows={[
+          ["VOUCHER", "One per transaction — date, amount, and voucher type (Payment or Receipt)"],
+          ["LEDGERENTRIES", "The debit/credit split against Bank and a matching ledger"],
+          ["NARRATION", "The transaction description, with real XML special characters properly escaped"],
+        ]}
+      />
+
+      <ArticleH2>Frequently Asked Questions</ArticleH2>
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <div className="space-y-4">
+          {FAQ.map(({ q, a }) => (
+            <div key={q} className="rounded-lg border border-border bg-card p-5">
+              <div className="font-semibold text-ink">{q}</div>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{a}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <RelatedArticles
+        articles={[
+          { href: "/icici-bank-statement-to-excel", title: "ICICI Bank Statement to Excel", blurb: "A major Indian bank many Tally users work with." },
+          { href: "/bank-statement-to-ofx", title: "Bank Statement to OFX", blurb: "For QuickBooks, Xero, and other accounting software." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+        ]}
+      />
+
+      <SiteFooter />
+    </div>
+  );
+}
