@@ -43,21 +43,38 @@ const STARTER_QUESTIONS = [
 const FALLBACK =
   "I don't have an article on that specific question yet. Head to Contact with a bit more detail and we'll get back to you directly.";
 
+const GREETING = "Hi there! Ask me a question about converting statements, pricing, security, or export formats — or tap one of the suggestions below.";
+const GREETING_WORDS = new Set(["hi", "hello", "hey", "hiya", "yo", "sup", "howdy", "hola"]);
+
+// Naive .includes() matching was scoring false hits from short query words
+// appearing as substrings of unrelated words (e.g. "hi" matching inside
+// "this", "nothing", "watching") -- a real, confirmed bug, not a hypothetical
+// one. Word-boundary matching only counts a real, whole-word match.
+function hasWord(haystack: string, word: string): boolean {
+  return new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(haystack);
+}
+
 function score(entry: Entry, queryWords: string[]): number {
-  const haystack = (entry.q + " " + entry.a).toLowerCase();
+  const haystackA = entry.a.toLowerCase();
+  const haystackQ = entry.q.toLowerCase();
   let s = 0;
   for (const w of queryWords) {
-    if (entry.q.toLowerCase().includes(w)) s += 3;
-    else if (haystack.includes(w)) s += 1;
+    if (hasWord(haystackQ, w)) s += 3;
+    else if (hasWord(haystackA, w)) s += 1;
   }
   return s;
 }
 
+// A real match needs at least one whole-word hit against the FAQ's own
+// question (score 3+) -- a couple of stray 1-point body-text hits alone
+// isn't enough confidence to hand back an answer.
+const MIN_MATCH_SCORE = 3;
+
 function bestMatch(query: string): Entry | null {
-  const words = query.trim().toLowerCase().split(/\s+/).filter((w) => w.length > 1);
+  const words = query.trim().toLowerCase().split(/\s+/).filter((w) => w.length > 2);
   if (words.length === 0) return null;
   const ranked = ENTRIES.map((e) => ({ entry: e, s: score(e, words) }))
-    .filter((r) => r.s > 0)
+    .filter((r) => r.s >= MIN_MATCH_SCORE)
     .sort((a, b) => b.s - a.s);
   return ranked[0]?.entry ?? null;
 }
@@ -82,13 +99,16 @@ export function ChatWidget() {
   function ask(question: string) {
     const trimmed = question.trim();
     if (!trimmed) return;
-    const match = bestMatch(trimmed);
+    const isGreeting = GREETING_WORDS.has(trimmed.toLowerCase().replace(/[!.?]+$/, ""));
+    const match = isGreeting ? null : bestMatch(trimmed);
     setMessages((prev) => [
       ...prev,
       { role: "user", text: trimmed },
-      match
-        ? { role: "assistant", text: match.a, href: match.href, hrefLabel: match.hrefLabel }
-        : { role: "assistant", text: FALLBACK },
+      isGreeting
+        ? { role: "assistant", text: GREETING }
+        : match
+          ? { role: "assistant", text: match.a, href: match.href, hrefLabel: match.hrefLabel }
+          : { role: "assistant", text: FALLBACK },
     ]);
     setInput("");
   }
