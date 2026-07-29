@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight, ShieldCheck, Check, X } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { StatementGridArt } from "@/components/statement-grid-art";
 
 const FAQ: Array<{ q: string; a: string }> = [
   {
@@ -60,87 +61,108 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <section className="border-b border-border py-20">
-        <div className="mx-auto max-w-3xl px-6 text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-            NatWest bank statement to CSV
-          </h1>
-          <p className="mt-4 text-muted-foreground">
-            The fastest route depends on what you actually have: access to your NatWest account, or just a PDF.
-            Here's both.
-          </p>
-        </div>
-      </section>
-
       <section className="border-b border-border py-16">
-        <div className="mx-auto max-w-2xl px-6">
-          <h2 className="text-2xl font-bold tracking-tight text-ink">
-            Option 1: Export directly from NatWest (fastest, if you can log in)
-          </h2>
-          <p className="mt-3 text-muted-foreground">
-            NatWest's own online banking already exports to CSV — no converter needed:
-          </p>
-          <ol className="mt-5 space-y-3 text-sm text-ink">
-            <li className="flex gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">1</span>
-              Log in at{" "}
-              <span className="font-mono">onlinebanking.natwest.com</span>, or the NatWest mobile app.
-            </li>
-            <li className="flex gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">2</span>
-              Select <span className="font-semibold">Statements &amp; transactions</span>, then{" "}
-              <span className="font-semibold">View transactions</span>.
-            </li>
-            <li className="flex gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">3</span>
-              Set your date range, then choose <span className="font-semibold">CSV</span> (or Excel/PDF) from the
-              export options.
-            </li>
-          </ol>
-          <p className="mt-4 text-sm text-muted-foreground">
-            NatWest gives you up to 7 years of history this way. If this works for you, you're done — you don't
-            need anything else on this page.
-          </p>
-        </div>
-      </section>
-
-      <section className="border-b border-border py-16">
-        <div className="mx-auto max-w-2xl px-6">
-          <h2 className="text-2xl font-bold tracking-tight text-ink">
-            Option 2: Convert a PDF statement (when Option 1 isn't available)
-          </h2>
-          <p className="mt-3 text-muted-foreground">
-            This is the real gap Option 1 doesn't cover — a statement you already have as a PDF (emailed to you, a
-            closed account, mail you scanned) rather than something you can freshly export. LedgerLocal reads the
-            PDF and converts it directly on your device:
-          </p>
-          <ol className="mt-5 space-y-3 text-sm text-ink">
-            <li className="flex gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">1</span>
-              Drop your NatWest PDF statement into the converter — no account needed for up to 6 pages.
-            </li>
-            <li className="flex gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">2</span>
-              LedgerLocal detects NatWest's layout automatically and extracts every transaction with a confidence
-              score, so you can see what's certain and what's worth double-checking.
-            </li>
-            <li className="flex gap-3">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">3</span>
-              Export to CSV, Excel, or — if you need a format NatWest doesn't offer natively, like Tally XML or
-              QuickBooks Desktop's IIF — those too.
-            </li>
-          </ol>
-          <div className="mt-8 flex items-center justify-center gap-2 rounded-full border border-border bg-surface-muted px-4 py-2 text-xs font-medium text-muted-foreground">
-            <ShieldCheck className="h-3.5 w-3.5 text-emerald" />
-            Processed on your device — nothing uploaded, ever
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="grid items-center gap-10 md:grid-cols-[1.1fr_1fr]">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-muted px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Bank guide
+              </span>
+              <h1 className="mt-4 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+                NatWest bank statement to CSV
+              </h1>
+              <p className="mt-4 text-muted-foreground">
+                The fastest route depends on what you actually have: access to your NatWest account, or just a
+                PDF. Two honest options below.
+              </p>
+              <div className="mt-6">
+                <Link
+                  to="/upload"
+                  className="inline-flex items-center gap-2 rounded-md bg-ink px-6 py-3 text-sm font-semibold text-background transition hover:bg-ink/90"
+                >
+                  Convert a NatWest statement <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+            <StatementGridArt
+              titleText="A NatWest bank statement transforming into a structured spreadsheet"
+              className="w-full rounded-2xl shadow-sm"
+            />
           </div>
-          <div className="mt-6 text-center">
-            <Link
-              to="/upload"
-              className="inline-flex items-center gap-2 rounded-md bg-ink px-6 py-3 text-sm font-semibold text-background transition hover:bg-ink/90"
-            >
-              Convert a NatWest statement <ArrowRight className="h-4 w-4" />
-            </Link>
+        </div>
+      </section>
+
+      <section className="border-b border-border py-16">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Option 1 */}
+            <div className="flex flex-col rounded-2xl border border-border bg-card p-7">
+              <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Option 1</div>
+              <h2 className="mt-2 text-xl font-bold tracking-tight text-ink">Export from NatWest</h2>
+              <p className="mt-2 text-sm text-muted-foreground">Fastest, if you can log in and the account is open.</p>
+              <ol className="mt-5 space-y-3 text-sm text-ink">
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">1</span>
+                  Log in at <span className="font-mono">onlinebanking.natwest.com</span>, or the NatWest app.
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">2</span>
+                  Select <span className="font-semibold">Statements &amp; transactions</span>, then{" "}
+                  <span className="font-semibold">View transactions</span>.
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">3</span>
+                  Set your date range, choose <span className="font-semibold">CSV</span>, Excel, or PDF.
+                </li>
+              </ol>
+              <div className="mt-6 space-y-2 border-t border-border pt-5 text-sm">
+                <div className="flex items-center gap-2 text-ink">
+                  <Check className="h-4 w-4 shrink-0 text-emerald" /> Free, no third-party tool
+                </div>
+                <div className="flex items-center gap-2 text-ink">
+                  <Check className="h-4 w-4 shrink-0 text-emerald" /> Excel or CSV, straight from NatWest
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <X className="h-4 w-4 shrink-0 text-rose-400" /> Only works if the account's still open and you can log in
+                </div>
+              </div>
+            </div>
+
+            {/* Option 2 */}
+            <div className="flex flex-col rounded-2xl border-2 border-emerald bg-card p-7">
+              <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Option 2</div>
+              <h2 className="mt-2 text-xl font-bold tracking-tight text-ink">Convert a PDF statement</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                For a PDF you already have — emailed to you, a closed account, mail you scanned.
+              </p>
+              <ol className="mt-5 space-y-3 text-sm text-ink">
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">1</span>
+                  Drop your NatWest PDF into the converter — no account needed for up to 6 pages.
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">2</span>
+                  LedgerLocal detects NatWest's layout automatically, with a confidence score for anything worth
+                  double-checking.
+                </li>
+                <li className="flex gap-3">
+                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">3</span>
+                  Export to CSV, Excel, or a format NatWest doesn't offer at all — Tally XML, IIF, and more.
+                </li>
+              </ol>
+              <div className="mt-6 space-y-2 border-t border-border pt-5 text-sm">
+                <div className="flex items-center gap-2 text-ink">
+                  <Check className="h-4 w-4 shrink-0 text-emerald" /> Works on closed accounts, old emailed PDFs, scans
+                </div>
+                <div className="flex items-center gap-2 text-ink">
+                  <Check className="h-4 w-4 shrink-0 text-emerald" /> More export formats — Tally, IIF, and more
+                </div>
+              </div>
+              <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground">
+                <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald" />
+                Processed on your device — nothing uploaded, ever
+              </div>
+            </div>
           </div>
         </div>
       </section>

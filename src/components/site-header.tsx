@@ -31,9 +31,9 @@ export function SiteHeader() {
           <Link to="/pricing" className="text-background/80 transition-colors hover:text-background">
             Pricing
           </Link>
-          <a href="#" className="text-background/80 transition-colors hover:text-background">
+          <Link to="/blog" className="text-background/80 transition-colors hover:text-background">
             Blog
-          </a>
+          </Link>
         </nav>
 
         {/* Right: local indicator + auth actions */}
@@ -92,24 +92,12 @@ export function SiteFooter() {
 
       <div className="border-t border-border/60">
         <div className="mx-auto max-w-7xl px-6 py-8 text-sm text-muted-foreground">
-          <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-ink">Popular conversions</div>
-          <ul className="flex flex-wrap gap-x-6 gap-y-2">
-            <li><Link to="/bank-statement-to-tally" className="hover:text-ink">Bank statement to Tally</Link></li>
-            <li><Link to="/bank-statement-to-ofx" className="hover:text-ink">Bank statement to OFX</Link></li>
-            <li><Link to="/bank-statement-to-qif" className="hover:text-ink">Bank statement to QIF</Link></li>
-            <li><Link to="/chase-bank-statement-to-excel" className="hover:text-ink">Chase statement to Excel</Link></li>
-            <li><Link to="/icici-bank-statement-to-excel" className="hover:text-ink">ICICI statement to Excel</Link></li>
-            <li><Link to="/natwest-bank-statement-to-csv" className="hover:text-ink">NatWest statement to CSV</Link></li>
-            <li><Link to="/lloyds-bank-statement-to-csv" className="hover:text-ink">Lloyds statement to CSV</Link></li>
-            <li><Link to="/csv-to-iif" className="hover:text-ink">CSV to IIF</Link></li>
-            <li><Link to="/iif-to-csv" className="hover:text-ink">IIF to CSV</Link></li>
-            <li><Link to="/csv-to-qif" className="hover:text-ink">CSV to QIF</Link></li>
-            <li><Link to="/qif-to-csv" className="hover:text-ink">QIF to CSV</Link></li>
-            <li><Link to="/csv-to-ofx" className="hover:text-ink">CSV to OFX</Link></li>
-            <li><Link to="/ofx-to-csv" className="hover:text-ink">OFX to CSV</Link></li>
-            <li><Link to="/qfx-to-csv" className="hover:text-ink">QFX to CSV</Link></li>
-            <li><Link to="/mt940-to-csv" className="hover:text-ink">MT940 to CSV</Link></li>
-          </ul>
+          <Link to="/blog" className="inline-flex items-center gap-1.5 font-semibold text-ink hover:text-emerald">
+            Guides &amp; converters
+          </Link>
+          <p className="mt-1.5 max-w-md text-xs">
+            Bank-specific statement guides and free format converters (IIF, QIF, OFX, QFX, MT940, CSV).
+          </p>
         </div>
       </div>
 

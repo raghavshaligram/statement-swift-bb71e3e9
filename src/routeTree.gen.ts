@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BankStatementToOfxRouteImport } from './routes/bank-statement-to-ofx'
 import { Route as BankStatementToQifRouteImport } from './routes/bank-statement-to-qif'
 import { Route as BankStatementToTallyRouteImport } from './routes/bank-statement-to-tally'
+import { Route as BlogRouteImport } from './routes/blog'
 import { Route as ChaseBankStatementToExcelRouteImport } from './routes/chase-bank-statement-to-excel'
 import { Route as CsvToIifRouteImport } from './routes/csv-to-iif'
 import { Route as CsvToOfxRouteImport } from './routes/csv-to-ofx'
@@ -59,6 +60,11 @@ const BankStatementToQifRoute = BankStatementToQifRouteImport.update({
 const BankStatementToTallyRoute = BankStatementToTallyRouteImport.update({
   id: '/bank-statement-to-tally',
   path: '/bank-statement-to-tally',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChaseBankStatementToExcelRoute =
@@ -206,6 +212,7 @@ export interface FileRoutesByFullPath {
   '/bank-statement-to-ofx': typeof BankStatementToOfxRoute
   '/bank-statement-to-qif': typeof BankStatementToQifRoute
   '/bank-statement-to-tally': typeof BankStatementToTallyRoute
+  '/blog': typeof BlogRoute
   '/chase-bank-statement-to-excel': typeof ChaseBankStatementToExcelRoute
   '/csv-to-iif': typeof CsvToIifRoute
   '/csv-to-ofx': typeof CsvToOfxRoute
@@ -239,6 +246,7 @@ export interface FileRoutesByTo {
   '/bank-statement-to-ofx': typeof BankStatementToOfxRoute
   '/bank-statement-to-qif': typeof BankStatementToQifRoute
   '/bank-statement-to-tally': typeof BankStatementToTallyRoute
+  '/blog': typeof BlogRoute
   '/chase-bank-statement-to-excel': typeof ChaseBankStatementToExcelRoute
   '/csv-to-iif': typeof CsvToIifRoute
   '/csv-to-ofx': typeof CsvToOfxRoute
@@ -273,6 +281,7 @@ export interface FileRoutesById {
   '/bank-statement-to-ofx': typeof BankStatementToOfxRoute
   '/bank-statement-to-qif': typeof BankStatementToQifRoute
   '/bank-statement-to-tally': typeof BankStatementToTallyRoute
+  '/blog': typeof BlogRoute
   '/chase-bank-statement-to-excel': typeof ChaseBankStatementToExcelRoute
   '/csv-to-iif': typeof CsvToIifRoute
   '/csv-to-ofx': typeof CsvToOfxRoute
@@ -308,6 +317,7 @@ export interface FileRouteTypes {
     | '/bank-statement-to-ofx'
     | '/bank-statement-to-qif'
     | '/bank-statement-to-tally'
+    | '/blog'
     | '/chase-bank-statement-to-excel'
     | '/csv-to-iif'
     | '/csv-to-ofx'
@@ -341,6 +351,7 @@ export interface FileRouteTypes {
     | '/bank-statement-to-ofx'
     | '/bank-statement-to-qif'
     | '/bank-statement-to-tally'
+    | '/blog'
     | '/chase-bank-statement-to-excel'
     | '/csv-to-iif'
     | '/csv-to-ofx'
@@ -374,6 +385,7 @@ export interface FileRouteTypes {
     | '/bank-statement-to-ofx'
     | '/bank-statement-to-qif'
     | '/bank-statement-to-tally'
+    | '/blog'
     | '/chase-bank-statement-to-excel'
     | '/csv-to-iif'
     | '/csv-to-ofx'
@@ -408,6 +420,7 @@ export interface RootRouteChildren {
   BankStatementToOfxRoute: typeof BankStatementToOfxRoute
   BankStatementToQifRoute: typeof BankStatementToQifRoute
   BankStatementToTallyRoute: typeof BankStatementToTallyRoute
+  BlogRoute: typeof BlogRoute
   ChaseBankStatementToExcelRoute: typeof ChaseBankStatementToExcelRoute
   CsvToIifRoute: typeof CsvToIifRoute
   CsvToOfxRoute: typeof CsvToOfxRoute
@@ -465,6 +478,13 @@ declare module '@tanstack/react-router' {
       path: '/bank-statement-to-tally'
       fullPath: '/bank-statement-to-tally'
       preLoaderRoute: typeof BankStatementToTallyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chase-bank-statement-to-excel': {
@@ -664,6 +684,7 @@ const rootRouteChildren: RootRouteChildren = {
   BankStatementToOfxRoute: BankStatementToOfxRoute,
   BankStatementToQifRoute: BankStatementToQifRoute,
   BankStatementToTallyRoute: BankStatementToTallyRoute,
+  BlogRoute: BlogRoute,
   ChaseBankStatementToExcelRoute: ChaseBankStatementToExcelRoute,
   CsvToIifRoute: CsvToIifRoute,
   CsvToOfxRoute: CsvToOfxRoute,
