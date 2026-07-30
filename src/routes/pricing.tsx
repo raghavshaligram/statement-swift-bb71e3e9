@@ -207,7 +207,7 @@ function Pricing() {
               <span className="text-sm text-background/60">/ month · flat</span>
             </div>
             <Link
-              to="/upload"
+              to="/account/billing"
               className="mt-6 inline-flex w-full items-center justify-center rounded-md bg-emerald px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-emerald/90"
             >
               Get Pro

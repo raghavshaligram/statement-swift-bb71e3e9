@@ -9,193 +9,75 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UploadRouteImport } from './routes/upload'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as SignupRouteImport } from './routes/signup'
-import { Route as SigninRouteImport } from './routes/signin'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as QifToQboRouteImport } from './routes/qif-to-qbo'
-import { Route as QifToCsvRouteImport } from './routes/qif-to-csv'
-import { Route as QfxToQboRouteImport } from './routes/qfx-to-qbo'
-import { Route as QfxToCsvRouteImport } from './routes/qfx-to-csv'
-import { Route as QboToCsvRouteImport } from './routes/qbo-to-csv'
-import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as PreviewRouteImport } from './routes/preview'
-import { Route as OfxToQboRouteImport } from './routes/ofx-to-qbo'
-import { Route as OfxToCsvRouteImport } from './routes/ofx-to-csv'
-import { Route as NatwestBankStatementToCsvRouteImport } from './routes/natwest-bank-statement-to-csv'
-import { Route as Mt940ToCsvRouteImport } from './routes/mt940-to-csv'
-import { Route as LloydsBankStatementToCsvRouteImport } from './routes/lloyds-bank-statement-to-csv'
-import { Route as ImageToExcelRouteImport } from './routes/image-to-excel'
-import { Route as IifToCsvRouteImport } from './routes/iif-to-csv'
-import { Route as IciciBankStatementToExcelRouteImport } from './routes/icici-bank-statement-to-excel'
-import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
-import { Route as ExportRouteImport } from './routes/export'
-import { Route as CsvToQifRouteImport } from './routes/csv-to-qif'
-import { Route as CsvToQboRouteImport } from './routes/csv-to-qbo'
-import { Route as CsvToOfxRouteImport } from './routes/csv-to-ofx'
-import { Route as CsvToIifRouteImport } from './routes/csv-to-iif'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as ChaseBankStatementToExcelRouteImport } from './routes/chase-bank-statement-to-excel'
-import { Route as BlogRouteImport } from './routes/blog'
-import { Route as BankStatementToTallyRouteImport } from './routes/bank-statement-to-tally'
-import { Route as BankStatementToQifRouteImport } from './routes/bank-statement-to-qif'
-import { Route as BankStatementToOfxRouteImport } from './routes/bank-statement-to-ofx'
-import { Route as BankStatementToCsvRouteImport } from './routes/bank-statement-to-csv'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BankStatementToCsvRouteImport } from './routes/bank-statement-to-csv'
+import { Route as BankStatementToOfxRouteImport } from './routes/bank-statement-to-ofx'
+import { Route as BankStatementToQifRouteImport } from './routes/bank-statement-to-qif'
+import { Route as BankStatementToTallyRouteImport } from './routes/bank-statement-to-tally'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as ChaseBankStatementToExcelRouteImport } from './routes/chase-bank-statement-to-excel'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as CsvToIifRouteImport } from './routes/csv-to-iif'
+import { Route as CsvToOfxRouteImport } from './routes/csv-to-ofx'
+import { Route as CsvToQboRouteImport } from './routes/csv-to-qbo'
+import { Route as CsvToQifRouteImport } from './routes/csv-to-qif'
+import { Route as ExportRouteImport } from './routes/export'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as IciciBankStatementToExcelRouteImport } from './routes/icici-bank-statement-to-excel'
+import { Route as IifToCsvRouteImport } from './routes/iif-to-csv'
+import { Route as ImageToExcelRouteImport } from './routes/image-to-excel'
+import { Route as LloydsBankStatementToCsvRouteImport } from './routes/lloyds-bank-statement-to-csv'
+import { Route as Mt940ToCsvRouteImport } from './routes/mt940-to-csv'
+import { Route as NatwestBankStatementToCsvRouteImport } from './routes/natwest-bank-statement-to-csv'
+import { Route as OfxToCsvRouteImport } from './routes/ofx-to-csv'
+import { Route as OfxToQboRouteImport } from './routes/ofx-to-qbo'
+import { Route as PreviewRouteImport } from './routes/preview'
+import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as QboToCsvRouteImport } from './routes/qbo-to-csv'
+import { Route as QfxToCsvRouteImport } from './routes/qfx-to-csv'
+import { Route as QfxToQboRouteImport } from './routes/qfx-to-qbo'
+import { Route as QifToCsvRouteImport } from './routes/qif-to-csv'
+import { Route as QifToQboRouteImport } from './routes/qif-to-qbo'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SigninRouteImport } from './routes/signin'
+import { Route as SignupRouteImport } from './routes/signup'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as UploadRouteImport } from './routes/upload'
 import { Route as AccountIndexRouteImport } from './routes/account/index'
-import { Route as AccountSettingsRouteImport } from './routes/account/settings'
-import { Route as AccountHistoryRouteImport } from './routes/account/history'
 import { Route as AccountBillingRouteImport } from './routes/account/billing'
+import { Route as AccountHistoryRouteImport } from './routes/account/history'
+import { Route as AccountSettingsRouteImport } from './routes/account/settings'
 
-const UploadRoute = UploadRouteImport.update({
-  id: '/upload',
-  path: '/upload',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
+const BankStatementToCsvRoute = BankStatementToCsvRouteImport.update({
+  id: '/bank-statement-to-csv',
+  path: '/bank-statement-to-csv',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
+const BankStatementToOfxRoute = BankStatementToOfxRouteImport.update({
+  id: '/bank-statement-to-ofx',
+  path: '/bank-statement-to-ofx',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
+const BankStatementToQifRoute = BankStatementToQifRouteImport.update({
+  id: '/bank-statement-to-qif',
+  path: '/bank-statement-to-qif',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SigninRoute = SigninRouteImport.update({
-  id: '/signin',
-  path: '/signin',
+const BankStatementToTallyRoute = BankStatementToTallyRouteImport.update({
+  id: '/bank-statement-to-tally',
+  path: '/bank-statement-to-tally',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QifToQboRoute = QifToQboRouteImport.update({
-  id: '/qif-to-qbo',
-  path: '/qif-to-qbo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QifToCsvRoute = QifToCsvRouteImport.update({
-  id: '/qif-to-csv',
-  path: '/qif-to-csv',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QfxToQboRoute = QfxToQboRouteImport.update({
-  id: '/qfx-to-qbo',
-  path: '/qfx-to-qbo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QfxToCsvRoute = QfxToCsvRouteImport.update({
-  id: '/qfx-to-csv',
-  path: '/qfx-to-csv',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const QboToCsvRoute = QboToCsvRouteImport.update({
-  id: '/qbo-to-csv',
-  path: '/qbo-to-csv',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyRoute = PrivacyRouteImport.update({
-  id: '/privacy',
-  path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PricingRoute = PricingRouteImport.update({
-  id: '/pricing',
-  path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PreviewRoute = PreviewRouteImport.update({
-  id: '/preview',
-  path: '/preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OfxToQboRoute = OfxToQboRouteImport.update({
-  id: '/ofx-to-qbo',
-  path: '/ofx-to-qbo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OfxToCsvRoute = OfxToCsvRouteImport.update({
-  id: '/ofx-to-csv',
-  path: '/ofx-to-csv',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NatwestBankStatementToCsvRoute =
-  NatwestBankStatementToCsvRouteImport.update({
-    id: '/natwest-bank-statement-to-csv',
-    path: '/natwest-bank-statement-to-csv',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const Mt940ToCsvRoute = Mt940ToCsvRouteImport.update({
-  id: '/mt940-to-csv',
-  path: '/mt940-to-csv',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LloydsBankStatementToCsvRoute =
-  LloydsBankStatementToCsvRouteImport.update({
-    id: '/lloyds-bank-statement-to-csv',
-    path: '/lloyds-bank-statement-to-csv',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ImageToExcelRoute = ImageToExcelRouteImport.update({
-  id: '/image-to-excel',
-  path: '/image-to-excel',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IifToCsvRoute = IifToCsvRouteImport.update({
-  id: '/iif-to-csv',
-  path: '/iif-to-csv',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IciciBankStatementToExcelRoute =
-  IciciBankStatementToExcelRouteImport.update({
-    id: '/icici-bank-statement-to-excel',
-    path: '/icici-bank-statement-to-excel',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
-  id: '/forgot-password',
-  path: '/forgot-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ExportRoute = ExportRouteImport.update({
-  id: '/export',
-  path: '/export',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CsvToQifRoute = CsvToQifRouteImport.update({
-  id: '/csv-to-qif',
-  path: '/csv-to-qif',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CsvToQboRoute = CsvToQboRouteImport.update({
-  id: '/csv-to-qbo',
-  path: '/csv-to-qbo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CsvToOfxRoute = CsvToOfxRouteImport.update({
-  id: '/csv-to-ofx',
-  path: '/csv-to-ofx',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CsvToIifRoute = CsvToIifRouteImport.update({
-  id: '/csv-to-iif',
-  path: '/csv-to-iif',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChaseBankStatementToExcelRoute =
@@ -204,34 +86,152 @@ const ChaseBankStatementToExcelRoute =
     path: '/chase-bank-statement-to-excel',
     getParentRoute: () => rootRouteImport,
   } as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BankStatementToTallyRoute = BankStatementToTallyRouteImport.update({
-  id: '/bank-statement-to-tally',
-  path: '/bank-statement-to-tally',
+const CsvToIifRoute = CsvToIifRouteImport.update({
+  id: '/csv-to-iif',
+  path: '/csv-to-iif',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BankStatementToQifRoute = BankStatementToQifRouteImport.update({
-  id: '/bank-statement-to-qif',
-  path: '/bank-statement-to-qif',
+const CsvToOfxRoute = CsvToOfxRouteImport.update({
+  id: '/csv-to-ofx',
+  path: '/csv-to-ofx',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BankStatementToOfxRoute = BankStatementToOfxRouteImport.update({
-  id: '/bank-statement-to-ofx',
-  path: '/bank-statement-to-ofx',
+const CsvToQboRoute = CsvToQboRouteImport.update({
+  id: '/csv-to-qbo',
+  path: '/csv-to-qbo',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BankStatementToCsvRoute = BankStatementToCsvRouteImport.update({
-  id: '/bank-statement-to-csv',
-  path: '/bank-statement-to-csv',
+const CsvToQifRoute = CsvToQifRouteImport.update({
+  id: '/csv-to-qif',
+  path: '/csv-to-qif',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ExportRoute = ExportRouteImport.update({
+  id: '/export',
+  path: '/export',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IciciBankStatementToExcelRoute =
+  IciciBankStatementToExcelRouteImport.update({
+    id: '/icici-bank-statement-to-excel',
+    path: '/icici-bank-statement-to-excel',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const IifToCsvRoute = IifToCsvRouteImport.update({
+  id: '/iif-to-csv',
+  path: '/iif-to-csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImageToExcelRoute = ImageToExcelRouteImport.update({
+  id: '/image-to-excel',
+  path: '/image-to-excel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LloydsBankStatementToCsvRoute =
+  LloydsBankStatementToCsvRouteImport.update({
+    id: '/lloyds-bank-statement-to-csv',
+    path: '/lloyds-bank-statement-to-csv',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Mt940ToCsvRoute = Mt940ToCsvRouteImport.update({
+  id: '/mt940-to-csv',
+  path: '/mt940-to-csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NatwestBankStatementToCsvRoute =
+  NatwestBankStatementToCsvRouteImport.update({
+    id: '/natwest-bank-statement-to-csv',
+    path: '/natwest-bank-statement-to-csv',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const OfxToCsvRoute = OfxToCsvRouteImport.update({
+  id: '/ofx-to-csv',
+  path: '/ofx-to-csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfxToQboRoute = OfxToQboRouteImport.update({
+  id: '/ofx-to-qbo',
+  path: '/ofx-to-qbo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PreviewRoute = PreviewRouteImport.update({
+  id: '/preview',
+  path: '/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QboToCsvRoute = QboToCsvRouteImport.update({
+  id: '/qbo-to-csv',
+  path: '/qbo-to-csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QfxToCsvRoute = QfxToCsvRouteImport.update({
+  id: '/qfx-to-csv',
+  path: '/qfx-to-csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QfxToQboRoute = QfxToQboRouteImport.update({
+  id: '/qfx-to-qbo',
+  path: '/qfx-to-qbo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QifToCsvRoute = QifToCsvRouteImport.update({
+  id: '/qif-to-csv',
+  path: '/qif-to-csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QifToQboRoute = QifToQboRouteImport.update({
+  id: '/qif-to-qbo',
+  path: '/qif-to-qbo',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UploadRoute = UploadRouteImport.update({
+  id: '/upload',
+  path: '/upload',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountIndexRoute = AccountIndexRouteImport.update({
@@ -239,9 +239,9 @@ const AccountIndexRoute = AccountIndexRouteImport.update({
   path: '/account/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AccountSettingsRoute = AccountSettingsRouteImport.update({
-  id: '/account/settings',
-  path: '/account/settings',
+const AccountBillingRoute = AccountBillingRouteImport.update({
+  id: '/account/billing',
+  path: '/account/billing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccountHistoryRoute = AccountHistoryRouteImport.update({
@@ -249,9 +249,9 @@ const AccountHistoryRoute = AccountHistoryRouteImport.update({
   path: '/account/history',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AccountBillingRoute = AccountBillingRouteImport.update({
-  id: '/account/billing',
-  path: '/account/billing',
+const AccountSettingsRoute = AccountSettingsRouteImport.update({
+  id: '/account/settings',
+  path: '/account/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -556,242 +556,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/upload': {
-      id: '/upload'
-      path: '/upload'
-      fullPath: '/upload'
-      preLoaderRoute: typeof UploadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/signin': {
-      id: '/signin'
-      path: '/signin'
-      fullPath: '/signin'
-      preLoaderRoute: typeof SigninRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/qif-to-qbo': {
-      id: '/qif-to-qbo'
-      path: '/qif-to-qbo'
-      fullPath: '/qif-to-qbo'
-      preLoaderRoute: typeof QifToQboRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/qif-to-csv': {
-      id: '/qif-to-csv'
-      path: '/qif-to-csv'
-      fullPath: '/qif-to-csv'
-      preLoaderRoute: typeof QifToCsvRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/qfx-to-qbo': {
-      id: '/qfx-to-qbo'
-      path: '/qfx-to-qbo'
-      fullPath: '/qfx-to-qbo'
-      preLoaderRoute: typeof QfxToQboRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/qfx-to-csv': {
-      id: '/qfx-to-csv'
-      path: '/qfx-to-csv'
-      fullPath: '/qfx-to-csv'
-      preLoaderRoute: typeof QfxToCsvRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/qbo-to-csv': {
-      id: '/qbo-to-csv'
-      path: '/qbo-to-csv'
-      fullPath: '/qbo-to-csv'
-      preLoaderRoute: typeof QboToCsvRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/pricing': {
-      id: '/pricing'
-      path: '/pricing'
-      fullPath: '/pricing'
-      preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/preview': {
-      id: '/preview'
-      path: '/preview'
-      fullPath: '/preview'
-      preLoaderRoute: typeof PreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ofx-to-qbo': {
-      id: '/ofx-to-qbo'
-      path: '/ofx-to-qbo'
-      fullPath: '/ofx-to-qbo'
-      preLoaderRoute: typeof OfxToQboRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ofx-to-csv': {
-      id: '/ofx-to-csv'
-      path: '/ofx-to-csv'
-      fullPath: '/ofx-to-csv'
-      preLoaderRoute: typeof OfxToCsvRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/natwest-bank-statement-to-csv': {
-      id: '/natwest-bank-statement-to-csv'
-      path: '/natwest-bank-statement-to-csv'
-      fullPath: '/natwest-bank-statement-to-csv'
-      preLoaderRoute: typeof NatwestBankStatementToCsvRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mt940-to-csv': {
-      id: '/mt940-to-csv'
-      path: '/mt940-to-csv'
-      fullPath: '/mt940-to-csv'
-      preLoaderRoute: typeof Mt940ToCsvRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lloyds-bank-statement-to-csv': {
-      id: '/lloyds-bank-statement-to-csv'
-      path: '/lloyds-bank-statement-to-csv'
-      fullPath: '/lloyds-bank-statement-to-csv'
-      preLoaderRoute: typeof LloydsBankStatementToCsvRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/image-to-excel': {
-      id: '/image-to-excel'
-      path: '/image-to-excel'
-      fullPath: '/image-to-excel'
-      preLoaderRoute: typeof ImageToExcelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/iif-to-csv': {
-      id: '/iif-to-csv'
-      path: '/iif-to-csv'
-      fullPath: '/iif-to-csv'
-      preLoaderRoute: typeof IifToCsvRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/icici-bank-statement-to-excel': {
-      id: '/icici-bank-statement-to-excel'
-      path: '/icici-bank-statement-to-excel'
-      fullPath: '/icici-bank-statement-to-excel'
-      preLoaderRoute: typeof IciciBankStatementToExcelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/forgot-password': {
-      id: '/forgot-password'
-      path: '/forgot-password'
-      fullPath: '/forgot-password'
-      preLoaderRoute: typeof ForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/export': {
-      id: '/export'
-      path: '/export'
-      fullPath: '/export'
-      preLoaderRoute: typeof ExportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/csv-to-qif': {
-      id: '/csv-to-qif'
-      path: '/csv-to-qif'
-      fullPath: '/csv-to-qif'
-      preLoaderRoute: typeof CsvToQifRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/csv-to-qbo': {
-      id: '/csv-to-qbo'
-      path: '/csv-to-qbo'
-      fullPath: '/csv-to-qbo'
-      preLoaderRoute: typeof CsvToQboRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/csv-to-ofx': {
-      id: '/csv-to-ofx'
-      path: '/csv-to-ofx'
-      fullPath: '/csv-to-ofx'
-      preLoaderRoute: typeof CsvToOfxRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/csv-to-iif': {
-      id: '/csv-to-iif'
-      path: '/csv-to-iif'
-      fullPath: '/csv-to-iif'
-      preLoaderRoute: typeof CsvToIifRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/chase-bank-statement-to-excel': {
-      id: '/chase-bank-statement-to-excel'
-      path: '/chase-bank-statement-to-excel'
-      fullPath: '/chase-bank-statement-to-excel'
-      preLoaderRoute: typeof ChaseBankStatementToExcelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bank-statement-to-tally': {
-      id: '/bank-statement-to-tally'
-      path: '/bank-statement-to-tally'
-      fullPath: '/bank-statement-to-tally'
-      preLoaderRoute: typeof BankStatementToTallyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bank-statement-to-qif': {
-      id: '/bank-statement-to-qif'
-      path: '/bank-statement-to-qif'
-      fullPath: '/bank-statement-to-qif'
-      preLoaderRoute: typeof BankStatementToQifRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/bank-statement-to-ofx': {
-      id: '/bank-statement-to-ofx'
-      path: '/bank-statement-to-ofx'
-      fullPath: '/bank-statement-to-ofx'
-      preLoaderRoute: typeof BankStatementToOfxRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bank-statement-to-csv': {
@@ -801,11 +570,242 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BankStatementToCsvRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/bank-statement-to-ofx': {
+      id: '/bank-statement-to-ofx'
+      path: '/bank-statement-to-ofx'
+      fullPath: '/bank-statement-to-ofx'
+      preLoaderRoute: typeof BankStatementToOfxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bank-statement-to-qif': {
+      id: '/bank-statement-to-qif'
+      path: '/bank-statement-to-qif'
+      fullPath: '/bank-statement-to-qif'
+      preLoaderRoute: typeof BankStatementToQifRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bank-statement-to-tally': {
+      id: '/bank-statement-to-tally'
+      path: '/bank-statement-to-tally'
+      fullPath: '/bank-statement-to-tally'
+      preLoaderRoute: typeof BankStatementToTallyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chase-bank-statement-to-excel': {
+      id: '/chase-bank-statement-to-excel'
+      path: '/chase-bank-statement-to-excel'
+      fullPath: '/chase-bank-statement-to-excel'
+      preLoaderRoute: typeof ChaseBankStatementToExcelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/csv-to-iif': {
+      id: '/csv-to-iif'
+      path: '/csv-to-iif'
+      fullPath: '/csv-to-iif'
+      preLoaderRoute: typeof CsvToIifRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/csv-to-ofx': {
+      id: '/csv-to-ofx'
+      path: '/csv-to-ofx'
+      fullPath: '/csv-to-ofx'
+      preLoaderRoute: typeof CsvToOfxRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/csv-to-qbo': {
+      id: '/csv-to-qbo'
+      path: '/csv-to-qbo'
+      fullPath: '/csv-to-qbo'
+      preLoaderRoute: typeof CsvToQboRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/csv-to-qif': {
+      id: '/csv-to-qif'
+      path: '/csv-to-qif'
+      fullPath: '/csv-to-qif'
+      preLoaderRoute: typeof CsvToQifRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/export': {
+      id: '/export'
+      path: '/export'
+      fullPath: '/export'
+      preLoaderRoute: typeof ExportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/icici-bank-statement-to-excel': {
+      id: '/icici-bank-statement-to-excel'
+      path: '/icici-bank-statement-to-excel'
+      fullPath: '/icici-bank-statement-to-excel'
+      preLoaderRoute: typeof IciciBankStatementToExcelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/iif-to-csv': {
+      id: '/iif-to-csv'
+      path: '/iif-to-csv'
+      fullPath: '/iif-to-csv'
+      preLoaderRoute: typeof IifToCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/image-to-excel': {
+      id: '/image-to-excel'
+      path: '/image-to-excel'
+      fullPath: '/image-to-excel'
+      preLoaderRoute: typeof ImageToExcelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lloyds-bank-statement-to-csv': {
+      id: '/lloyds-bank-statement-to-csv'
+      path: '/lloyds-bank-statement-to-csv'
+      fullPath: '/lloyds-bank-statement-to-csv'
+      preLoaderRoute: typeof LloydsBankStatementToCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mt940-to-csv': {
+      id: '/mt940-to-csv'
+      path: '/mt940-to-csv'
+      fullPath: '/mt940-to-csv'
+      preLoaderRoute: typeof Mt940ToCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/natwest-bank-statement-to-csv': {
+      id: '/natwest-bank-statement-to-csv'
+      path: '/natwest-bank-statement-to-csv'
+      fullPath: '/natwest-bank-statement-to-csv'
+      preLoaderRoute: typeof NatwestBankStatementToCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ofx-to-csv': {
+      id: '/ofx-to-csv'
+      path: '/ofx-to-csv'
+      fullPath: '/ofx-to-csv'
+      preLoaderRoute: typeof OfxToCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ofx-to-qbo': {
+      id: '/ofx-to-qbo'
+      path: '/ofx-to-qbo'
+      fullPath: '/ofx-to-qbo'
+      preLoaderRoute: typeof OfxToQboRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/preview': {
+      id: '/preview'
+      path: '/preview'
+      fullPath: '/preview'
+      preLoaderRoute: typeof PreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qbo-to-csv': {
+      id: '/qbo-to-csv'
+      path: '/qbo-to-csv'
+      fullPath: '/qbo-to-csv'
+      preLoaderRoute: typeof QboToCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qfx-to-csv': {
+      id: '/qfx-to-csv'
+      path: '/qfx-to-csv'
+      fullPath: '/qfx-to-csv'
+      preLoaderRoute: typeof QfxToCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qfx-to-qbo': {
+      id: '/qfx-to-qbo'
+      path: '/qfx-to-qbo'
+      fullPath: '/qfx-to-qbo'
+      preLoaderRoute: typeof QfxToQboRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qif-to-csv': {
+      id: '/qif-to-csv'
+      path: '/qif-to-csv'
+      fullPath: '/qif-to-csv'
+      preLoaderRoute: typeof QifToCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/qif-to-qbo': {
+      id: '/qif-to-qbo'
+      path: '/qif-to-qbo'
+      fullPath: '/qif-to-qbo'
+      preLoaderRoute: typeof QifToQboRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/upload': {
+      id: '/upload'
+      path: '/upload'
+      fullPath: '/upload'
+      preLoaderRoute: typeof UploadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account/': {
@@ -815,11 +815,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/account/settings': {
-      id: '/account/settings'
-      path: '/account/settings'
-      fullPath: '/account/settings'
-      preLoaderRoute: typeof AccountSettingsRouteImport
+    '/account/billing': {
+      id: '/account/billing'
+      path: '/account/billing'
+      fullPath: '/account/billing'
+      preLoaderRoute: typeof AccountBillingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/account/history': {
@@ -829,11 +829,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AccountHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/account/billing': {
-      id: '/account/billing'
-      path: '/account/billing'
-      fullPath: '/account/billing'
-      preLoaderRoute: typeof AccountBillingRouteImport
+    '/account/settings': {
+      id: '/account/settings'
+      path: '/account/settings'
+      fullPath: '/account/settings'
+      preLoaderRoute: typeof AccountSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -884,3 +884,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
