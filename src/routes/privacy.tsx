@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Shield, Lock, ServerOff, FileText, Mail } from "lucide-react";
+import { Shield, Lock, ServerOff, FileText, Mail, Bot, Paperclip } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 
 export const Route = createFileRoute("/privacy")({
@@ -14,8 +14,7 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:title", content: "Privacy Policy — LedgerLocal" },
       {
         property: "og:description",
-        content:
-          "Your bank statements never leave your device. Read LedgerLocal's privacy practices.",
+        content: "Your bank statements never leave your device. Read LedgerLocal's privacy practices.",
       },
     ],
   }),
@@ -26,27 +25,37 @@ const sections = [
   {
     icon: ServerOff,
     title: "On-device processing",
-    body: "LedgerLocal is designed so your PDF bank statements are parsed entirely inside your browser or local application. No statement content, transaction history, or account numbers are uploaded to our servers. The file never leaves your device unless you choose to save or export the output yourself.",
+    body: "Converting a PDF, CSV, or other statement file happens entirely inside your browser. The file itself — and every transaction in it — is read, parsed, and exported without ever being sent to our servers. You can verify this yourself: open your browser's DevTools Network tab during a conversion and watch for outbound requests. There won't be any. There is exactly one exception to this, described below under \"Contact and support requests.\"",
   },
   {
     icon: Shield,
     title: "What we collect",
-    body: "If you use the free tier, we do not require an account and collect no statement data. If you create an account for Pro access, we collect your email address, authentication provider details, and billing information handled by our payment processor. We also collect basic product analytics (feature usage, errors, and device type) to improve the software.",
+    body: "Using LedgerLocal without an account (up to 6 pages per conversion) requires nothing from you — no email, no tracking, nothing stored about you at all. Creating a free account gets you a larger page allowance; this requires an email address and password, handled by our authentication provider, Supabase, and we track a single running count of how many pages you've converted (a number, not the statement content itself) so we can enforce that allowance. We do not currently run any product analytics, error tracking, or usage-analytics tooling — we simply don't collect that data today.",
   },
   {
     icon: Lock,
-    title: "How we use your information",
-    body: "Account information is used to authenticate you, manage your Pro subscription, and send essential service updates. Analytics data is used to fix bugs, improve parsing accuracy, and prioritize new export formats. We do not sell, rent, or trade your personal information.",
+    title: "Pro billing",
+    body: "Pro subscription billing is not live yet. When it launches, payment will be handled by a third-party payment processor (such as Stripe) who collects and stores your card details directly under their own security standards — LedgerLocal itself never sees or stores your full card number. This section will be updated with the specific processor's name once billing is active.",
   },
   {
     icon: FileText,
     title: "Cookies and local storage",
-    body: "We use a small number of cookies and browser storage items to keep you signed in and remember your preferences. You can clear these at any time through your browser settings. We do not use third-party advertising or tracking cookies.",
+    body: "We use your browser's local storage (not cookies) to keep you signed in between visits. That's it — no advertising cookies, no third-party tracking pixels, no cross-site tracking of any kind. You can clear this at any time through your browser settings; you'll simply need to sign in again.",
+  },
+  {
+    icon: Bot,
+    title: "The help assistant",
+    body: "The chat assistant available on every page answers questions by matching what you type against a fixed set of pre-written answers, entirely in your browser — it is not connected to any AI service, and nothing you type into it is sent anywhere. If that ever changes, we'll update this policy and the assistant's own description before it does.",
+  },
+  {
+    icon: Paperclip,
+    title: "Contact and support requests",
+    body: "If you reach out via our Contact page and choose to attach a statement that isn't converting correctly, that specific file is uploaded to our support system — this is the one real exception to on-device processing on this site, and it only happens if you actively choose to attach a file and confirm you understand it will be uploaded. We use it solely to diagnose the issue you've reported, and it is not accessible to anyone outside our support process.",
   },
   {
     icon: Mail,
     title: "Your rights and contact",
-    body: "You may request access to, correction of, or deletion of your account data by contacting us. Because statement content is processed locally, we generally cannot access, delete, or retain copies of your bank statements.",
+    body: "You can request access to, correction of, or deletion of your account data (email, password, page-usage count) at any time via our Contact page. Because statement content is processed locally and never reaches us, there is generally nothing for us to delete on that front — the one exception being a file you've explicitly attached to a support request, which we'll delete on request.",
   },
 ];
 
@@ -57,18 +66,13 @@ function Privacy() {
 
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-3xl px-6">
-          <div className="text-xs font-semibold uppercase tracking-wider text-emerald">
-            Privacy
-          </div>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
-            Privacy Policy
-          </h1>
+          <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Privacy</div>
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">Privacy Policy</h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Your bank statements are processed on your device, not on our servers. This page explains what we do and do not collect.
+            Your bank statements are processed on your device, not on our servers. This page explains exactly
+            what we do and do not collect, with no exception left unstated.
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Last updated: July 23, 2026
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">Last updated: July 30, 2026</p>
         </div>
       </section>
 
@@ -91,10 +95,10 @@ function Privacy() {
           <div className="mt-16 rounded-2xl border border-border bg-surface-muted/40 p-8">
             <h2 className="text-xl font-semibold text-ink">Questions?</h2>
             <p className="mt-2 text-muted-foreground">
-              If you have any questions about this Privacy Policy or your data, please contact us at{" "}
-              <a href="mailto:privacy@ledgerlocal.app" className="text-emerald hover:underline">
-                privacy@ledgerlocal.app
-              </a>
+              If you have any questions about this Privacy Policy or your data, reach out via our{" "}
+              <Link to="/contact" className="text-emerald hover:underline">
+                Contact page
+              </Link>
               .
             </p>
             <div className="mt-6">

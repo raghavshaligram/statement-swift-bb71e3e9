@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Scale, CheckCircle, AlertCircle, RefreshCcw, FileCheck } from "lucide-react";
+import { Scale, CheckCircle, AlertCircle, RefreshCcw, FileCheck, Gavel } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 
 export const Route = createFileRoute("/terms")({
@@ -8,14 +8,12 @@ export const Route = createFileRoute("/terms")({
       { title: "Terms & Conditions — LedgerLocal" },
       {
         name: "description",
-        content:
-          "Read the Terms and Conditions for using LedgerLocal bank statement to Excel software.",
+        content: "Read the Terms and Conditions for using LedgerLocal bank statement to Excel software.",
       },
       { property: "og:title", content: "Terms & Conditions — LedgerLocal" },
       {
         property: "og:description",
-        content:
-          "Terms of use for LedgerLocal's on-device bank statement conversion software.",
+        content: "Terms of use for LedgerLocal's on-device bank statement conversion software.",
       },
     ],
   }),
@@ -40,13 +38,18 @@ const sections = [
   },
   {
     icon: RefreshCcw,
-    title: "Subscriptions and refunds",
-    body: "Pro access is billed on a flat monthly basis. You may cancel your subscription at any time, and access will continue until the end of the current billing period. Because statement processing happens on your device, refunds are generally not provided once the Pro features have been made available, but we will review reasonable requests on a case-by-case basis.",
+    title: "Free tier and Pro billing",
+    body: "The free tier — 6 pages per conversion with no account, or a 10-page lifetime allowance once you sign up — is available now at no cost. Pro subscription billing is not live yet; pricing shown for Pro reflects our intended launch price, not an active charge. Once billing launches, this section will be updated with the specific terms for subscribing, cancelling, and any refund policy that applies.",
   },
   {
     icon: AlertCircle,
     title: "Disclaimer and liability",
     body: "LedgerLocal is provided as-is without warranties of any kind. While we aim to produce accurate exports, you should always verify converted figures against your original statement before using them for accounting, tax, or financial reporting. To the fullest extent permitted by law, LedgerLocal shall not be liable for any indirect, incidental, or consequential damages arising from use of the software.",
+  },
+  {
+    icon: Gavel,
+    title: "Governing law",
+    body: "PLACEHOLDER — this section needs your input, not a guess: which country's and state's/region's law governs these terms, and where would a dispute be resolved (e.g. courts, or an arbitration clause)? This typically follows wherever your business is legally registered. Replace this paragraph once decided — don't publish this placeholder text as-is.",
   },
 ];
 
@@ -57,18 +60,12 @@ function Terms() {
 
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-3xl px-6">
-          <div className="text-xs font-semibold uppercase tracking-wider text-emerald">
-            Terms
-          </div>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
-            Terms & Conditions
-          </h1>
+          <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Terms</div>
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">Terms & Conditions</h1>
           <p className="mt-4 text-lg text-muted-foreground">
             These terms govern your use of LedgerLocal software and services. Please read them carefully.
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Last updated: July 23, 2026
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">Last updated: July 30, 2026</p>
         </div>
       </section>
 
@@ -91,10 +88,11 @@ function Terms() {
           <div className="mt-16 rounded-2xl border border-border bg-surface-muted/40 p-8">
             <h2 className="text-xl font-semibold text-ink">Changes to these terms</h2>
             <p className="mt-2 text-muted-foreground">
-              We may update these Terms & Conditions from time to time. Continued use of LedgerLocal after changes constitutes acceptance of the revised terms. If you have questions, contact us at{" "}
-              <a href="mailto:legal@ledgerlocal.app" className="text-emerald hover:underline">
-                legal@ledgerlocal.app
-              </a>
+              We may update these Terms & Conditions from time to time. Continued use of LedgerLocal after
+              changes constitutes acceptance of the revised terms. If you have questions, reach out via our{" "}
+              <Link to="/contact" className="text-emerald hover:underline">
+                Contact page
+              </Link>
               .
             </p>
             <div className="mt-6">
