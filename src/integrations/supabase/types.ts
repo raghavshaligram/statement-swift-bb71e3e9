@@ -14,39 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      contact_submissions: {
-        Row: {
-          attachment_path: string | null
-          created_at: string
-          email: string
-          id: string
-          issue_type: string
-          message: string
-          name: string | null
-          user_id: string | null
-        }
-        Insert: {
-          attachment_path?: string | null
-          created_at?: string
-          email: string
-          id?: string
-          issue_type: string
-          message: string
-          name?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          attachment_path?: string | null
-          created_at?: string
-          email?: string
-          id?: string
-          issue_type?: string
-          message?: string
-          name?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       page_usage: {
         Row: {
           lifetime_pages_used: number
