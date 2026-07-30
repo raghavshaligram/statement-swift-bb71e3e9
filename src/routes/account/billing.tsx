@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Minus, Zap, CreditCard } from "lucide-react";
+import { Check, Minus, CreditCard } from "lucide-react";
 import { AccountShell } from "@/components/account-shell";
 import { usePageUsage } from "@/hooks/use-page-usage";
 import { SIGNED_IN_MAX_PAGES } from "@/lib/pricing-constants";
+import { PayPalSubscribeButton } from "@/components/paypal-subscribe-button";
 
 export const Route = createFileRoute("/account/billing")({
   head: () => ({
@@ -96,12 +97,10 @@ function BillingPage() {
           <span className="font-mono text-sm text-muted-foreground">/ month · flat</span>
         </div>
         <p className="mt-1 text-xs text-muted-foreground">
-          Checkout isn't live yet — leave your email and we'll notify you the moment it is.
+          Cancel anytime from this page once you've subscribed.
         </p>
 
-        <button className="mt-5 inline-flex h-11 items-center gap-2 rounded-lg bg-emerald px-6 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-emerald/90">
-          <Zap className="h-4 w-4" /> Notify me when Pro launches
-        </button>
+        <PayPalSubscribeButton />
       </div>
 
       {/* Payment method */}
