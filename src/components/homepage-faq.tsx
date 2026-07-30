@@ -28,6 +28,10 @@ const FAQ: Array<{ q: string; a: string }> = [
     a: "Yes, both, using on-device OCR automatically — no upload, same as everything else. Scanned PDFs work the same as any PDF, no signup needed. Uploading a raw photo or screenshot (JPG/PNG/WEBP) requires a free account, since photo OCR costs the same to run as scanning a PDF. Results depend on image quality: a clear scan or screenshot works well, but a blurry or heavily compressed photo may not read correctly. Always double-check extracted rows before exporting.",
   },
   {
+    q: "Can I convert my bank statement to Excel sheet format, or only CSV?",
+    a: "Both — export straight to a real Excel (.xlsx) sheet with proper columns, or CSV if that's what your workflow needs. If you're going the other way and already have a bank statement CSV, converting bank statement CSV to Excel is a one-step export — or just open the CSV directly in Excel yourself if the columns are already how you want them.",
+  },
+  {
     q: "Can I import into QuickBooks?",
     a: "Yes — export to IIF for QuickBooks Desktop, or QBO for QuickBooks Online's Web Connect import. Bank-specific import walkthroughs are on the way.",
   },

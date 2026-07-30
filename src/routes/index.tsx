@@ -209,12 +209,12 @@ function Landing() {
           </div>
           <div className="mt-6 text-center text-xs text-muted-foreground">
             Don't see yours?{" "}
-            <a
-              href="mailto:support@ledgerlocal.com?subject=Bank%20profile%20request"
+            <Link
+              to="/contact"
               className="font-medium text-emerald hover:underline"
             >
               Request a bank profile →
-            </a>
+            </Link>
           </div>
         </div>
       </section>
