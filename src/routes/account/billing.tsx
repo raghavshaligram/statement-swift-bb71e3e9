@@ -93,38 +93,44 @@ function BillingPage() {
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold tracking-tight text-ink">{used}</span>
-            <span className="font-mono text-sm text-muted-foreground">/ {cap} pages</span>
+            <span className="font-mono text-sm text-muted-foreground">
+              {isPro ? "pages · unlimited" : `/ ${cap} pages`}
+            </span>
           </div>
           <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-surface-muted">
-            <div className="h-full rounded-full bg-emerald" style={{ width: `${pct}%` }} />
+            <div className="h-full rounded-full bg-emerald" style={{ width: `${isPro ? 100 : pct}%` }} />
           </div>
           <div className="mt-2 text-xs text-muted-foreground">
-            {Math.max(0, cap - used)} pages remaining · doesn't reset, ever, on Free — PDF pages and photo/scan conversions draw from this same pool
+            {isPro
+              ? "No page cap on Pro — PDF pages and photo/scan conversions are both unlimited."
+              : `${Math.max(0, cap - used)} pages remaining · doesn't reset, ever, on Free — PDF pages and photo/scan conversions draw from this same pool`}
           </div>
         </div>
       </div>
 
       {/* Upgrade card */}
-      <div className="mt-6 rounded-2xl border-2 border-emerald/40 bg-emerald/[0.03] p-6 shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <div className="text-xl font-bold tracking-tight text-ink">Upgrade to Pro</div>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Unlimited pages, all export formats, priority support.
-            </p>
+      {!isPro && (
+        <div className="mt-6 rounded-2xl border-2 border-emerald/40 bg-emerald/[0.03] p-6 shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <div className="text-xl font-bold tracking-tight text-ink">Upgrade to Pro</div>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Unlimited pages, all export formats, priority support.
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-5 flex items-baseline gap-1.5">
-          <span className="font-mono text-4xl font-bold tracking-tight text-ink">$19</span>
-          <span className="font-mono text-sm text-muted-foreground">/ month · flat</span>
-        </div>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Cancel anytime from this page once you've subscribed.
-        </p>
+          <div className="mt-5 flex items-baseline gap-1.5">
+            <span className="font-mono text-4xl font-bold tracking-tight text-ink">$19</span>
+            <span className="font-mono text-sm text-muted-foreground">/ month · flat</span>
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Cancel anytime from this page once you've subscribed.
+          </p>
 
-        <PayPalSubscribeButton />
-      </div>
+          <PayPalSubscribeButton />
+        </div>
+      )}
 
       {/* Payment method */}
       <div className="mt-6 rounded-2xl border border-border bg-background p-6 shadow-sm">
@@ -136,12 +142,15 @@ function BillingPage() {
             <div>
               <div className="text-sm font-semibold text-ink">Payment method</div>
               <div className="text-xs text-muted-foreground">
-                No card on file. You'll be asked when you upgrade.
+                {isPro
+                  ? "Billed through PayPal. Update or cancel from your PayPal account."
+                  : "No card on file. You'll be asked when you upgrade."}
               </div>
             </div>
           </div>
         </div>
       </div>
+
 
       {/* Comparison table */}
       <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-background shadow-sm">
