@@ -6,6 +6,7 @@ import {
   ArticleBackLink,
   ArticleHero,
   QuickSummary,
+  ArticleTOC,
   ArticleProse,
   ArticleH2,
   NumberedSteps,
@@ -101,7 +102,15 @@ function Page() {
         export, or a password-protected emailed PDF you've already unlocked, convert it here.
       </QuickSummary>
 
-      <section className="border-b border-border py-16">
+      <ArticleTOC
+        items={[
+          { label: "ICICI's export vs. converting a PDF", href: "#options" },
+          { label: "What an ICICI statement contains", href: "#statement-contains" },
+          { label: "FAQ", href: "#faq" },
+        ]}
+      />
+
+      <section id="options" className="scroll-mt-24 border-b border-border py-16">
         <div className="mx-auto max-w-5xl px-6">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="flex flex-col rounded-2xl border border-border bg-card p-7">
@@ -159,7 +168,7 @@ function Page() {
         </div>
       </section>
 
-      <ArticleH2>What an ICICI Statement Contains</ArticleH2>
+      <ArticleH2 id="statement-contains">What an ICICI Statement Contains</ArticleH2>
       <ArticleProse>
         <p>
           ICICI statements typically show both a transaction date and a separate value date (when funds actually
@@ -178,7 +187,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>Frequently Asked Questions</ArticleH2>
+      <ArticleH2 id="faq">Frequently Asked Questions</ArticleH2>
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <div className="space-y-4">
           {FAQ.map(({ q, a }) => (

@@ -6,6 +6,7 @@ import {
   ArticleBackLink,
   ArticleHero,
   QuickSummary,
+  ArticleTOC,
   ArticleProse,
   ArticleH2,
   NumberedSteps,
@@ -100,7 +101,16 @@ function Page() {
         structured export for them at all — the gap this page covers.
       </QuickSummary>
 
-      <section className="border-b border-border py-16">
+      <ArticleTOC
+        items={[
+          { label: "Chase's export vs. converting a PDF", href: "#options" },
+          { label: "What the export looks like", href: "#export-looks-like" },
+          { label: "Native export limits", href: "#limits" },
+          { label: "FAQ", href: "#faq" },
+        ]}
+      />
+
+      <section id="options" className="scroll-mt-24 border-b border-border py-16">
         <div className="mx-auto max-w-5xl px-6">
           <div className="grid gap-6 md:grid-cols-2">
             <div className="flex flex-col rounded-2xl border border-border bg-card p-7">
@@ -158,7 +168,7 @@ function Page() {
         </div>
       </section>
 
-      <ArticleH2>What the Chase CSV Export Looks Like</ArticleH2>
+      <ArticleH2 id="export-looks-like">What the Chase CSV Export Looks Like</ArticleH2>
       <ArticleTable
         headers={["Column", "What It Contains"]}
         rows={[
@@ -170,7 +180,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>The Limits of Chase's Native Export</ArticleH2>
+      <ArticleH2 id="limits">The Limits of Chase's Native Export</ArticleH2>
       <LimitsList
         limits={[
           { lead: "Limited lookback", body: "the Activity download covers roughly the last 90 days on checking and savings accounts. PDF statements, by contrast, are available for up to 7 years." },
@@ -179,7 +189,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>Frequently Asked Questions</ArticleH2>
+      <ArticleH2 id="faq">Frequently Asked Questions</ArticleH2>
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <div className="space-y-4">
           {FAQ.map(({ q, a }) => (

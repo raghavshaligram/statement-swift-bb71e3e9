@@ -5,6 +5,7 @@ import {
   ArticleBackLink,
   ArticleHero,
   QuickSummary,
+  ArticleTOC,
   ArticleProse,
   ArticleH2,
   NumberedSteps,
@@ -97,7 +98,16 @@ function Page() {
         limit, not an oversight.
       </QuickSummary>
 
-      <ArticleH2>How It Works</ArticleH2>
+      <ArticleTOC
+        items={[
+          { label: "How it works", href: "#how-it-works" },
+          { label: "What affects accuracy", href: "#accuracy" },
+          { label: "When a photo won't work well", href: "#limits" },
+          { label: "FAQ", href: "#faq" },
+        ]}
+      />
+
+      <ArticleH2 id="how-it-works">How It Works</ArticleH2>
       <NumberedSteps
         steps={[
           {
@@ -119,7 +129,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>What Affects Accuracy</ArticleH2>
+      <ArticleH2 id="accuracy">What Affects Accuracy</ArticleH2>
       <ArticleTable
         headers={["Factor", "Real effect"]}
         rows={[
@@ -130,7 +140,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>When a Photo Won't Work Well</ArticleH2>
+      <ArticleH2 id="limits">When a Photo Won't Work Well</ArticleH2>
       <LimitsList
         limits={[
           { lead: "Handwritten statements", body: "OCR is built for printed text — handwriting isn't reliably readable at all." },
@@ -139,7 +149,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>Frequently Asked Questions</ArticleH2>
+      <ArticleH2 id="faq">Frequently Asked Questions</ArticleH2>
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <div className="space-y-4">
           {FAQ.map(({ q, a }) => (

@@ -5,6 +5,7 @@ import {
   ArticleBackLink,
   ArticleHero,
   QuickSummary,
+  ArticleTOC,
   ArticleProse,
   ArticleH2,
   NumberedSteps,
@@ -111,7 +112,18 @@ function Page() {
         LedgerLocal instead of typing it in by hand.
       </QuickSummary>
 
-      <ArticleH2>How to Export a NatWest Bank Statement as CSV</ArticleH2>
+      <ArticleTOC
+        items={[
+          { label: "How to export the CSV", href: "#download" },
+          { label: "What the export looks like", href: "#export-looks-like" },
+          { label: "Native export limits", href: "#limits" },
+          { label: "Converting PDF statements", href: "#converting-pdf" },
+          { label: "Importing into your software", href: "#importing" },
+          { label: "FAQ", href: "#faq" },
+        ]}
+      />
+
+      <ArticleH2 id="download">How to Export a NatWest Bank Statement as CSV</ArticleH2>
       <NumberedSteps
         steps={[
           {
@@ -133,7 +145,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>What the NatWest CSV Export Looks Like</ArticleH2>
+      <ArticleH2 id="export-looks-like">What the NatWest CSV Export Looks Like</ArticleH2>
       <ArticleProse>
         <p>
           The NatWest export contains six columns, using the same paid-in/paid-out split several UK banks favor
@@ -152,7 +164,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>The Limits of NatWest's Native Export</ArticleH2>
+      <ArticleH2 id="limits">The Limits of NatWest's Native Export</ArticleH2>
       <LimitsList
         limits={[
           { lead: "Credit card history is much shorter", body: "credit card transactions are viewable and exportable for roughly the last 3 months, versus up to 7 years for current-account transaction search." },
@@ -162,7 +174,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>Converting NatWest PDF Statements</ArticleH2>
+      <ArticleH2 id="converting-pdf">Converting NatWest PDF Statements</ArticleH2>
       <ArticleProse>
         <p>
           For anything the native export can't reach — an old credit card statement past the 3-month window, a
@@ -177,7 +189,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>Import Into QuickBooks, Excel, or Google Sheets</ArticleH2>
+      <ArticleH2 id="importing">Import Into QuickBooks, Excel, or Google Sheets</ArticleH2>
       <ArticleProse>
         <p>
           <strong className="text-ink">QuickBooks Desktop:</strong> QuickBooks Desktop has no native CSV import
@@ -195,7 +207,7 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <ArticleH2>Frequently Asked Questions</ArticleH2>
+      <ArticleH2 id="faq">Frequently Asked Questions</ArticleH2>
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <div className="space-y-4">
           {FAQ.map(({ q, a }) => (
