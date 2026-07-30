@@ -5,6 +5,7 @@ import {
   ArticleBackLink,
   ArticleHero,
   QuickSummary,
+  ArticleTOC,
   ArticleProse,
   ArticleH2,
   NumberedSteps,
@@ -124,7 +125,18 @@ function Page() {
         single row by hand.
       </QuickSummary>
 
-      <ArticleH2>How to Download a Lloyds Bank Statement as CSV</ArticleH2>
+      <ArticleTOC
+        items={[
+          { label: "How to download the CSV", href: "#download" },
+          { label: "What the export looks like", href: "#export-looks-like" },
+          { label: "Native export limits", href: "#limits" },
+          { label: "Converting PDF statements", href: "#converting-pdf" },
+          { label: "Importing into your software", href: "#importing" },
+          { label: "FAQ", href: "#faq" },
+        ]}
+      />
+
+      <ArticleH2 id="download">How to Download a Lloyds Bank Statement as CSV</ArticleH2>
       <ArticleProse>
         <p>
           The built-in export works, it's free, and for recent transactions it's the fastest option available.
@@ -156,7 +168,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>What the Lloyds CSV Export Looks Like</ArticleH2>
+      <ArticleH2 id="export-looks-like">What the Lloyds CSV Export Looks Like</ArticleH2>
       <ArticleProse>
         <p>
           The Lloyds CSV export contains six columns. Unlike some banks that use a single signed Amount column,
@@ -182,7 +194,7 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <ArticleH2>The Limits of Lloyds' Native CSV Export</ArticleH2>
+      <ArticleH2 id="limits">The Limits of Lloyds' Native CSV Export</ArticleH2>
       <ArticleProse>
         <p>
           The CSV download is genuinely useful for recent activity. It also has hard edges that show up exactly
@@ -200,7 +212,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>Converting Lloyds PDF Statements</ArticleH2>
+      <ArticleH2 id="converting-pdf">Converting Lloyds PDF Statements</ArticleH2>
       <ArticleProse>
         <p>
           Lloyds keeps up to 7 years of PDF statements available under Statement options, and even longer in the
@@ -233,7 +245,7 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <ArticleH2>Import Into QuickBooks, Excel, or Google Sheets</ArticleH2>
+      <ArticleH2 id="importing">Import Into QuickBooks, Excel, or Google Sheets</ArticleH2>
       <ArticleProse>
         <p>
           <strong className="text-ink">QuickBooks Desktop:</strong> QuickBooks Desktop has no native CSV import
@@ -253,7 +265,7 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <ArticleH2>Frequently Asked Questions</ArticleH2>
+      <ArticleH2 id="faq">Frequently Asked Questions</ArticleH2>
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <div className="space-y-4">
           {FAQ.map(({ q, a }) => (

@@ -50,6 +50,43 @@ export function QuickSummary({ children }: { children: ReactNode }) {
   );
 }
 
+/** Jump-link table of contents, for longer pages with several real H2
+ * sections -- earns its place once a page has enough structure to actually
+ * navigate, not on every short page. Links to the same #id values passed to
+ * ArticleH2 below. */
+export function ArticleTOC({ items }: { items: Array<{ label: string; href: string }> }) {
+  return (
+    <div className="mx-auto max-w-3xl px-6">
+      <details className="group rounded-xl border border-border bg-card p-4 sm:hidden">
+        <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          On this page
+        </summary>
+        <ul className="mt-3 space-y-1.5 border-t border-border pt-3">
+          {items.map((item) => (
+            <li key={item.href}>
+              <a href={item.href} className="text-sm text-ink/80 hover:text-emerald">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
+      <div className="hidden rounded-xl border border-border bg-card p-4 sm:block">
+        <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">On this page</div>
+        <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
+          {items.map((item) => (
+            <li key={item.href}>
+              <a href={item.href} className="text-sm text-ink/80 hover:text-emerald hover:underline">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
 /** Plain prose body copy -- article paragraphs, not boxed cards. */
 export function ArticleProse({ children }: { children: ReactNode }) {
   return (
@@ -59,10 +96,12 @@ export function ArticleProse({ children }: { children: ReactNode }) {
   );
 }
 
-export function ArticleH2({ children }: { children: ReactNode }) {
+export function ArticleH2({ children, id }: { children: ReactNode; id?: string }) {
   return (
     <div className="mx-auto max-w-3xl px-6">
-      <h2 className="mt-4 text-2xl font-bold tracking-tight text-ink">{children}</h2>
+      <h2 id={id} className="mt-4 scroll-mt-24 text-2xl font-bold tracking-tight text-ink">
+        {children}
+      </h2>
     </div>
   );
 }
