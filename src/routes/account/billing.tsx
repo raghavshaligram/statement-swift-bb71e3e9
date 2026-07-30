@@ -66,14 +66,25 @@ function BillingPage() {
             Current plan
           </div>
           <div className="mt-2 flex items-center gap-3">
-            <div className="text-2xl font-bold tracking-tight text-ink">Free</div>
-            <span className="rounded-full bg-surface-muted px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              Free tier
+            <div className="text-2xl font-bold tracking-tight text-ink">
+              {subLoading ? "…" : isPro ? "Pro" : "Free"}
+            </div>
+            <span
+              className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
+                isPro ? "bg-emerald/10 text-emerald" : "bg-surface-muted text-muted-foreground"
+              }`}
+            >
+              {statusLabel}
             </span>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            No payment method on file. Upgrade to Pro for unlimited pages and all export formats.
+            {isPro
+              ? "Unlimited pages and every export format are unlocked. Manage or cancel this subscription from your PayPal account."
+              : subscription
+                ? "We've recorded your subscription and are waiting on PayPal to confirm it. This usually takes under a minute."
+                : "No payment method on file. Upgrade to Pro for unlimited pages and all export formats."}
           </p>
+
         </div>
 
         <div className="rounded-2xl border border-border bg-background p-6 shadow-sm">
