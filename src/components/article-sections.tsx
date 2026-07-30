@@ -41,7 +41,7 @@ export function ArticleHero({
 /** Tinted TL;DR callout box, shown right after the intro paragraph. */
 export function QuickSummary({ children }: { children: ReactNode }) {
   return (
-    <div className="mx-auto max-w-3xl px-6">
+    <div className="mx-auto max-w-3xl px-6 py-4">
       <div className="rounded-xl border border-emerald/20 bg-emerald-soft/40 p-5">
         <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Quick summary</div>
         <p className="mt-2 text-sm leading-relaxed text-ink">{children}</p>
@@ -56,7 +56,7 @@ export function QuickSummary({ children }: { children: ReactNode }) {
  * ArticleH2 below. */
 export function ArticleTOC({ items }: { items: Array<{ label: string; href: string }> }) {
   return (
-    <div className="mx-auto max-w-3xl px-6">
+    <div className="mx-auto max-w-3xl px-6 py-4">
       <details className="group rounded-xl border border-border bg-card p-4 sm:hidden">
         <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           On this page
@@ -64,7 +64,7 @@ export function ArticleTOC({ items }: { items: Array<{ label: string; href: stri
         <ul className="mt-3 space-y-1.5 border-t border-border pt-3">
           {items.map((item) => (
             <li key={item.href}>
-              <a href={item.href} className="text-sm text-ink/80 hover:text-emerald">
+              <a href={item.href} className="text-sm font-medium text-emerald hover:underline">
                 {item.label}
               </a>
             </li>
@@ -76,7 +76,7 @@ export function ArticleTOC({ items }: { items: Array<{ label: string; href: stri
         <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
           {items.map((item) => (
             <li key={item.href}>
-              <a href={item.href} className="text-sm text-ink/80 hover:text-emerald hover:underline">
+              <a href={item.href} className="text-sm font-medium text-emerald hover:underline">
                 {item.label}
               </a>
             </li>
@@ -98,8 +98,8 @@ export function ArticleProse({ children }: { children: ReactNode }) {
 
 export function ArticleH2({ children, id }: { children: ReactNode; id?: string }) {
   return (
-    <div className="mx-auto max-w-3xl px-6">
-      <h2 id={id} className="mt-4 scroll-mt-24 text-2xl font-bold tracking-tight text-ink">
+    <div className="mx-auto max-w-3xl px-6 pt-6">
+      <h2 id={id} className="scroll-mt-24 text-2xl font-bold tracking-tight text-ink">
         {children}
       </h2>
     </div>
