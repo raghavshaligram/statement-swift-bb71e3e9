@@ -62,6 +62,7 @@ const FORMAT_CONVERTERS: Post[] = [
   { href: "/bank-statement-to-tally", title: "Bank Statement to Tally XML", blurb: "No bank exports Tally XML natively — convert any PDF statement directly.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "XML", color: EMERALD }] },
   { href: "/bank-statement-to-ofx", title: "Bank Statement to OFX", blurb: "For QuickBooks, Xero, and other accounting software, from any bank's PDF.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "OFX", color: EMERALD }] },
   { href: "/bank-statement-to-qif", title: "Bank Statement to QIF", blurb: "For Quicken import, from any bank's PDF statement.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "QIF", color: EMERALD }] },
+  { href: "/bank-statement-to-csv", title: "Bank Statement to CSV", blurb: "Any bank's PDF statement, converted to a clean CSV.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "CSV", color: EMERALD }] },
 ];
 
 function PostCard({ post }: { post: Post }) {

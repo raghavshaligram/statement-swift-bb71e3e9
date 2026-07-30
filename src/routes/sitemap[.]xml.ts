@@ -25,6 +25,7 @@ const entries = [
   { path: "/bank-statement-to-tally", changefreq: "monthly", priority: "0.6" },
   { path: "/bank-statement-to-ofx", changefreq: "monthly", priority: "0.6" },
   { path: "/bank-statement-to-qif", changefreq: "monthly", priority: "0.6" },
+  { path: "/bank-statement-to-csv", changefreq: "monthly", priority: "0.7" },
   { path: "/chase-bank-statement-to-excel", changefreq: "monthly", priority: "0.6" },
   { path: "/icici-bank-statement-to-excel", changefreq: "monthly", priority: "0.6" },
   { path: "/natwest-bank-statement-to-csv", changefreq: "monthly", priority: "0.6" },

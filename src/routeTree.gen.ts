@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BankStatementToCsvRouteImport } from './routes/bank-statement-to-csv'
 import { Route as BankStatementToOfxRouteImport } from './routes/bank-statement-to-ofx'
 import { Route as BankStatementToQifRouteImport } from './routes/bank-statement-to-qif'
 import { Route as BankStatementToTallyRouteImport } from './routes/bank-statement-to-tally'
@@ -52,6 +53,11 @@ import { Route as AccountSettingsRouteImport } from './routes/account/settings'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BankStatementToCsvRoute = BankStatementToCsvRouteImport.update({
+  id: '/bank-statement-to-csv',
+  path: '/bank-statement-to-csv',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BankStatementToOfxRoute = BankStatementToOfxRouteImport.update({
@@ -251,6 +257,7 @@ const AccountSettingsRoute = AccountSettingsRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bank-statement-to-csv': typeof BankStatementToCsvRoute
   '/bank-statement-to-ofx': typeof BankStatementToOfxRoute
   '/bank-statement-to-qif': typeof BankStatementToQifRoute
   '/bank-statement-to-tally': typeof BankStatementToTallyRoute
@@ -292,6 +299,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bank-statement-to-csv': typeof BankStatementToCsvRoute
   '/bank-statement-to-ofx': typeof BankStatementToOfxRoute
   '/bank-statement-to-qif': typeof BankStatementToQifRoute
   '/bank-statement-to-tally': typeof BankStatementToTallyRoute
@@ -334,6 +342,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bank-statement-to-csv': typeof BankStatementToCsvRoute
   '/bank-statement-to-ofx': typeof BankStatementToOfxRoute
   '/bank-statement-to-qif': typeof BankStatementToQifRoute
   '/bank-statement-to-tally': typeof BankStatementToTallyRoute
@@ -377,6 +386,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/bank-statement-to-csv'
     | '/bank-statement-to-ofx'
     | '/bank-statement-to-qif'
     | '/bank-statement-to-tally'
@@ -418,6 +428,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/bank-statement-to-csv'
     | '/bank-statement-to-ofx'
     | '/bank-statement-to-qif'
     | '/bank-statement-to-tally'
@@ -459,6 +470,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/bank-statement-to-csv'
     | '/bank-statement-to-ofx'
     | '/bank-statement-to-qif'
     | '/bank-statement-to-tally'
@@ -501,6 +513,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BankStatementToCsvRoute: typeof BankStatementToCsvRoute
   BankStatementToOfxRoute: typeof BankStatementToOfxRoute
   BankStatementToQifRoute: typeof BankStatementToQifRoute
   BankStatementToTallyRoute: typeof BankStatementToTallyRoute
@@ -548,6 +561,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bank-statement-to-csv': {
+      id: '/bank-statement-to-csv'
+      path: '/bank-statement-to-csv'
+      fullPath: '/bank-statement-to-csv'
+      preLoaderRoute: typeof BankStatementToCsvRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bank-statement-to-ofx': {
@@ -821,6 +841,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BankStatementToCsvRoute: BankStatementToCsvRoute,
   BankStatementToOfxRoute: BankStatementToOfxRoute,
   BankStatementToQifRoute: BankStatementToQifRoute,
   BankStatementToTallyRoute: BankStatementToTallyRoute,
