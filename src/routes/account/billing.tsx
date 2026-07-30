@@ -36,11 +36,22 @@ function Cell({ v }: { v: string | boolean }) {
   );
 }
 
+const STATUS_LABEL: Record<string, string> = {
+  active: "Active",
+  pending: "Pending activation",
+  past_due: "Payment failed",
+  suspended: "Suspended",
+  cancelled: "Cancelled",
+  expired: "Expired",
+};
+
 function BillingPage() {
   const pageUsage = usePageUsage(0);
+  const { subscription, isPro, loading: subLoading } = useSubscription();
   const used = pageUsage.used ?? 0;
   const cap = pageUsage.limit;
   const pct = Math.min(100, (used / cap) * 100);
+  const statusLabel = subscription ? (STATUS_LABEL[subscription.status] ?? subscription.status) : "Free tier";
   return (
     <AccountShell
       eyebrow="Account"
