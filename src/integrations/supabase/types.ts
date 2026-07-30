@@ -14,39 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      contact_submissions: {
-        Row: {
-          attachment_path: string | null
-          created_at: string
-          email: string
-          id: string
-          issue_type: string
-          message: string
-          name: string | null
-          user_id: string | null
-        }
-        Insert: {
-          attachment_path?: string | null
-          created_at?: string
-          email: string
-          id?: string
-          issue_type: string
-          message: string
-          name?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          attachment_path?: string | null
-          created_at?: string
-          email?: string
-          id?: string
-          issue_type?: string
-          message?: string
-          name?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       page_usage: {
         Row: {
           lifetime_pages_used: number
@@ -62,6 +29,33 @@ export type Database = {
           lifetime_pages_used?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -92,33 +86,6 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string
-        }
-        Relationships: []
-      }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          created_at: string
-          display_name: string | null
-          email: string | null
-          id: string
-          updated_at: string
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string
-          display_name?: string | null
-          email?: string | null
-          id: string
-          updated_at?: string
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string
-          display_name?: string | null
-          email?: string | null
-          id?: string
-          updated_at?: string
         }
         Relationships: []
       }
