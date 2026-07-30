@@ -4,6 +4,7 @@ import { AccountShell } from "@/components/account-shell";
 import { usePageUsage } from "@/hooks/use-page-usage";
 import { SIGNED_IN_MAX_PAGES } from "@/lib/pricing-constants";
 import { PayPalSubscribeButton } from "@/components/paypal-subscribe-button";
+import { useSubscription } from "@/hooks/use-subscription";
 
 export const Route = createFileRoute("/account/billing")({
   head: () => ({
