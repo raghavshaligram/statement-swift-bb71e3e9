@@ -104,6 +104,7 @@ const BANK_CURRENCY_FALLBACK: Partial<Record<BankId, string>> = {
   natwest: "GBP",
   santander_uk: "GBP",
   monzo: "GBP",
+  tide: "GBP",
   rbc: "CAD",
   td_canada_trust: "CAD",
   scotiabank: "CAD",

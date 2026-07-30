@@ -31,6 +31,7 @@ export type BankId =
   | "natwest"
   | "santander_uk"
   | "monzo"
+  | "tide"
   // Canada
   | "rbc"
   | "td_canada_trust"
@@ -59,6 +60,7 @@ export const BANK_LABELS: Record<BankId, string> = {
   natwest: "NatWest",
   santander_uk: "Santander UK",
   monzo: "Monzo",
+  tide: "Tide",
   rbc: "RBC Royal Bank",
   td_canada_trust: "TD Canada Trust",
   scotiabank: "Scotiabank",
@@ -99,6 +101,10 @@ const SIGNATURES: Array<{ id: BankId; patterns: RegExp[] }> = [
   // Santander operates in Spain, Latin America, and the US too -- scope to UK.
   { id: "santander_uk", patterns: [/\bsantander uk\b/i, /\bsantander\.co\.uk\b/i] },
   { id: "monzo", patterns: [/\bmonzo\b/i, /\bmonzo\.com\b/i] },
+  // "tide" alone is a common English word -- scoped to the real domain and
+  // Tide's actual product name, never a bare word match, same precedent as
+  // the TD Bank / TD Canada Trust disambiguation above.
+  { id: "tide", patterns: [/\btide\.co\b/i, /\btide business\b/i] },
 
   // Canada
   { id: "rbc", patterns: [/\brbc royal bank\b/i, /\broyal bank of canada\b/i, /\brbc\.com\b/i] },
