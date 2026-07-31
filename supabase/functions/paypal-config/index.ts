@@ -47,6 +47,18 @@ Deno.serve(async (req: Request) => {
         // value -- enough to debug a misconfiguration without leaking
         // anything sensitive.
         missing: [!clientId && `PAYPAL_CLIENT_ID_${suffix}`, !planId && `PAYPAL_PLAN_ID_${suffix}`].filter(Boolean),
+        // Presence of every expected name, so a typo in a secret's NAME
+        // (or a PAYPAL_ENV still pointing at the wrong environment) is
+        // obvious at a glance. Names and booleans only -- no values.
+        secretsPresent: {
+          PAYPAL_ENV: env,
+          PAYPAL_CLIENT_ID_SANDBOX: !!Deno.env.get("PAYPAL_CLIENT_ID_SANDBOX"),
+          PAYPAL_CLIENT_SECRET_SANDBOX: !!Deno.env.get("PAYPAL_CLIENT_SECRET_SANDBOX"),
+          PAYPAL_PLAN_ID_SANDBOX: !!Deno.env.get("PAYPAL_PLAN_ID_SANDBOX"),
+          PAYPAL_CLIENT_ID_LIVE: !!Deno.env.get("PAYPAL_CLIENT_ID_LIVE"),
+          PAYPAL_CLIENT_SECRET_LIVE: !!Deno.env.get("PAYPAL_CLIENT_SECRET_LIVE"),
+          PAYPAL_PLAN_ID_LIVE: !!Deno.env.get("PAYPAL_PLAN_ID_LIVE"),
+        },
       }),
       { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
@@ -80,17 +92,35 @@ Deno.serve(async (req: Request) => {
         });
 
         if (!planRes.ok) {
-          // Include PayPal's own error body: RESOURCE_NOT_FOUND means the
-          // plan genuinely isn't in this environment, while NOT_AUTHORIZED
-          // means it exists but belongs to a different account than this
-          // Client ID -- two very different fixes, indistinguishable from
-          // the HTTP status alone.
           let paypalError: unknown = null;
           try {
             paypalError = await planRes.json();
           } catch {
             paypalError = await planRes.text().catch(() => null);
           }
+
+          // Decisive diagnostic: list the plans these credentials CAN see.
+          // If the configured plan is visible in the PayPal dashboard but
+          // absent from this list, that proves the plan belongs to a
+          // different account than this Client ID -- which is otherwise
+          // very hard to tell apart from a wrong-environment mistake.
+          let visiblePlans: unknown = "could not list";
+          try {
+            const listRes = await fetch(`${apiBase}/v1/billing/plans?page_size=20`, {
+              headers: { Authorization: `Bearer ${access_token}` },
+            });
+            if (listRes.ok) {
+              const list = await listRes.json();
+              visiblePlans = (list.plans ?? []).map((p: { id: string; name: string; status: string }) => ({
+                id: p.id,
+                name: p.name,
+                status: p.status,
+              }));
+            }
+          } catch {
+            /* listing is best-effort -- never block the real error on it */
+          }
+
           return new Response(
             JSON.stringify({
               error: "The configured PayPal plan could not be verified",
@@ -102,12 +132,16 @@ Deno.serve(async (req: Request) => {
               environmentChecked: env,
               paypalStatus: planRes.status,
               paypalError,
+              plansVisibleToTheseCredentials: visiblePlans,
               detail:
                 `Credentials authenticated successfully, but PayPal could not return this plan in the ` +
-                `"${env}" environment. If PayPal's error says RESOURCE_NOT_FOUND, the plan isn't in this ` +
-                `environment (a plan created in the live dashboard doesn't exist in sandbox, or vice versa). ` +
-                `If it says NOT_AUTHORIZED, the plan exists but was created under a different PayPal account ` +
-                `than the one this Client ID belongs to.`,
+                `"${env}" environment. Note that PayPal returns RESOURCE_NOT_FOUND both when a plan is in ` +
+                `a different environment AND when it belongs to a different account than this Client ID -- ` +
+                `it does not distinguish the two. Compare planIdChecked against ` +
+                `plansVisibleToTheseCredentials: if your plan is visible in the PayPal dashboard but is ` +
+                `NOT in that list, the plan was created under a different account than the one this Client ` +
+                `ID belongs to. Creating the plan with these same credentials (scripts/setup-paypal-plan.sh) ` +
+                `guarantees it lands in the right account.`,
             }),
             { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
           );
