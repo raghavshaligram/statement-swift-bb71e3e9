@@ -81,7 +81,17 @@ export type UploadValidation =
   | { ok: true }
   | { ok: false; message: string; requiresSignIn: boolean };
 
-export async function validateUploadBatch(files: File[], isSignedIn: boolean): Promise<UploadValidation> {
+export async function validateUploadBatch(
+  files: File[],
+  isSignedIn: boolean,
+  isPro = false,
+): Promise<UploadValidation> {
+  // Pro has no page cap at all -- that is the entire proposition. This
+  // function previously had no concept of a subscription, so paying
+  // customers were still held to the 10-page free allowance and told to
+  // "Upgrade to Pro" while already on Pro.
+  if (isPro) return { ok: true };
+
   const images = files.filter((f) => isImageFile(f) && !isPageLimitExempt(f));
   const pdfs = files.filter((f) => !isImageFile(f) && !isPageLimitExempt(f));
 

@@ -19,6 +19,7 @@ import { parseStatementFile } from "@/lib/pdf/parse-statement";
 import { validateUploadBatch, findEncryptedPdfs } from "@/lib/pdf/upload-validation";
 import { usePageUsage } from "@/hooks/use-page-usage";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
 import { ANONYMOUS_MAX_PAGES, SIGNED_IN_MAX_PAGES } from "@/lib/pricing-constants";
 
 export function EmbeddedConverter({
@@ -55,6 +56,7 @@ export function EmbeddedConverter({
   const [ocrLanguage, setOcrLanguage] = useState("eng");
   const [usageRefresh, setUsageRefresh] = useState(0);
   const pageUsage = usePageUsage(usageRefresh);
+  const { isPro } = useSubscription();
 
   // This widget is embedded on many separate marketing/content pages that all
   // share one global store. Without this, a completed conversion on page A
@@ -112,7 +114,7 @@ export function EmbeddedConverter({
   }
 
   async function runBatch(files: File[], pwds: Record<string, string>) {
-    const validation = await validateUploadBatch(files, !!user);
+    const validation = await validateUploadBatch(files, !!user, isPro);
     if (!validation.ok) {
       setPageLimitError({ message: validation.message, requiresSignIn: validation.requiresSignIn });
       return;
@@ -267,7 +269,7 @@ export function EmbeddedConverter({
               </Link>
             </div>
           ) : null}
-          {pageUsage.isSignedIn && pageUsage.used !== null && (
+          {!isPro && pageUsage.isSignedIn && pageUsage.used !== null && (
             <p className="mt-2 px-2 text-center text-xs text-muted-foreground">
               {pageUsage.used} of {pageUsage.limit} free lifetime pages used (PDFs and photos/scans combined)
               {pageUsage.used >= pageUsage.limit && (

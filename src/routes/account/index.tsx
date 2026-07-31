@@ -88,14 +88,17 @@ function AccountPage() {
                 </span>
               )}
             </div>
-            <a
-              href="/account/billing"
-              className={`inline-flex h-10 items-center rounded-lg border-2 border-emerald px-4 text-sm font-semibold text-emerald transition hover:bg-emerald/5 ${
-                subLoading || isPro ? "hidden" : ""
-              }`}
-            >
-              Upgrade to Pro
-            </a>
+            {/* Rendered conditionally rather than toggled with a `hidden`
+                class: `hidden` and `inline-flex` are both display utilities,
+                so they collide and the button stayed visible for Pro users. */}
+            {!subLoading && !isPro && (
+              <a
+                href="/account/billing"
+                className="inline-flex h-10 items-center rounded-lg border-2 border-emerald px-4 text-sm font-semibold text-emerald transition hover:bg-emerald/5"
+              >
+                Upgrade to Pro
+              </a>
+            )}
           </div>
 
           <div className="mt-8 border-t border-border pt-6">

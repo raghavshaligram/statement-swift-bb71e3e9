@@ -92,7 +92,7 @@ function UploadPage() {
           </div>
         )}
 
-        {!showQueue && pageUsage.isSignedIn && pageUsage.used !== null && (
+        {!showQueue && !isPro && pageUsage.isSignedIn && pageUsage.used !== null && (
           <p className="text-xs text-muted-foreground">
             {pageUsage.used >= pageUsage.limit ? (
               <span className="text-amber-700">
