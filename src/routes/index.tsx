@@ -11,6 +11,10 @@ import {
   Layers,
   FileOutput,
   Shield,
+  Scale,
+  Gauge,
+  CalendarCheck,
+  KeyRound,
 } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ScrollReveal, ScrollRevealGroup, ScrollRevealItem } from "@/components/scroll-reveal";
@@ -71,6 +75,29 @@ const FEATURES = [
     icon: FileOutput,
     title: "Every Format",
     body: "Excel (.xlsx), CSV, Tally XML, OFX, QIF, QBO, IIF — exports for whatever ledger you already use.",
+  },
+];
+
+const ACCURACY = [
+  {
+    icon: Scale,
+    title: "We check the maths",
+    body: "Every row's running balance is checked against the one before it. If the statement doesn't tie out, you're told the exact row where it breaks — before you export, not after your reconciliation fails.",
+  },
+  {
+    icon: Gauge,
+    title: "Every row is scored",
+    body: "Each transaction gets a confidence score, so a misread digit is flagged rather than quietly exported. Low-confidence rows can be reviewed side by side against the original, or excluded entirely.",
+  },
+  {
+    icon: CalendarCheck,
+    title: "Dates come out right",
+    body: "03/04 means different months either side of the Atlantic. The date order is inferred from the statement itself rather than guessed, then normalised so Excel can't reinterpret it.",
+  },
+  {
+    icon: KeyRound,
+    title: "Password-protected PDFs",
+    body: "Statements emailed with a password — common from ICICI, HDFC and SBI — are unlocked in your browser. The password is used on your device and never sent anywhere.",
   },
 ];
 
@@ -175,6 +202,38 @@ function Landing() {
                   </div>
                   <h3 className="mt-4 text-sm font-semibold text-ink">{f.title}</h3>
                   <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{f.body}</p>
+                </div>
+              </ScrollRevealItem>
+            ))}
+          </ScrollRevealGroup>
+        </div>
+      </section>
+
+      {/* ACCURACY — the checks that already run but were never mentioned */}
+      <section className="border-b border-border py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          <ScrollReveal className="mx-auto max-w-2xl text-center">
+            <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Accuracy</div>
+            <h2 className="mt-3 font-serif text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+              Getting the numbers out is the easy part
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+              Any tool can pull text off a PDF. The question that matters is whether the figures are right —
+              so LedgerLocal checks its own work and tells you where it isn't sure.
+            </p>
+          </ScrollReveal>
+
+          <ScrollRevealGroup className="mt-12 grid gap-5 sm:grid-cols-2">
+            {ACCURACY.map((f) => (
+              <ScrollRevealItem key={f.title}>
+                <div className="flex h-full gap-4 rounded-2xl border border-border bg-card p-6 transition hover:border-emerald/30 hover:shadow-sm">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-emerald-soft text-emerald">
+                    <f.icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-semibold text-ink">{f.title}</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+                  </div>
                 </div>
               </ScrollRevealItem>
             ))}
