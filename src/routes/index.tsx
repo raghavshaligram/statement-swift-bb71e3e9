@@ -19,6 +19,7 @@ import {
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ScrollReveal, ScrollRevealGroup, ScrollRevealItem } from "@/components/scroll-reveal";
 import { EmbeddedConverter } from "@/components/embedded-converter";
+import { WorkbookAnimation } from "@/components/workbook-animation";
 import { HowItWorksTimeline } from "@/components/how-it-works-timeline";
 import { TransactionSideBySide } from "@/components/transaction-side-by-side";
 import { CapabilityGrid } from "@/components/capability-grid";
@@ -206,6 +207,38 @@ function Landing() {
               </ScrollRevealItem>
             ))}
           </ScrollRevealGroup>
+        </div>
+      </section>
+
+      {/* BATCH → WORKBOOK — shipped since early on, never mentioned anywhere */}
+      <section className="border-b border-border bg-surface-muted/20 py-20">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 lg:grid-cols-2">
+          <ScrollReveal>
+            <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Batch conversion</div>
+            <h2 className="mt-3 font-serif text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+              A year of statements, one workbook
+            </h2>
+            <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+              Drop twelve monthly PDFs at once and get a single Excel file back — with each statement on its
+              own named tab, not merged into one undifferentiated sheet you then have to pull apart by hand.
+            </p>
+            <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
+              {[
+                "One tab per statement, named after the file it came from",
+                "Mix banks freely — each is detected and parsed on its own terms",
+                "Prefer everything on one sheet? It's a toggle on the export screen",
+              ].map((line) => (
+                <li key={line} className="flex gap-2.5">
+                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.1}>
+            <WorkbookAnimation />
+          </ScrollReveal>
         </div>
       </section>
 
