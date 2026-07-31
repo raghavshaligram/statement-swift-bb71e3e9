@@ -53,7 +53,20 @@ export function PayPalSubscribeButton() {
         // genuine CORS misconfiguration very hard to diagnose, so log
         // enough to tell "not configured" apart from "couldn't reach the
         // function at all."
-        console.warn("[LedgerLocal] Checkout unavailable:", error ?? data ?? "no response from paypal-config");
+        // supabase.functions.invoke wraps a non-2xx response in an error
+        // whose body lives on error.context -- without reading it, the
+        // entire diagnostic payload the function returned is silently
+        // thrown away and all failures look identical.
+        let detail: unknown = error ?? data ?? "no response from paypal-config";
+        const ctx = (error as { context?: Response } | null)?.context;
+        if (ctx && typeof ctx.json === "function") {
+          try {
+            detail = await ctx.json();
+          } catch {
+            /* keep the original error if the body isn't JSON */
+          }
+        }
+        console.warn("[LedgerLocal] Checkout unavailable:", detail);
         setStatus("unavailable");
         return;
       }

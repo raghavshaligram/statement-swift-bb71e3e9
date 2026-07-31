@@ -30,10 +30,14 @@ Deno.serve(async (req: Request) => {
     return new Response("Method not allowed", { status: 405, headers: corsHeaders });
   }
 
-  const env = Deno.env.get("PAYPAL_ENV") ?? "sandbox";
+  // Trim everything: a trailing newline or space is easy to introduce when
+  // pasting into a secrets UI, and an untrimmed plan ID silently produces a
+  // malformed lookup URL that PayPal answers with a 404 -- indistinguishable
+  // from a genuinely missing plan without this.
+  const env = (Deno.env.get("PAYPAL_ENV") ?? "sandbox").trim();
   const suffix = env === "live" ? "LIVE" : "SANDBOX";
-  const clientId = Deno.env.get(`PAYPAL_CLIENT_ID_${suffix}`);
-  const planId = Deno.env.get(`PAYPAL_PLAN_ID_${suffix}`);
+  const clientId = Deno.env.get(`PAYPAL_CLIENT_ID_${suffix}`)?.trim();
+  const planId = Deno.env.get(`PAYPAL_PLAN_ID_${suffix}`)?.trim();
 
   if (!clientId || !planId) {
     return new Response(
@@ -56,7 +60,7 @@ Deno.serve(async (req: Request) => {
   // INVALID_RESOURCE_ID error surfaced in practice. Failing here instead
   // means the page honestly says checkout isn't available, and the reason
   // is visible rather than buried in a PayPal SDK stack trace.
-  const clientSecret = Deno.env.get(`PAYPAL_CLIENT_SECRET_${suffix}`);
+  const clientSecret = Deno.env.get(`PAYPAL_CLIENT_SECRET_${suffix}`)?.trim();
   if (clientSecret) {
     try {
       const apiBase = env === "live" ? "https://api-m.paypal.com" : "https://api-m.sandbox.paypal.com";
@@ -76,15 +80,34 @@ Deno.serve(async (req: Request) => {
         });
 
         if (!planRes.ok) {
+          // Include PayPal's own error body: RESOURCE_NOT_FOUND means the
+          // plan genuinely isn't in this environment, while NOT_AUTHORIZED
+          // means it exists but belongs to a different account than this
+          // Client ID -- two very different fixes, indistinguishable from
+          // the HTTP status alone.
+          let paypalError: unknown = null;
+          try {
+            paypalError = await planRes.json();
+          } catch {
+            paypalError = await planRes.text().catch(() => null);
+          }
           return new Response(
             JSON.stringify({
-              error: "The configured PayPal plan was not found",
-              detail:
-                `PAYPAL_PLAN_ID_${suffix} does not exist in the ${env} environment for this Client ID. ` +
-                `The most common cause is creating the plan in the wrong place -- a plan made in the live ` +
-                `dashboard (paypal.com) won't exist in sandbox, and vice versa -- or creating it under a ` +
-                `different PayPal account than the one this Client ID belongs to.`,
+              error: "The configured PayPal plan could not be verified",
+              // The plan ID is NOT sensitive -- it's handed to the browser
+              // for the subscribe button anyway -- so echoing it back is
+              // safe and makes a typo or stray character immediately
+              // obvious.
+              planIdChecked: planId,
+              environmentChecked: env,
               paypalStatus: planRes.status,
+              paypalError,
+              detail:
+                `Credentials authenticated successfully, but PayPal could not return this plan in the ` +
+                `"${env}" environment. If PayPal's error says RESOURCE_NOT_FOUND, the plan isn't in this ` +
+                `environment (a plan created in the live dashboard doesn't exist in sandbox, or vice versa). ` +
+                `If it says NOT_AUTHORIZED, the plan exists but was created under a different PayPal account ` +
+                `than the one this Client ID belongs to.`,
             }),
             { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
           );
