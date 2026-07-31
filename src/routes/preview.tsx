@@ -40,6 +40,25 @@ function PreviewPage() {
   // tiers in confidence.ts (90 = high, 75 = medium) so the filter and the
   // colour coding can't disagree.
   const [maxConfidence, setMaxConfidence] = useState<number>(0);
+  // Row highlighted after jumping to it from a reconciliation break.
+  const [focusedRowId, setFocusedRowId] = useState<string | null>(null);
+
+  // Take the user straight to the offending row: switch to the statement it
+  // belongs to, clear any filters that would hide it, scroll it into view and
+  // highlight it. A break is only useful if you can act on it -- reporting
+  // "first break at <description>" and leaving someone to find it by eye in a
+  // few hundred rows isn't much better than not reporting it.
+  function jumpToRow(fileName: string, rowId: string) {
+    setActiveFile(fileName);
+    setTab("all");
+    setMaxConfidence(0);
+    setQ("");
+    setFocusedRowId(rowId);
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`row-${rowId}`);
+      el?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
   const [tab, setTab] = useState<FilterTab>("all");
   const [view, setView] = useState<"table" | "sidebyside">("table");
   const [editing, setEditing] = useState<{ id: string; field: keyof Transaction } | null>(null);
@@ -183,9 +202,13 @@ function PreviewPage() {
                         {first && (
                           <>
                             . First break at{" "}
-                            <span className="font-semibold">
+                            <button
+                              onClick={() => jumpToRow(fileName, first.id)}
+                              className="font-semibold underline decoration-dotted underline-offset-2 hover:decoration-solid"
+                              title="Jump to this row"
+                            >
                               {first.date} · {first.description.slice(0, 40)}
-                            </span>{" "}
+                            </button>{" "}
                             (expected {formatAmount(first.expected, currency)}, got{" "}
                             {formatAmount(first.actual, currency)})
                             {result.breaks.length > 1 && ` and ${result.breaks.length - 1} other row(s)`}
@@ -464,9 +487,14 @@ function PreviewPage() {
                 return (
                   <tr
                     key={r.id}
+                    id={`row-${r.id}`}
                     className={cn(
                       "group hover:bg-surface-muted/50",
-                      flagged && "border-l-2 border-l-amber-500 bg-amber-50/40"
+                      flagged && "border-l-2 border-l-amber-500 bg-amber-50/40",
+                      // Ring rather than a background change so it reads as
+                      // "here it is" without masking the flagged styling that
+                      // may already apply to the same row.
+                      focusedRowId === r.id && "ring-2 ring-inset ring-emerald"
                     )}
                   >
                     <td className="px-2 py-1.5">

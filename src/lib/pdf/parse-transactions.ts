@@ -134,6 +134,22 @@ function isStatementSummaryRow(text: string): boolean {
   return SUMMARY_ROW_RE.test(text);
 }
 
+// Appendix rows -- "TOTAL Summary of TDS", fixed-deposit interest tables and
+// similar sections printed after the transaction list. Unlike the summary
+// rows above these carry a date and an amount, so the no-date filter can't
+// reach them, and they were being parsed as enormous transactions: a real
+// ICICI statement produced a -3,791,242.79 "transaction" from one, which
+// then reported the whole statement as failing to reconcile.
+//
+// Anchored to the start of the description so it only catches a row that
+// *opens* an appendix section, not a payment that happens to mention TDS.
+const APPENDIX_ROW_RE =
+  /^(total\s+)?summary\s+of\b|^tds\s+(summary|details)\b|^summary\s+(of|for)\b|^interest\s+(certificate|summary)\b/i;
+
+function isAppendixRow(description: string): boolean {
+  return APPENDIX_ROW_RE.test(description.trim());
+}
+
 // A brought-forward / opening-balance row, which unlike the summary rows
 // above DOES carry the statement's start date and so survives the no-date
 // filter. Confirmed on a real ICICI statement: a row reading "B F" with the
@@ -568,7 +584,9 @@ export function parseTransactionsFromPages(pages: PageText[], fullText: string):
   // sees them. Done here rather than at the block-grouping stage because
   // these rows carry a real date and a real amount, so they only become
   // identifiable once the description has been assembled.
-  const withoutOpeningBalance = transactions.filter((t) => !isBroughtForwardRow(t.description));
+  const withoutOpeningBalance = transactions.filter(
+    (t) => !isBroughtForwardRow(t.description) && !isAppendixRow(t.description)
+  );
 
   // Continuity is scored after the filter so the removed row can't be
   // treated as a break in the running balance.
