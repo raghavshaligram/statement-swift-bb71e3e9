@@ -4,6 +4,7 @@ import {
   FileSpreadsheet, FileText, FileCode, FileType, Check, ShieldCheck, Download, ArrowLeft,
 } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
+import { recordConversion } from "@/lib/conversion-history";
 import { useStatementStore } from "@/lib/statement-store";
 import { runExport, DEFAULT_EXPORT_OPTIONS, type ExportFormat, type ExportOptions } from "@/lib/export";
 import { getConfidenceTier } from "@/lib/pdf/confidence";
@@ -68,6 +69,18 @@ function ExportPage() {
   function handleDownload() {
     runExport(selected, rows, baseFileName, options, oneSheetPerStatement, currency);
     setDownloaded((s) => ({ ...s, [selected]: true }));
+    // Log the conversion once the user actually downloads -- that's the point
+    // the conversion is genuinely "done". Metadata only; nothing from the
+    // statement itself is recorded.
+    for (const st of statements) {
+      recordConversion({
+        fileName: st.fileName,
+        bank: st.detectedBank,
+        pages: st.pageCount,
+        transactions: st.transactions.length,
+        format: selected.toUpperCase(),
+      });
+    }
   }
 
   if (statements.length === 0) return null;
