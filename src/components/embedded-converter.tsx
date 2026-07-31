@@ -32,6 +32,7 @@ export function EmbeddedConverter({ className }: { className?: string }) {
   const startProcessing = useStatementStore((s) => s.startProcessing);
   const setProgress = useStatementStore((s) => s.setProgress);
   const finishProcessing = useStatementStore((s) => s.finishProcessing);
+  const existingStatements = useStatementStore((s) => s.statements);
   const failProcessing = useStatementStore((s) => s.failProcessing);
   const [, setLiveFileName] = useState("");
   const [pageLimitError, setPageLimitError] = useState<{ message: string; requiresSignIn: boolean } | null>(null);
@@ -107,7 +108,12 @@ export function EmbeddedConverter({ className }: { className?: string }) {
       return;
     }
 
-    reset();
+    // Adding to an already-finished batch should ADD, not wipe it -- the
+    // real workflow is an accountant dropping twelve monthly statements and
+    // getting one combined output. Only a genuinely fresh start resets.
+    const isAddingToBatch = phase === "done" && existingStatements.length > 0;
+    const carriedOver = isAddingToBatch ? existingStatements : [];
+    if (!isAddingToBatch) reset();
     setPendingFiles(files);
     startProcessing();
     const parsed = [];
@@ -122,7 +128,7 @@ export function EmbeddedConverter({ className }: { className?: string }) {
         );
         parsed.push(statement);
       }
-      finishProcessing(parsed);
+      finishProcessing([...carriedOver, ...parsed]);
       setUsageRefresh((n) => n + 1);
     } catch (err) {
       failProcessing(err instanceof Error ? err.message : "Something went wrong while parsing.");
@@ -142,10 +148,27 @@ export function EmbeddedConverter({ className }: { className?: string }) {
         <>
           <ParseQueue onReview={() => navigate({ to: "/preview" })} onRemove={(i) => removePendingFile(i)} />
           {(phase === "done" || phase === "error") && (
-            <div className="px-3 pb-3 pt-1 text-center">
-              <button onClick={() => reset()} className="text-xs font-medium text-muted-foreground hover:text-ink">
-                Convert another statement
-              </button>
+            <div className="space-y-2 px-3 pb-3 pt-1">
+              {phase === "done" && (
+                <>
+                  {/* The dropzone stays available after a batch finishes.
+                      Previously it was hidden here, which left no way to add
+                      another statement without starting over. */}
+                  <StatementDropzone
+                    variant="compact"
+                    onFiles={handleFiles}
+                    className="border border-dashed border-border/70 bg-surface/40"
+                  />
+                  <p className="text-center text-[11px] text-muted-foreground">
+                    Drop more statements to add them to this batch — they'll be combined into one export.
+                  </p>
+                </>
+              )}
+              <div className="text-center">
+                <button onClick={() => reset()} className="text-xs font-medium text-muted-foreground hover:text-ink">
+                  Start over
+                </button>
+              </div>
             </div>
           )}
         </>
