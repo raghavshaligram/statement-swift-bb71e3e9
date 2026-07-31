@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { User as UserIcon, FileText, Download, Trash2, Mail } from "lucide-react";
+import { useSubscription } from "@/hooks/use-subscription";
 import { AccountShell } from "@/components/account-shell";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +27,7 @@ const TABS = [
 
 function SettingsPage() {
   const { user } = useAuth();
+  const { isPro, loading: subLoading } = useSubscription();
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("account");
   const [displayName, setDisplayName] = useState("");
   const [saving, setSaving] = useState(false);
@@ -116,13 +118,26 @@ function SettingsPage() {
               </div>
 
               <div className="mt-6 flex items-center justify-between border-t border-border pt-5">
+                {/* Third place the plan was hardcoded to "Free". Reads real
+                    subscription state now, and the upgrade link is rendered
+                    conditionally rather than class-toggled. */}
                 <div className="flex items-center gap-3">
-                  <span className="rounded-full bg-surface-muted px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    Free plan
-                  </span>
-                  <Link to="/account/billing" className="text-sm font-semibold text-emerald hover:underline">
-                    Upgrade to Pro →
-                  </Link>
+                  {subLoading ? (
+                    <span className="inline-block h-[18px] w-20 animate-pulse rounded-full bg-surface-muted" aria-hidden />
+                  ) : (
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
+                        isPro ? "bg-emerald-soft text-emerald" : "bg-surface-muted text-muted-foreground"
+                      }`}
+                    >
+                      {isPro ? "Pro plan" : "Free plan"}
+                    </span>
+                  )}
+                  {!subLoading && !isPro && (
+                    <Link to="/account/billing" className="text-sm font-semibold text-emerald hover:underline">
+                      Upgrade to Pro →
+                    </Link>
+                  )}
                 </div>
               </div>
 
