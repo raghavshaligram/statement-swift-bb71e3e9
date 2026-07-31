@@ -105,7 +105,11 @@ export function PayPalSubscribeButton() {
             }
             setStatus("success");
           },
-          onError() {
+          onError(err: unknown) {
+            // The user-facing copy stays friendly, but log the real PayPal
+            // error -- a RESOURCE_NOT_FOUND on an invalid plan ID looks
+            // identical to any other failure without this.
+            console.error("[LedgerLocal] PayPal checkout error:", err);
             setErrorMessage("Something went wrong starting checkout. Please try again.");
             setStatus("error");
           },
