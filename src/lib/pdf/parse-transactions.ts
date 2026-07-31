@@ -128,7 +128,7 @@ function isDateOnlyRow(text: string, dateOrder: DateOrder): boolean {
 // site), so this can't accidentally exclude a real dated transaction whose
 // own description happens to contain one of these words.
 const SUMMARY_ROW_RE =
-  /\b(previous balance|opening balance|beginning balance|balance forward|closing balance|new balance|statement balance|total amount due|minimum amount due|minimum payment due)\b/i;
+  /\b(previous balance|opening balance|beginning balance|balance forward|closing balance|new balance|statement balance|total amount due|minimum amount due|minimum payment due|grand total|total withdrawals?|total deposits?|total debits?|total credits?)\b/i;
 
 function isStatementSummaryRow(text: string): boolean {
   return SUMMARY_ROW_RE.test(text);
@@ -592,6 +592,28 @@ function applyBalanceContinuityAdjustment(transactions: RawTransaction[]): void 
     const prev = transactions[i - 1];
     const curr = transactions[i];
     if (prev.balance === null || curr.balance === null) continue; // not applicable -- leave base score as-is
+
+    const delta = curr.balance - prev.balance;
+
+    // Where a running balance exists it is the authority on direction, not
+    // the column the figure happened to land in. Statements with separate
+    // Withdrawals and Deposits columns frequently collapse into a single
+    // extracted column -- confirmed on a real Federal Bank statement, where
+    // "2500.00 10089.41" is a deposit and "797.00 9292.41" is a withdrawal
+    // despite occupying the identical position. Guessing from position gets
+    // the magnitude right and the sign wrong, which silently inverts real
+    // money.
+    //
+    // Only the SIGN is corrected, and only when the magnitude already
+    // agrees with the balance delta. A magnitude mismatch means something
+    // genuinely went wrong in extraction, and quietly overwriting the amount
+    // to force a tie-out would hide exactly the error the reconciliation
+    // check exists to surface.
+    const magnitudeAgrees = Math.abs(Math.abs(delta) - Math.abs(curr.amount)) < 0.02;
+    const signIsWrong = Math.sign(delta) !== Math.sign(curr.amount);
+    if (magnitudeAgrees && signIsWrong && Math.abs(delta) > 0) {
+      curr.amount = delta;
+    }
 
     const expected = prev.balance + curr.amount;
     const reconciles = Math.abs(expected - curr.balance) < 0.02;
