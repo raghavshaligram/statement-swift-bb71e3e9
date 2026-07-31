@@ -130,8 +130,26 @@ export function isFriendlyPdfError(err: unknown): err is EncryptedPdfError | Mal
  */
 export async function isPdfEncrypted(file: File): Promise<boolean> {
   try {
-    await openPdfjs(await file.arrayBuffer(), { onPassword: () => null });
-    return false;
+    // Fail-open with a hard timeout. This probe opens the PDF a second time,
+    // and if it ever fails to settle it would hang the whole upload -- which
+    // it did, silently blocking normal uploads entirely. A probe is a
+    // convenience for showing the unlock panel up front; it must never be
+    // able to stop a file being processed. If it doesn't answer quickly we
+    // assume "not encrypted" and let the real parse decide, since that path
+    // raises EncryptedPdfError properly anyway.
+    const probe = (async () => {
+      const doc = await openPdfjs(await file.arrayBuffer(), { onPassword: () => null });
+      // Release the worker document -- leaving these open leaks pdf.js
+      // resources across a multi-file batch.
+      try {
+        await (doc as unknown as { destroy?: () => Promise<void> }).destroy?.();
+      } catch {
+        /* noop */
+      }
+      return false;
+    })();
+    const timeout = new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 4000));
+    return await Promise.race([probe, timeout]);
   } catch (err) {
     if (err instanceof EncryptedPdfError) return true;
     return false;
