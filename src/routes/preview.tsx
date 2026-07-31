@@ -35,6 +35,11 @@ function PreviewPage() {
   // one file the merged view is misleading -- two statements' rows sit
   // interleaved with no indication of where one ends and the next begins.
   const [activeFile, setActiveFile] = useState<string>("__all__");
+  // Confidence floor. 0 shows everything; anything higher shows only rows
+  // scoring BELOW it, i.e. the ones worth checking. Thresholds mirror the
+  // tiers in confidence.ts (90 = high, 75 = medium) so the filter and the
+  // colour coding can't disagree.
+  const [maxConfidence, setMaxConfidence] = useState<number>(0);
   const [tab, setTab] = useState<FilterTab>("all");
   const [view, setView] = useState<"table" | "sidebyside">("table");
   const [editing, setEditing] = useState<{ id: string; field: keyof Transaction } | null>(null);
@@ -87,13 +92,14 @@ function PreviewPage() {
           return haystack.includes(q.toLowerCase());
         })
         .filter((r) => activeFile === "__all__" || r.sourceFile === activeFile)
+        .filter((r) => maxConfidence === 0 || r.confidence < maxConfidence)
         .filter((r) => {
           if (tab === "credits") return r.amount > 0;
           if (tab === "debits") return r.amount < 0;
           if (tab === "flagged") return getConfidenceTier(r.confidence) === "low";
           return true;
         }),
-    [rows, q, tab, activeFile]
+    [rows, q, tab, activeFile, maxConfidence]
   );
 
   // Scoped to the statement being viewed. These were computed across every
@@ -373,6 +379,36 @@ function PreviewPage() {
                     "rounded-md px-2.5 py-1.5 text-xs font-semibold transition",
                     tab === key
                       ? "bg-emerald text-primary-foreground"
+                      : "text-muted-foreground hover:text-ink"
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Confidence floor. Thresholds mirror confidence.ts (90 = high,
+                75 = medium) so this can't drift from the row colouring. */}
+            <div className="inline-flex items-center gap-1 rounded-lg border border-border bg-card p-0.5">
+              <span className="px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Conf.
+              </span>
+              {(
+                [
+                  [0, "Any"],
+                  [90, "< 90%"],
+                  [75, "< 75%"],
+                  [50, "< 50%"],
+                ] as const
+              ).map(([value, label]) => (
+                <button
+                  key={value}
+                  onClick={() => setMaxConfidence(value)}
+                  title={value === 0 ? "Show every row" : `Only rows scoring below ${value}% confidence`}
+                  className={cn(
+                    "rounded-md px-2.5 py-1.5 text-xs font-semibold transition",
+                    maxConfidence === value
+                      ? "bg-amber-500 text-white"
                       : "text-muted-foreground hover:text-ink"
                   )}
                 >
