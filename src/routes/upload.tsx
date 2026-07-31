@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import { usePageUsage } from "@/hooks/use-page-usage";
 import { useSubscription } from "@/hooks/use-subscription";
+import { useAuth } from "@/hooks/use-auth";
 import { useStatementStore } from "@/lib/statement-store";
 
 export const Route = createFileRoute("/upload")({
@@ -36,6 +37,30 @@ function UploadPage() {
   const [usageRefresh] = useState(0);
   const pageUsage = usePageUsage(usageRefresh);
   const { isPro } = useSubscription();
+  const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuth();
+
+  // Final catch for a pending post-sign-in destination. Sign-in can route
+  // here through several paths -- the email redirect, the OAuth round-trip
+  // via the homepage, or a plain visit -- and the destination has been lost
+  // at more than one of them. Honouring it here means it no longer matters
+  // which path was taken: whoever asked to go to billing gets there.
+  useEffect(() => {
+    // Only ever act on this once signed in. It's a POST-auth redirect, and
+    // firing it for a signed-out visitor would bounce them off /upload --
+    // breaking anonymous conversion, which needs no account at all.
+    // Confirmed that directly in testing before it shipped.
+    if (authLoading || !user) return;
+    try {
+      const pending = sessionStorage.getItem("ledgerlocal.postAuthRedirect");
+      if (pending && pending !== "/upload") {
+        sessionStorage.removeItem("ledgerlocal.postAuthRedirect");
+        navigate({ to: pending, replace: true });
+      }
+    } catch {
+      /* storage blocked -- stay on /upload */
+    }
+  }, [navigate, user, authLoading]);
   const phase = useStatementStore((s) => s.phase);
   const pendingFiles = useStatementStore((s) => s.pendingFiles);
   const showQueue = phase !== "idle" && pendingFiles.length > 0;

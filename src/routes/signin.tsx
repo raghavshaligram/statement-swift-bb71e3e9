@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, FileText, LayoutGrid, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
@@ -35,6 +35,21 @@ function SignInPage() {
   const navigate = useNavigate();
   const { redirect } = Route.useSearch();
   const destination = redirect ?? "/upload";
+
+  // Record the intended destination as soon as this page loads, so it
+  // survives regardless of which sign-in route the user takes. The
+  // ?redirect= param alone is lost on the Google OAuth round-trip, and
+  // relying on two different mechanisms for two paths is what let this
+  // regress twice.
+  useEffect(() => {
+    try {
+      if (destination && destination !== "/upload") {
+        sessionStorage.setItem("ledgerlocal.postAuthRedirect", destination);
+      }
+    } catch {
+      /* storage blocked -- falls back to the default destination */
+    }
+  }, [destination]);
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
