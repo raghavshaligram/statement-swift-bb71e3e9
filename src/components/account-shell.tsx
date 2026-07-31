@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
@@ -28,8 +28,14 @@ export function AccountShell({
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (r) => r.location.pathname });
 
+  // Captured once at mount: without this, adding pathname to the effect's
+  // deps made it re-fire after navigating to /signin and overwrite the real
+  // destination with "/signin" itself -- confirmed as a real bug in
+  // testing, not a hypothetical one.
+  const returnTo = useRef(pathname);
+
   useEffect(() => {
-    if (!loading && !user) navigate({ to: "/signin" });
+    if (!loading && !user) navigate({ to: "/signin", search: { redirect: returnTo.current } });
   }, [loading, user, navigate]);
 
   return (

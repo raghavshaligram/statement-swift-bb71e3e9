@@ -6,6 +6,9 @@ import { lovable } from "@/integrations/lovable";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/signin")({
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } => ({
+    redirect: typeof search.redirect === "string" ? search.redirect : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Sign in — LedgerLocal" },
@@ -30,6 +33,8 @@ function GoogleIcon({ className }: { className?: string }) {
 
 function SignInPage() {
   const navigate = useNavigate();
+  const { redirect } = Route.useSearch();
+  const destination = redirect ?? "/upload";
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,7 +50,7 @@ function SignInPage() {
       return;
     }
     toast.success("Welcome back!");
-    navigate({ to: "/upload" });
+    navigate({ to: destination });
   }
 
   const [googleLoading, setGoogleLoading] = useState(false);
@@ -58,7 +63,7 @@ function SignInPage() {
       return;
     }
     if (res.redirected) return;
-    navigate({ to: "/upload" });
+    navigate({ to: destination });
   }
 
   return (
@@ -170,7 +175,7 @@ function SignInPage() {
 
           <p className="mt-8 text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
-            <Link to="/signup" className="font-bold text-emerald hover:underline">
+            <Link to="/signup" search={{ redirect }} className="font-bold text-emerald hover:underline">
               Sign up free
             </Link>
           </p>
