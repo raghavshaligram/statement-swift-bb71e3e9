@@ -68,6 +68,17 @@ function SignUpPage() {
   const [googleLoading, setGoogleLoading] = useState(false);
   async function onGoogle() {
     setGoogleLoading(true);
+    // Google OAuth returns to the site origin, which discards the
+    // ?redirect= search param -- and the homepage then sends any logged-in
+    // user straight to /upload. Stash the intended destination so it can
+    // survive the round-trip.
+    try {
+      if (destination && destination !== "/upload") {
+        sessionStorage.setItem("ledgerlocal.postAuthRedirect", destination);
+      }
+    } catch {
+      /* storage can be blocked; falls back to the default destination */
+    }
     const res = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (res.error) {
       setGoogleLoading(false);

@@ -107,7 +107,21 @@ function Landing() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!loading && user) navigate({ to: "/upload", replace: true });
+    if (loading || !user) return;
+    // A signed-in visitor normally belongs in the app, but if they were sent
+    // to sign in from somewhere specific (Get Pro -> billing, say), honour
+    // that rather than dropping them on the converter.
+    let target = "/upload";
+    try {
+      const stashed = sessionStorage.getItem("ledgerlocal.postAuthRedirect");
+      if (stashed) {
+        target = stashed;
+        sessionStorage.removeItem("ledgerlocal.postAuthRedirect");
+      }
+    } catch {
+      /* fall through to the default */
+    }
+    navigate({ to: target, replace: true });
   }, [user, loading, navigate]);
   useEffect(() => {
     if (loading || user) return;

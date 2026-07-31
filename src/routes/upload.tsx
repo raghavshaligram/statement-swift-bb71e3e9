@@ -1,8 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { AppShell } from "@/components/app-shell";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import { usePageUsage } from "@/hooks/use-page-usage";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useStatementStore } from "@/lib/statement-store";
 
 export const Route = createFileRoute("/upload")({
@@ -33,6 +35,7 @@ export const Route = createFileRoute("/upload")({
 function UploadPage() {
   const [usageRefresh] = useState(0);
   const pageUsage = usePageUsage(usageRefresh);
+  const { isPro } = useSubscription();
   const phase = useStatementStore((s) => s.phase);
   const pendingFiles = useStatementStore((s) => s.pendingFiles);
   const showQueue = phase !== "idle" && pendingFiles.length > 0;
@@ -41,6 +44,28 @@ function UploadPage() {
     <AppShell title="Convert statements">
       <div className="mx-auto max-w-4xl space-y-6">
         <EmbeddedConverter showOcrLanguage />
+
+        {/* A persistent, low-key upgrade path for signed-in free accounts.
+            Previously the only way to reach billing from here was to first
+            exhaust the free allowance, which meant the people most likely to
+            pay had no route to doing so. */}
+        {!showQueue && pageUsage.isSignedIn && !isPro && (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald/25 bg-emerald-soft/40 px-5 py-4">
+            <div>
+              <div className="text-sm font-semibold text-ink">You're on the free plan</div>
+              <p className="mt-0.5 text-xs text-muted-foreground">
+                Pro removes the page cap entirely — a full year of statements in one sitting, all seven export
+                formats.
+              </p>
+            </div>
+            <Link
+              to="/account/billing"
+              className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-emerald px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-emerald/90"
+            >
+              Upgrade to Pro <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        )}
 
         {!showQueue && pageUsage.isSignedIn && pageUsage.used !== null && (
           <p className="text-xs text-muted-foreground">
