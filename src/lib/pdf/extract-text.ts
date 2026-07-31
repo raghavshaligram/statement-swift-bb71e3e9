@@ -25,7 +25,7 @@ export type ExtractedPdf = {
   fullText: string;
 };
 
-import { openPdfjs, type PasswordPrompt } from "@/lib/pdf/pdf-open";
+import { openPdfjs } from "@/lib/pdf/pdf-open";
 
 let pdfjsLibPromise: Promise<typeof import("pdfjs-dist")> | null = null;
 
@@ -44,14 +44,14 @@ export async function loadPdfJs() {
 export async function extractPdfText(
   file: File,
   onPageParsed?: (pageNumber: number, totalPages: number) => void,
-  onPassword?: PasswordPrompt
+  password?: string
 ): Promise<ExtractedPdf> {
   if (typeof window === "undefined") {
     throw new Error("extractPdfText can only run in the browser");
   }
 
   const arrayBuffer = await file.arrayBuffer();
-  const doc = await openPdfjs(arrayBuffer, { onPassword });
+  const doc = await openPdfjs(arrayBuffer, { password });
 
   const pages: PageText[] = [];
   let fullText = "";
@@ -95,12 +95,12 @@ export async function extractPdfText(
  * check before committing to a full parse, so a too-long file gets rejected
  * immediately rather than after doing real work on it.
  */
-export async function getPdfPageCount(file: File, onPassword?: PasswordPrompt): Promise<number> {
+export async function getPdfPageCount(file: File, password?: string): Promise<number> {
   if (typeof window === "undefined") {
     throw new Error("getPdfPageCount can only run in the browser");
   }
   const arrayBuffer = await file.arrayBuffer();
-  const doc = await openPdfjs(arrayBuffer, { onPassword });
+  const doc = await openPdfjs(arrayBuffer, { password });
   return doc.numPages;
 }
 

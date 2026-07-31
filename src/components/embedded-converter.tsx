@@ -10,12 +10,12 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Upload, AlertTriangle } from "lucide-react";
+import { Upload, AlertTriangle, Lock } from "lucide-react";
 import { StatementDropzone } from "@/components/statement-dropzone";
 import { ParseQueue } from "@/components/parse-queue";
 import { useStatementStore } from "@/lib/statement-store";
 import { parseStatementFile } from "@/lib/pdf/parse-statement";
-import { validateUploadBatch } from "@/lib/pdf/upload-validation";
+import { validateUploadBatch, findEncryptedPdfs } from "@/lib/pdf/upload-validation";
 import { usePageUsage } from "@/hooks/use-page-usage";
 import { useAuth } from "@/hooks/use-auth";
 import { ANONYMOUS_MAX_PAGES, SIGNED_IN_MAX_PAGES } from "@/lib/pricing-constants";
@@ -35,6 +35,13 @@ export function EmbeddedConverter({ className }: { className?: string }) {
   const failProcessing = useStatementStore((s) => s.failProcessing);
   const [, setLiveFileName] = useState("");
   const [pageLimitError, setPageLimitError] = useState<{ message: string; requiresSignIn: boolean } | null>(null);
+  // Files that are encrypted and still awaiting a password. Parsing is held
+  // until every one is unlocked -- continuing without the password can only
+  // fail, and doing so previously read as a broken workflow.
+  const [lockedFiles, setLockedFiles] = useState<File[]>([]);
+  const [pendingBatch, setPendingBatch] = useState<File[]>([]);
+  const [passwords, setPasswords] = useState<Record<string, string>>({});
+  const [unlockError, setUnlockError] = useState<string | null>(null);
   const [usageRefresh, setUsageRefresh] = useState(0);
   const pageUsage = usePageUsage(usageRefresh);
 
@@ -65,7 +72,35 @@ export function EmbeddedConverter({ className }: { className?: string }) {
 
   async function handleFiles(files: File[]) {
     setPageLimitError(null);
+    setUnlockError(null);
 
+    // Ask for passwords BEFORE validating or parsing -- an encrypted file
+    // can't be page-counted or read until it's unlocked.
+    const locked = await findEncryptedPdfs(files);
+    if (locked.length > 0) {
+      setLockedFiles(locked);
+      setPendingBatch(files);
+      return;
+    }
+
+    await runBatch(files, {});
+  }
+
+  async function submitPasswords() {
+    setUnlockError(null);
+    for (const f of lockedFiles) {
+      if (!passwords[f.name]) {
+        setUnlockError("Enter the password for every locked file to continue.");
+        return;
+      }
+    }
+    const batch = pendingBatch;
+    setLockedFiles([]);
+    setPendingBatch([]);
+    await runBatch(batch, passwords);
+  }
+
+  async function runBatch(files: File[], pwds: Record<string, string>) {
     const validation = await validateUploadBatch(files, !!user);
     if (!validation.ok) {
       setPageLimitError({ message: validation.message, requiresSignIn: validation.requiresSignIn });
@@ -79,7 +114,12 @@ export function EmbeddedConverter({ className }: { className?: string }) {
     try {
       for (let i = 0; i < files.length; i++) {
         setLiveFileName(files[i].name);
-        const statement = await parseStatementFile(files[i], (page, total) => setProgress(i, page, total));
+        const statement = await parseStatementFile(
+          files[i],
+          (page, total) => setProgress(i, page, total),
+          ["eng"],
+          pwds[files[i].name]
+        );
         parsed.push(statement);
       }
       finishProcessing(parsed);
@@ -112,6 +152,54 @@ export function EmbeddedConverter({ className }: { className?: string }) {
       ) : (
         <>
           <StatementDropzone variant="full" onFiles={handleFiles} className="border-2 border-dashed border-border/80 bg-surface/50" />
+
+          {lockedFiles.length > 0 && (
+            <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-4">
+              <div className="flex items-start gap-2.5">
+                <Lock className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+                <div className="w-full">
+                  <div className="text-sm font-semibold text-amber-900">
+                    {lockedFiles.length === 1 ? "This statement is password-protected" : "These statements are password-protected"}
+                  </div>
+                  <p className="mt-1 text-xs text-amber-800">
+                    Enter the password to unlock. It's used entirely on your device and never sent anywhere.
+                  </p>
+                  <div className="mt-3 space-y-2">
+                    {lockedFiles.map((f) => (
+                      <div key={f.name}>
+                        <label className="text-[11px] font-medium text-amber-900">{f.name}</label>
+                        <input
+                          type="password"
+                          autoComplete="off"
+                          value={passwords[f.name] ?? ""}
+                          onChange={(e) => setPasswords((prev) => ({ ...prev, [f.name]: e.target.value }))}
+                          onKeyDown={(e) => { if (e.key === "Enter") submitPasswords(); }}
+                          placeholder="PDF password"
+                          className="mt-1 w-full rounded-md border border-amber-300 bg-background px-3 py-2 text-sm text-ink outline-none focus:border-amber-500"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  {unlockError && <div className="mt-2 text-xs font-medium text-rose-700">{unlockError}</div>}
+                  <div className="mt-3 flex gap-2">
+                    <button
+                      onClick={submitPasswords}
+                      className="rounded-lg bg-amber-500 px-4 py-2 text-xs font-semibold text-white transition hover:bg-amber-600"
+                    >
+                      Unlock and convert
+                    </button>
+                    <button
+                      onClick={() => { setLockedFiles([]); setPendingBatch([]); setPasswords({}); setUnlockError(null); }}
+                      className="rounded-lg border border-amber-300 px-4 py-2 text-xs font-semibold text-amber-900 transition hover:bg-amber-100"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {pageLimitError ? (
             <div className="mx-2 mt-3 flex items-center justify-between gap-3 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3">
               <div className="flex items-start gap-2.5 text-left">

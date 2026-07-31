@@ -40,18 +40,17 @@ export interface OpenPdfjsOpts {
   /** Called when the PDF is encrypted. Return a password to retry, or null
    *  to cancel (which raises EncryptedPdfError). Defaults to window.prompt. */
   onPassword?: PasswordPrompt;
+  /** Known password, collected by in-app UI. Preferred over onPassword. */
+  password?: string;
   /** Extra parameters forwarded to pdfjs.getDocument. */
   extra?: Record<string, unknown>;
 }
 
-const defaultPrompt: PasswordPrompt = (reason) => {
-  if (typeof window === "undefined") return null;
-  const msg =
-    reason === "incorrectPassword"
-      ? "Incorrect password — try again:"
-      : "This PDF is password-protected. Enter the password:";
-  return window.prompt(msg) ?? null;
-};
+// NOTE: there is deliberately no default prompt. A browser window.prompt is
+// poor UX, and it let the flow continue past an unanswered prompt straight
+// into parsing. Callers supply the password via `password`, collected by real
+// in-app UI; an encrypted file with no password raises EncryptedPdfError so
+// the caller can stop and ask properly.
 
 /**
  * Open a PDF with pdf.js, handling encryption and malformed input cleanly.
@@ -64,42 +63,39 @@ export async function openPdfjs(
   opts: OpenPdfjsOpts = {},
 ) {
   const pdfjsLib = await loadPdfJs();
-  const prompt = opts.onPassword ?? defaultPrompt;
   const task = pdfjsLib.getDocument({
     data: data instanceof Uint8Array ? data : new Uint8Array(data),
+    ...(opts.password ? { password: opts.password } : {}),
     ...(opts.extra ?? {}),
   });
 
-  const anyTask = task as unknown as {
-    onPassword?: (updateCallback: (pw: string) => void, reason: number) => void;
-    destroy?: () => void;
-    promise: Promise<unknown>;
-  };
-
-  // pdf.js reason codes: 1 = needs a password, 2 = the one supplied was wrong.
-  anyTask.onPassword = (updateCallback, reason) => {
-    Promise.resolve(prompt(reason === 2 ? "incorrectPassword" : "needPassword"))
-      .then((pw) => {
-        if (pw == null || pw === "") {
-          // Cancelled: destroy the task so its promise rejects rather than
-          // hanging forever waiting for a password that isn't coming.
-          try {
-            anyTask.destroy?.();
-          } catch {
-            /* noop */
+  // Only install an onPassword handler when a caller explicitly supplies
+  // one. Installing it unconditionally and then destroy()-ing the task on
+  // cancel made the promise reject with a *destroy* error rather than
+  // pdf.js's PasswordException -- which silently defeated encryption
+  // detection. Left alone, pdf.js rejects with PasswordException, which maps
+  // cleanly to EncryptedPdfError below.
+  if (opts.onPassword) {
+    const prompt = opts.onPassword;
+    const anyTask = task as unknown as {
+      onPassword?: (updateCallback: (pw: string) => void, reason: number) => void;
+      destroy?: () => void;
+    };
+    // pdf.js reason codes: 1 = needs a password, 2 = the one given was wrong.
+    anyTask.onPassword = (updateCallback, reason) => {
+      Promise.resolve(prompt(reason === 2 ? "incorrectPassword" : "needPassword"))
+        .then((pw) => {
+          if (pw == null || pw === "") {
+            try { anyTask.destroy?.(); } catch { /* noop */ }
+            return;
           }
-          return;
-        }
-        updateCallback(pw);
-      })
-      .catch(() => {
-        try {
-          anyTask.destroy?.();
-        } catch {
-          /* noop */
-        }
-      });
-  };
+          updateCallback(pw);
+        })
+        .catch(() => {
+          try { anyTask.destroy?.(); } catch { /* noop */ }
+        });
+    };
+  }
 
   try {
     return await task.promise;
@@ -125,4 +121,19 @@ export async function openPdfjs(
  *  a specific, actionable message for. */
 export function isFriendlyPdfError(err: unknown): err is EncryptedPdfError | MalformedPdfError {
   return err instanceof EncryptedPdfError || err instanceof MalformedPdfError;
+}
+
+/**
+ * Returns true if the PDF needs a password, without prompting for one.
+ * Lets the caller collect a password up front rather than discovering the
+ * problem midway through a parse.
+ */
+export async function isPdfEncrypted(file: File): Promise<boolean> {
+  try {
+    await openPdfjs(await file.arrayBuffer(), { onPassword: () => null });
+    return false;
+  } catch (err) {
+    if (err instanceof EncryptedPdfError) return true;
+    return false;
+  }
 }

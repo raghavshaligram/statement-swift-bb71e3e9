@@ -37,7 +37,7 @@
  */
 
 import { getPdfPageCount, isPageLimitExempt } from "./extract-text";
-import { EncryptedPdfError } from "@/lib/pdf/pdf-open";
+import { EncryptedPdfError, isPdfEncrypted } from "@/lib/pdf/pdf-open";
 import { ANONYMOUS_MAX_PAGES, SIGNED_IN_MAX_PAGES } from "../pricing-constants";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -63,6 +63,18 @@ const IMAGE_EXT_RE = /\.(jpe?g|png|webp)$/i;
 
 function isImageFile(f: File): boolean {
   return f.type.startsWith("image/") || IMAGE_EXT_RE.test(f.name);
+}
+
+/**
+ * Encrypted PDFs must be unlocked BEFORE anything else happens. Returning
+ * them here lets the caller collect a password in real UI and stop, rather
+ * than continuing into a parse that cannot possibly succeed -- which is what
+ * it did previously, and read as a broken workflow.
+ */
+export async function findEncryptedPdfs(files: File[]): Promise<File[]> {
+  const pdfs = files.filter((f) => /\.pdf$/i.test(f.name) || f.type === "application/pdf");
+  const flags = await Promise.all(pdfs.map((f) => isPdfEncrypted(f)));
+  return pdfs.filter((_, i) => flags[i]);
 }
 
 export type UploadValidation =

@@ -20,7 +20,8 @@ const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export async function parseStatementFile(
   file: File,
   onPageParsed?: (pageNumber: number, totalPages: number) => void,
-  ocrLanguages: string[] = ["eng"]
+  ocrLanguages: string[] = ["eng"],
+  password?: string
 ): Promise<ParsedStatement> {
   const warnings: string[] = [];
 
@@ -148,7 +149,7 @@ export async function parseStatementFile(
     }
   } else {
     try {
-      extracted = await extractPdfText(file, onPageParsed);
+      extracted = await extractPdfText(file, onPageParsed, password);
     } catch (err) {
       // Now that openPdfjs raises typed errors, say which of the three
       // things actually went wrong instead of listing all of them and
