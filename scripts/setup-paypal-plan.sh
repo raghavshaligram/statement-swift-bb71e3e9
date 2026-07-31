@@ -20,9 +20,18 @@ set -euo pipefail
 : "${PAYPAL_API_BASE:?Set PAYPAL_API_BASE (sandbox or live)}"
 
 echo "Getting access token..."
-ACCESS_TOKEN=$(curl -s "$PAYPAL_API_BASE/v1/oauth2/token" \
+TOKEN_RESPONSE=$(curl -s "$PAYPAL_API_BASE/v1/oauth2/token" \
   -u "$PAYPAL_CLIENT_ID:$PAYPAL_CLIENT_SECRET" \
-  -d "grant_type=client_credentials" | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])")
+  -d "grant_type=client_credentials")
+ACCESS_TOKEN=$(echo "$TOKEN_RESPONSE" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+if 'access_token' not in d:
+    print('ERROR: could not authenticate with PayPal. Response was:', file=sys.stderr)
+    print(json.dumps(d, indent=2), file=sys.stderr)
+    sys.exit(1)
+print(d['access_token'])
+")
 
 echo "Creating product..."
 PRODUCT_RESPONSE=$(curl -s "$PAYPAL_API_BASE/v1/catalogs/products" \
@@ -35,7 +44,15 @@ PRODUCT_RESPONSE=$(curl -s "$PAYPAL_API_BASE/v1/catalogs/products" \
     "type": "SERVICE",
     "category": "SOFTWARE"
   }')
-PRODUCT_ID=$(echo "$PRODUCT_RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+PRODUCT_ID=$(echo "$PRODUCT_RESPONSE" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+if 'id' not in d:
+    print('ERROR: product creation failed. PayPal responded:', file=sys.stderr)
+    print(json.dumps(d, indent=2), file=sys.stderr)
+    sys.exit(1)
+print(d['id'])
+")
 echo "Product created: $PRODUCT_ID"
 
 echo "Creating plan..."
@@ -47,6 +64,7 @@ PLAN_RESPONSE=$(curl -s "$PAYPAL_API_BASE/v1/billing/plans" \
     "product_id": "'"$PRODUCT_ID"'",
     "name": "LedgerLocal Pro Monthly",
     "description": "$19/month flat -- unlimited conversions, no page cap, all export formats",
+    "status": "ACTIVE",
     "billing_cycles": [
       {
         "frequency": { "interval_unit": "MONTH", "interval_count": 1 },
@@ -63,7 +81,15 @@ PLAN_RESPONSE=$(curl -s "$PAYPAL_API_BASE/v1/billing/plans" \
       "payment_failure_threshold": 3
     }
   }')
-PLAN_ID=$(echo "$PLAN_RESPONSE" | python3 -c "import sys,json; print(json.load(sys.stdin)['id'])")
+PLAN_ID=$(echo "$PLAN_RESPONSE" | python3 -c "
+import sys, json
+d = json.load(sys.stdin)
+if 'id' not in d:
+    print('ERROR: plan creation failed. PayPal responded:', file=sys.stderr)
+    print(json.dumps(d, indent=2), file=sys.stderr)
+    sys.exit(1)
+print(d['id'])
+")
 
 echo ""
 echo "=========================================="
