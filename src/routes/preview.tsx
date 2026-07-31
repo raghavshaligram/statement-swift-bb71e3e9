@@ -6,6 +6,7 @@ import { SideBySidePane } from "@/components/side-by-side-pane";
 import { useStatementStore } from "@/lib/statement-store";
 import { formatAmount } from "@/lib/pdf/detect-currency";
 import { getConfidenceTier } from "@/lib/pdf/confidence";
+import { reconcileTransactions } from "@/lib/pdf/reconciliation";
 import { cn } from "@/lib/utils";
 import type { Transaction } from "@/lib/statement-store";
 
@@ -35,6 +36,10 @@ function PreviewPage() {
   const [editing, setEditing] = useState<{ id: string; field: keyof Transaction } | null>(null);
 
   const rows = useMemo(() => statements.flatMap((st) => st.transactions), [statements]);
+  // The parser already does this arithmetic per row for confidence scoring
+  // and discards it. Surfacing it is the point: an accountant's first
+  // question is whether the statement ties out, not how many rows parsed.
+  const reconciliation = useMemo(() => reconcileTransactions(rows), [rows]);
   const warnings = useMemo(() => statements.flatMap((st) => st.warnings), [statements]);
   const currency = useMemo(() => statements.find((st) => st.currency)?.currency ?? null, [statements]);
   const flaggedCount = rows.filter((r) => getConfidenceTier(r.confidence) === "low").length;
@@ -84,6 +89,49 @@ function PreviewPage() {
     <div className="flex h-screen flex-col overflow-hidden bg-surface-muted/40">
       <TopNav />
       <div className="flex min-h-0 flex-1 flex-col">
+        {reconciliation.status !== "not-applicable" && (
+          <div
+            className={cn(
+              "flex-none border-b px-4 py-2.5 text-xs sm:px-5",
+              reconciliation.status === "balanced"
+                ? "border-emerald/30 bg-emerald-soft/50 text-emerald"
+                : "border-amber-300 bg-amber-50 text-amber-900"
+            )}
+          >
+            {reconciliation.status === "balanced" ? (
+              <span className="flex items-center gap-2 font-medium">
+                <Check className="h-3.5 w-3.5 shrink-0" />
+                Balances tie out — opening {formatAmount(reconciliation.openingBalance, currency)} plus{" "}
+                {formatAmount(reconciliation.netChange, currency)} net equals the closing balance of{" "}
+                {formatAmount(reconciliation.closingBalance, currency)} across {reconciliation.rowsChecked} rows.
+              </span>
+            ) : (
+              <span className="flex items-start gap-2 font-medium">
+                <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                <span>
+                  Balances don't tie out — expected a closing balance of{" "}
+                  {formatAmount(reconciliation.expectedClosing, currency)} but the statement shows{" "}
+                  {formatAmount(reconciliation.closingBalance, currency)} (off by{" "}
+                  {formatAmount(Math.abs(reconciliation.difference), currency)}).
+                  {reconciliation.breaks.length > 0 && (
+                    <>
+                      {" "}
+                      The running balance first breaks at{" "}
+                      <span className="font-semibold">
+                        {reconciliation.breaks[0].date} · {reconciliation.breaks[0].description.slice(0, 40)}
+                      </span>{" "}
+                      (expected {formatAmount(reconciliation.breaks[0].expected, currency)}, got{" "}
+                      {formatAmount(reconciliation.breaks[0].actual, currency)})
+                      {reconciliation.breaks.length > 1 && ` and ${reconciliation.breaks.length - 1} other row(s)`}.
+                      Worth checking those rows against the original before exporting.
+                    </>
+                  )}
+                </span>
+              </span>
+            )}
+          </div>
+        )}
+
         {/* Sticky header: metrics + Export */}
         <div className="flex-none border-b border-border">
           <div className="flex flex-wrap items-center justify-between gap-4 bg-ink px-4 py-3 text-background sm:px-5">
