@@ -85,6 +85,46 @@ Deno.serve(async (req: Request) => {
         body: "grant_type=client_credentials",
       });
 
+      // A rejected token request is definitive -- bad credentials, not a
+      // transient blip -- so it must fail loudly here. Previously this fell
+      // through and served the config anyway, which meant an invalid Client
+      // ID produced a confusing "SDK 400 Bad Request" in the browser instead
+      // of naming the actual problem. Genuine network exceptions are still
+      // caught below and allowed to pass, since those really can be
+      // transient.
+      if (!tokenRes.ok) {
+        let tokenError: unknown = null;
+        try {
+          tokenError = await tokenRes.json();
+        } catch {
+          tokenError = await tokenRes.text().catch(() => null);
+        }
+        return new Response(
+          JSON.stringify({
+            error: "PayPal rejected the configured credentials",
+            environmentChecked: env,
+            paypalStatus: tokenRes.status,
+            paypalError: tokenError,
+            // Shape only -- never the value itself. A real PayPal Client ID
+            // is a long (~80 char) token starting with "A". A short value is
+            // almost always a Merchant/Account ID pasted in by mistake,
+            // which looks plausible but is a completely different
+            // identifier.
+            clientIdLength: clientId.length,
+            clientIdLooksValid: clientId.length > 50,
+            detail:
+              clientId.length > 50
+                ? `PAYPAL_CLIENT_ID_${suffix} and PAYPAL_CLIENT_SECRET_${suffix} were rejected by PayPal. ` +
+                  `Check they're from the same app, and that both belong to the "${env}" environment.`
+                : `PAYPAL_CLIENT_ID_${suffix} is only ${clientId.length} characters, which is too short to be ` +
+                  `a real Client ID -- those are roughly 80 characters and start with "A". A short value like ` +
+                  `this is usually a PayPal Merchant/Account ID pasted in by mistake. Get the actual Client ID ` +
+                  `from developer.paypal.com under Apps & Credentials, on your app, for the "${env}" environment.`,
+          }),
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+        );
+      }
+
       if (tokenRes.ok) {
         const { access_token } = await tokenRes.json();
         const planRes = await fetch(`${apiBase}/v1/billing/plans/${planId}`, {
