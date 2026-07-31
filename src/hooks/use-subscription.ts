@@ -14,35 +14,94 @@ export type SubscriptionRow = {
  * paypal-webhook edge function (the source of truth) -- the browser only
  * ever reads it here.
  */
+/**
+ * Shared across every caller.
+ *
+ * Two real bugs came from not having this. The effect below depended on the
+ * `user` OBJECT, and a new reference on each render re-fired it endlessly --
+ * flipping `loading` back to true and the plan badge back to "Free", which
+ * is what read as Pro status "coming and going". And every component fetched
+ * independently, so the profile menu, account page and billing screen each
+ * resolved at different moments and disagreed with each other on screen.
+ *
+ * One in-flight request per user, one cached answer, so every caller shows
+ * the same thing at the same time.
+ */
+let cache: { userId: string; data: SubscriptionRow | null } | null = null;
+let inFlight: Promise<SubscriptionRow | null> | null = null;
+let inFlightUserId: string | null = null;
+
+/** Drop the cache so the next read re-fetches (e.g. after checkout). */
+export function invalidateSubscriptionCache() {
+  cache = null;
+  inFlight = null;
+  inFlightUserId = null;
+}
+
+async function fetchSubscription(userId: string): Promise<SubscriptionRow | null> {
+  if (cache && cache.userId === userId) return cache.data;
+  if (inFlight && inFlightUserId === userId) return inFlight;
+
+  inFlightUserId = userId;
+  inFlight = Promise.resolve(
+    supabase
+    .from("subscriptions")
+    .select("status, plan_id, paypal_subscription_id, created_at")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle()
+    .then(({ data, error }) => {
+      const row = error ? null : ((data as SubscriptionRow) ?? null);
+      cache = { userId, data: row };
+      inFlight = null;
+      inFlightUserId = null;
+      return row;
+    })
+  );
+
+  return inFlight;
+}
+
 export function useSubscription(refreshKey = 0) {
-  const { user } = useAuth();
-  const [subscription, setSubscription] = useState<SubscriptionRow | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading: authLoading } = useAuth();
+  const userId = user?.id ?? null;
+
+  // Seed straight from the cache when it's already known, so a remount
+  // doesn't briefly report "Free" before re-resolving.
+  const cached = cache && cache.userId === userId ? cache.data : null;
+  const [subscription, setSubscription] = useState<SubscriptionRow | null>(cached);
+  const [loading, setLoading] = useState(cached === null);
 
   useEffect(() => {
-    if (!user) {
+    if (refreshKey > 0) invalidateSubscriptionCache();
+
+    if (authLoading) return; // don't decide anything until auth is known
+    if (!userId) {
       setSubscription(null);
       setLoading(false);
       return;
     }
+
+    if (cache && cache.userId === userId) {
+      setSubscription(cache.data);
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
-    supabase
-      .from("subscriptions")
-      .select("status, plan_id, paypal_subscription_id, created_at")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle()
-      .then(({ data, error }) => {
-        if (cancelled) return;
-        if (!error) setSubscription((data as SubscriptionRow) ?? null);
-        setLoading(false);
-      });
+    fetchSubscription(userId).then((row) => {
+      if (cancelled) return;
+      setSubscription(row);
+      setLoading(false);
+    });
     return () => {
       cancelled = true;
     };
-  }, [user, refreshKey]);
+    // Keyed on the user ID (a stable string) rather than the user object,
+    // whose identity changes on every render and caused an endless refetch.
+  }, [userId, authLoading, refreshKey]);
 
   const isPro = subscription?.status === "active";
   return { subscription, isPro, loading };

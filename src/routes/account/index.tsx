@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Mail, User as UserIcon, Trash2 } from "lucide-react";
+import { useSubscription } from "@/hooks/use-subscription";
 import { AccountShell } from "@/components/account-shell";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/account/")({
 
 function AccountPage() {
   const { user } = useAuth();
+  const { isPro, loading: subLoading } = useSubscription();
   const [displayName, setDisplayName] = useState("");
   const [saving, setSaving] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);
@@ -74,13 +76,23 @@ function AccountPage() {
             <div className="min-w-0 flex-1">
               <div className="text-lg font-bold text-ink">{displayName || user?.email?.split("@")[0]}</div>
               <div className="truncate text-sm text-muted-foreground">{user?.email}</div>
-              <span className="mt-2 inline-block rounded-full bg-surface-muted px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                Free plan
-              </span>
+              {subLoading ? (
+                <span className="mt-2 inline-block h-[18px] w-20 animate-pulse rounded-full bg-surface-muted" aria-hidden />
+              ) : (
+                <span
+                  className={`mt-2 inline-block rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
+                    isPro ? "bg-emerald-soft text-emerald" : "bg-surface-muted text-muted-foreground"
+                  }`}
+                >
+                  {isPro ? "Pro plan" : "Free plan"}
+                </span>
+              )}
             </div>
             <a
               href="/account/billing"
-              className="inline-flex h-10 items-center rounded-lg border-2 border-emerald px-4 text-sm font-semibold text-emerald transition hover:bg-emerald/5"
+              className={`inline-flex h-10 items-center rounded-lg border-2 border-emerald px-4 text-sm font-semibold text-emerald transition hover:bg-emerald/5 ${
+                subLoading || isPro ? "hidden" : ""
+              }`}
             >
               Upgrade to Pro
             </a>

@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
+import { useSubscription } from "@/hooks/use-subscription";
 import { useStatementStore } from "@/lib/statement-store";
 import {
   DropdownMenu,
@@ -14,6 +15,7 @@ type Variant = "dark" | "light";
 
 export function AuthActions({ variant = "dark" }: { variant?: Variant }) {
   const { user, loading, signOut } = useAuth();
+  const { isPro, loading: subLoading } = useSubscription();
   const navigate = useNavigate();
   const resetStatements = useStatementStore((s) => s.reset);
 
@@ -60,9 +62,22 @@ export function AuthActions({ variant = "dark" }: { variant?: Variant }) {
         <div className="px-4 pb-3 pt-4">
           <div className="truncate text-sm font-bold text-background">{displayName}</div>
           <div className="truncate font-mono text-[11px] text-background/60">{user.email}</div>
-          <span className="mt-2 inline-block rounded-full bg-white/10 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-background/80">
-            Free
-          </span>
+          {/* Rendered from real subscription state. It was hardcoded "Free",
+              so a paying customer saw Free here while Billing correctly said
+              Pro. Nothing is shown until the status is known -- flashing
+              "Free" and then correcting to "Pro" is what read as the badge
+              flickering. */}
+          {subLoading ? (
+            <span className="mt-2 inline-block h-[18px] w-14 animate-pulse rounded-full bg-white/10" aria-hidden />
+          ) : (
+            <span
+              className={`mt-2 inline-block rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
+                isPro ? "bg-emerald/20 text-emerald" : "bg-white/10 text-background/80"
+              }`}
+            >
+              {isPro ? "Pro" : "Free"}
+            </span>
+          )}
         </div>
         <DropdownMenuSeparator className="my-0 bg-white/10" />
         <div className="py-1">

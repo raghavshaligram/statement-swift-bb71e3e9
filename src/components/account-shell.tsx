@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
-import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { SiteFooter } from "@/components/site-header";
+import { TopNav } from "@/components/top-nav";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import { History, User, CreditCard, Settings } from "lucide-react";
@@ -38,9 +39,25 @@ export function AccountShell({
     if (!loading && !user) navigate({ to: "/signin", search: { redirect: returnTo.current } });
   }, [loading, user, navigate]);
 
+  // Don't render protected content until auth is known. Previously children
+  // rendered immediately while the redirect happened in an effect, so a
+  // signed-out visitor saw a flash of the billing screen before being sent
+  // to sign in.
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-screen flex-col bg-surface-muted/30">
+        <TopNav />
+        <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-12">
+          <div className="h-8 w-48 animate-pulse rounded-lg bg-surface-muted" />
+          <div className="mt-6 h-40 w-full animate-pulse rounded-2xl bg-surface-muted" />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-surface-muted/30">
-      <SiteHeader />
+      <TopNav />
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-12">
         <div className="mb-8">
           <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald">
