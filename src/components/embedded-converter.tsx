@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Upload, AlertTriangle, Lock } from "lucide-react";
 import { StatementDropzone } from "@/components/statement-dropzone";
+import { OCR_LANGUAGES } from "@/lib/pdf/ocr-languages";
 import { ParseQueue } from "@/components/parse-queue";
 import { useStatementStore } from "@/lib/statement-store";
 import { parseStatementFile } from "@/lib/pdf/parse-statement";
@@ -20,7 +21,15 @@ import { usePageUsage } from "@/hooks/use-page-usage";
 import { useAuth } from "@/hooks/use-auth";
 import { ANONYMOUS_MAX_PAGES, SIGNED_IN_MAX_PAGES } from "@/lib/pricing-constants";
 
-export function EmbeddedConverter({ className }: { className?: string }) {
+export function EmbeddedConverter({
+  className,
+  showOcrLanguage = false,
+}: {
+  className?: string;
+  /** Show the OCR language picker. On by default only for the full /upload
+   *  experience -- the compact in-page converter keeps its footprint small. */
+  showOcrLanguage?: boolean;
+}) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const maxPages = user ? SIGNED_IN_MAX_PAGES : ANONYMOUS_MAX_PAGES;
@@ -43,6 +52,7 @@ export function EmbeddedConverter({ className }: { className?: string }) {
   const [pendingBatch, setPendingBatch] = useState<File[]>([]);
   const [passwords, setPasswords] = useState<Record<string, string>>({});
   const [unlockError, setUnlockError] = useState<string | null>(null);
+  const [ocrLanguage, setOcrLanguage] = useState("eng");
   const [usageRefresh, setUsageRefresh] = useState(0);
   const pageUsage = usePageUsage(usageRefresh);
 
@@ -123,7 +133,7 @@ export function EmbeddedConverter({ className }: { className?: string }) {
         const statement = await parseStatementFile(
           files[i],
           (page, total) => setProgress(i, page, total),
-          ["eng"],
+          [ocrLanguage],
           pwds[files[i].name]
         );
         parsed.push(statement);
@@ -175,6 +185,24 @@ export function EmbeddedConverter({ className }: { className?: string }) {
       ) : (
         <>
           <StatementDropzone variant="full" onFiles={handleFiles} className="border-2 border-dashed border-border/80 bg-surface/50" />
+
+          {showOcrLanguage && (
+            <div className="mt-3 flex items-center gap-2 px-1 text-xs text-muted-foreground">
+              <label htmlFor="ocr-language">If a scanned statement is dropped, read it as:</label>
+              <select
+                id="ocr-language"
+                value={ocrLanguage}
+                onChange={(e) => setOcrLanguage(e.target.value)}
+                className="rounded-md border border-border bg-background px-2 py-1 text-xs text-ink"
+              >
+                {OCR_LANGUAGES.map((l) => (
+                  <option key={l.code} value={l.code}>
+                    {l.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {lockedFiles.length > 0 && (
             <div className="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-4">
