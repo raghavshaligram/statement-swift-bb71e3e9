@@ -36,7 +36,7 @@ export const Route = createFileRoute("/upload")({
 function UploadPage() {
   const [usageRefresh] = useState(0);
   const pageUsage = usePageUsage(usageRefresh);
-  const { isPro } = useSubscription();
+  const { isPro, loading: subLoading } = useSubscription();
   const navigate = useNavigate();
   const { user, loading: authLoading } = useAuth();
 
@@ -74,7 +74,7 @@ function UploadPage() {
             Previously the only way to reach billing from here was to first
             exhaust the free allowance, which meant the people most likely to
             pay had no route to doing so. */}
-        {!showQueue && pageUsage.isSignedIn && !isPro && (
+        {!showQueue && !subLoading && pageUsage.isSignedIn && !isPro && (
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-emerald/25 bg-emerald-soft/40 px-5 py-4">
             <div>
               <div className="text-sm font-semibold text-ink">You're on the free plan</div>
@@ -92,7 +92,7 @@ function UploadPage() {
           </div>
         )}
 
-        {!showQueue && !isPro && pageUsage.isSignedIn && pageUsage.used !== null && (
+        {!showQueue && !subLoading && !isPro && pageUsage.isSignedIn && pageUsage.used !== null && (
           <p className="text-xs text-muted-foreground">
             {pageUsage.used >= pageUsage.limit ? (
               <span className="text-amber-700">

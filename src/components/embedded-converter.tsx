@@ -56,7 +56,7 @@ export function EmbeddedConverter({
   const [ocrLanguage, setOcrLanguage] = useState("eng");
   const [usageRefresh, setUsageRefresh] = useState(0);
   const pageUsage = usePageUsage(usageRefresh);
-  const { isPro } = useSubscription();
+  const { isPro, loading: subLoading } = useSubscription();
 
   // This widget is embedded on many separate marketing/content pages that all
   // share one global store. Without this, a completed conversion on page A
@@ -269,7 +269,7 @@ export function EmbeddedConverter({
               </Link>
             </div>
           ) : null}
-          {!isPro && pageUsage.isSignedIn && pageUsage.used !== null && (
+          {!subLoading && !isPro && pageUsage.isSignedIn && pageUsage.used !== null && (
             <p className="mt-2 px-2 text-center text-xs text-muted-foreground">
               {pageUsage.used} of {pageUsage.limit} free lifetime pages used (PDFs and photos/scans combined)
               {pageUsage.used >= pageUsage.limit && (

@@ -61,7 +61,10 @@ function PreviewPage() {
   }, [reconciliations]);
   const warnings = useMemo(() => statements.flatMap((st) => st.warnings), [statements]);
   const currency = useMemo(() => statements.find((st) => st.currency)?.currency ?? null, [statements]);
-  const flaggedCount = rows.filter((r) => getConfidenceTier(r.confidence) === "low").length;
+  const flaggedCount = useMemo(
+    () => (activeFile === "__all__" ? rows : rows.filter((r) => r.sourceFile === activeFile)).filter((r) => getConfidenceTier(r.confidence) === "low").length,
+    [rows, activeFile]
+  );
 
   // No parsed statements in the store (e.g. direct nav, or a page refresh which
   // clears in-memory state) — send back to upload rather than show an empty table.
@@ -93,9 +96,32 @@ function PreviewPage() {
     [rows, q, tab, activeFile]
   );
 
-  const credits = rows.reduce((s, r) => s + (r.amount > 0 ? r.amount : 0), 0);
-  const debits = rows.reduce((s, r) => s + (r.amount < 0 ? -r.amount : 0), 0);
-  const lastWithBalance = [...rows].reverse().find((r) => r.balance !== null);
+  // Scoped to the statement being viewed. These were computed across every
+  // statement regardless of the active tab, so the totals and closing
+  // balance didn't change when switching -- showing one statement's rows
+  // above another statement's numbers. Memoised as well: they previously
+  // recomputed over every row on each render, which is what made switching
+  // tabs feel sluggish.
+  const scopedRows = useMemo(
+    () => (activeFile === "__all__" ? rows : rows.filter((r) => r.sourceFile === activeFile)),
+    [rows, activeFile]
+  );
+  const { credits, debits, lastWithBalance } = useMemo(() => {
+    let c = 0;
+    let d = 0;
+    for (const r of scopedRows) {
+      if (r.amount > 0) c += r.amount;
+      else d += -r.amount;
+    }
+    let last: Transaction | undefined;
+    for (let i = scopedRows.length - 1; i >= 0; i--) {
+      if (scopedRows[i].balance !== null) {
+        last = scopedRows[i];
+        break;
+      }
+    }
+    return { credits: c, debits: d, lastWithBalance: last };
+  }, [scopedRows]);
 
   function update(t: Transaction, field: keyof Transaction, value: string) {
     const patch: Partial<Transaction> =
@@ -179,7 +205,7 @@ function PreviewPage() {
         <div className="flex-none border-b border-border">
           <div className="flex flex-wrap items-center justify-between gap-4 bg-ink px-4 py-3 text-background sm:px-5">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
-              <StatItem label="Transactions" value={rows.length.toString()} />
+              <StatItem label="Transactions" value={scopedRows.length.toString()} />
               <StatItem label="Credits" value={formatAmount(credits, currency)} tone="pos" />
               <StatItem label="Debits" value={formatAmount(debits, currency)} tone="neg" />
               <StatItem

@@ -104,5 +104,8 @@ export function useSubscription(refreshKey = 0) {
   }, [userId, authLoading, refreshKey]);
 
   const isPro = subscription?.status === "active";
-  return { subscription, isPro, loading };
+  // Report "still loading" while auth itself is unresolved. Otherwise this
+  // briefly answers "not Pro" during a remount, which is enough to flash
+  // free-tier UI (the upgrade card) at a paying customer before correcting.
+  return { subscription, isPro, loading: loading || authLoading };
 }
