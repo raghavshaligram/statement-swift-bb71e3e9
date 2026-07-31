@@ -134,6 +134,31 @@ function isStatementSummaryRow(text: string): boolean {
   return SUMMARY_ROW_RE.test(text);
 }
 
+// A brought-forward / opening-balance row, which unlike the summary rows
+// above DOES carry the statement's start date and so survives the no-date
+// filter. Confirmed on a real ICICI statement: a row reading "B F" with the
+// opening balance in the credit column was being counted as a ₹97,532.73
+// deposit -- inflating the credits total and the transaction count, and
+// putting a phantom transaction at the top of every export.
+//
+// Deliberately requires the description to consist ONLY of a brought-forward
+// marker. Merely containing one isn't enough: a genuine payment described as
+// "TFR TO B/F SAVINGS" must not be discarded. Anchored, punctuation-
+// tolerant, and capped in length so it can't match a real merchant line.
+const BROUGHT_FORWARD_RE =
+  /^(b[\s./-]*f|bf|balance\s*b[\s./-]*f|b[\s./-]*f\s*balance|brought\s*forward|balance\s*brought\s*forward|opening\s*bal(ance)?|op(ening)?\s*bal)$/i;
+
+function isBroughtForwardRow(description: string): boolean {
+  // Strip surrounding punctuation too, so "B.F." reduces to "B.F" and
+  // matches like every other spelling of the same thing.
+  const cleaned = description
+    .replace(/[^a-z0-9\s./-]/gi, "")
+    .trim()
+    .replace(/^[\s./-]+|[\s./-]+$/g, "");
+  if (cleaned.length > 30) return false;
+  return BROUGHT_FORWARD_RE.test(cleaned);
+}
+
 // --- amount parsing -----------------------------------------------------------
 
 // Matches a single standalone number-shaped token -- used against individual
@@ -539,9 +564,17 @@ export function parseTransactionsFromPages(pages: PageText[], fullText: string):
     }
   }
 
-  applyBalanceContinuityAdjustment(transactions);
+  // Drop brought-forward / opening-balance rows before anything downstream
+  // sees them. Done here rather than at the block-grouping stage because
+  // these rows carry a real date and a real amount, so they only become
+  // identifiable once the description has been assembled.
+  const withoutOpeningBalance = transactions.filter((t) => !isBroughtForwardRow(t.description));
 
-  return transactions;
+  // Continuity is scored after the filter so the removed row can't be
+  // treated as a break in the running balance.
+  applyBalanceContinuityAdjustment(withoutOpeningBalance);
+
+  return withoutOpeningBalance;
 }
 
 /**
