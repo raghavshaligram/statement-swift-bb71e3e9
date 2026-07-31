@@ -31,6 +31,10 @@ function PreviewPage() {
   const updateTransaction = useStatementStore((s) => s.updateTransaction);
   const deleteTransaction = useStatementStore((s) => s.deleteTransaction);
   const [q, setQ] = useState("");
+  // Which statement is being reviewed. Defaults to all, but with more than
+  // one file the merged view is misleading -- two statements' rows sit
+  // interleaved with no indication of where one ends and the next begins.
+  const [activeFile, setActiveFile] = useState<string>("__all__");
   const [tab, setTab] = useState<FilterTab>("all");
   const [view, setView] = useState<"table" | "sidebyside">("table");
   const [editing, setEditing] = useState<{ id: string; field: keyof Transaction } | null>(null);
@@ -39,7 +43,22 @@ function PreviewPage() {
   // The parser already does this arithmetic per row for confidence scoring
   // and discards it. Surfacing it is the point: an accountant's first
   // question is whether the statement ties out, not how many rows parsed.
-  const reconciliation = useMemo(() => reconcileTransactions(rows), [rows]);
+  // Reconcile each statement on its own. Running this across the flattened
+  // list was wrong: one statement's closing balance doesn't continue into the
+  // next one's opening, so every boundary between statements registered as a
+  // balance break and a multi-statement batch reported a false discrepancy.
+  const reconciliations = useMemo(
+    () => statements.map((st) => ({ fileName: st.fileName, result: reconcileTransactions(st.transactions) })),
+    [statements]
+  );
+
+  // Roll the per-statement results into one headline for the banner.
+  const reconciliation = useMemo(() => {
+    const applicable = reconciliations.filter((r) => r.result.status !== "not-applicable");
+    if (applicable.length === 0) return { kind: "none" as const };
+    const failed = applicable.filter((r) => r.result.status === "discrepancy");
+    return { kind: failed.length === 0 ? ("all-balanced" as const) : ("some-failed" as const), applicable, failed };
+  }, [reconciliations]);
   const warnings = useMemo(() => statements.flatMap((st) => st.warnings), [statements]);
   const currency = useMemo(() => statements.find((st) => st.currency)?.currency ?? null, [statements]);
   const flaggedCount = rows.filter((r) => getConfidenceTier(r.confidence) === "low").length;
@@ -64,13 +83,14 @@ function PreviewPage() {
             .toLowerCase();
           return haystack.includes(q.toLowerCase());
         })
+        .filter((r) => activeFile === "__all__" || r.sourceFile === activeFile)
         .filter((r) => {
           if (tab === "credits") return r.amount > 0;
           if (tab === "debits") return r.amount < 0;
           if (tab === "flagged") return getConfidenceTier(r.confidence) === "low";
           return true;
         }),
-    [rows, q, tab]
+    [rows, q, tab, activeFile]
   );
 
   const credits = rows.reduce((s, r) => s + (r.amount > 0 ? r.amount : 0), 0);
@@ -89,42 +109,65 @@ function PreviewPage() {
     <div className="flex h-screen flex-col overflow-hidden bg-surface-muted/40">
       <TopNav />
       <div className="flex min-h-0 flex-1 flex-col">
-        {reconciliation.status !== "not-applicable" && (
+        {reconciliation.kind !== "none" && (
           <div
             className={cn(
               "flex-none border-b px-4 py-2.5 text-xs sm:px-5",
-              reconciliation.status === "balanced"
+              reconciliation.kind === "all-balanced"
                 ? "border-emerald/30 bg-emerald-soft/50 text-emerald"
                 : "border-amber-300 bg-amber-50 text-amber-900"
             )}
           >
-            {reconciliation.status === "balanced" ? (
+            {reconciliation.kind === "all-balanced" ? (
               <span className="flex items-center gap-2 font-medium">
                 <Check className="h-3.5 w-3.5 shrink-0" />
-                Balances tie out — opening {formatAmount(reconciliation.openingBalance, currency)} plus{" "}
-                {formatAmount(reconciliation.netChange, currency)} net equals the closing balance of{" "}
-                {formatAmount(reconciliation.closingBalance, currency)} across {reconciliation.rowsChecked} rows.
+                {reconciliation.applicable.length === 1
+                  ? (() => {
+                      const r = reconciliation.applicable[0].result;
+                      if (r.status === "not-applicable") return null;
+                      return (
+                        <>
+                          Balances tie out — opening {formatAmount(r.openingBalance, currency)} plus{" "}
+                          {formatAmount(r.netChange, currency)} net equals the closing balance of{" "}
+                          {formatAmount(r.closingBalance, currency)} across {r.rowsChecked} rows.
+                        </>
+                      );
+                    })()
+                  : `All ${reconciliation.applicable.length} statements tie out — each checked separately against its own opening and closing balance.`}
               </span>
             ) : (
               <span className="flex items-start gap-2 font-medium">
                 <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
                 <span>
-                  Balances don't tie out — expected a closing balance of{" "}
-                  {formatAmount(reconciliation.expectedClosing, currency)} but the statement shows{" "}
-                  {formatAmount(reconciliation.closingBalance, currency)} (off by{" "}
-                  {formatAmount(Math.abs(reconciliation.difference), currency)}).
-                  {reconciliation.breaks.length > 0 && (
-                    <>
-                      {" "}
-                      The running balance first breaks at{" "}
-                      <span className="font-semibold">
-                        {reconciliation.breaks[0].date} · {reconciliation.breaks[0].description.slice(0, 40)}
-                      </span>{" "}
-                      (expected {formatAmount(reconciliation.breaks[0].expected, currency)}, got{" "}
-                      {formatAmount(reconciliation.breaks[0].actual, currency)})
-                      {reconciliation.breaks.length > 1 && ` and ${reconciliation.breaks.length - 1} other row(s)`}.
-                      Worth checking those rows against the original before exporting.
-                    </>
+                  {reconciliation.failed.map(({ fileName, result }) => {
+                    if (result.status === "not-applicable") return null;
+                    const first = result.breaks[0];
+                    return (
+                      <span key={fileName} className="block">
+                        <span className="font-semibold">{fileName}</span> doesn't tie out — expected{" "}
+                        {formatAmount(result.expectedClosing, currency)} but the statement shows{" "}
+                        {formatAmount(result.closingBalance, currency)} (off by{" "}
+                        {formatAmount(Math.abs(result.difference), currency)})
+                        {first && (
+                          <>
+                            . First break at{" "}
+                            <span className="font-semibold">
+                              {first.date} · {first.description.slice(0, 40)}
+                            </span>{" "}
+                            (expected {formatAmount(first.expected, currency)}, got{" "}
+                            {formatAmount(first.actual, currency)})
+                            {result.breaks.length > 1 && ` and ${result.breaks.length - 1} other row(s)`}
+                          </>
+                        )}
+                        .
+                      </span>
+                    );
+                  })}
+                  {reconciliation.applicable.length > reconciliation.failed.length && (
+                    <span className="block opacity-80">
+                      The other {reconciliation.applicable.length - reconciliation.failed.length} statement(s) tie
+                      out correctly.
+                    </span>
                   )}
                 </span>
               </span>
@@ -171,6 +214,91 @@ function PreviewPage() {
               </div>
             )}
 
+
+        {/* Per-statement tabs. Only shown for a multi-file batch, where the
+            merged list genuinely obscures which rows came from which
+            statement -- and where reconciliation is per-statement anyway. */}
+        {statements.length > 1 && (
+          <div className="flex-none border-b border-border bg-surface-muted/30 px-4 py-2 sm:px-5">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="mr-1 font-mono text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                Statement
+              </span>
+              <button
+                onClick={() => setActiveFile("__all__")}
+                className={cn(
+                  "rounded-md px-2.5 py-1 text-xs font-semibold transition",
+                  activeFile === "__all__"
+                    ? "bg-ink text-background"
+                    : "text-muted-foreground hover:bg-card hover:text-ink"
+                )}
+              >
+                All ({rows.length})
+              </button>
+              {statements.map((st) => {
+                const rec = reconciliations.find((r) => r.fileName === st.fileName)?.result;
+                const failed = rec?.status === "discrepancy";
+                return (
+                  <button
+                    key={st.fileName}
+                    onClick={() => setActiveFile(st.fileName)}
+                    className={cn(
+                      "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-semibold transition",
+                      activeFile === st.fileName
+                        ? "bg-ink text-background"
+                        : "text-muted-foreground hover:bg-card hover:text-ink"
+                    )}
+                  >
+                    {failed && <AlertTriangle className="h-3 w-3 shrink-0 text-amber-500" />}
+                    <span className="max-w-[16ch] truncate">{st.fileName}</span>
+                    <span className="opacity-60">({st.transactions.length})</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Per-statement tabs. Only rendered for a multi-file batch -- with a
+            single statement there's nothing to separate, and the merged view
+            is the right one. */}
+        {statements.length > 1 && (
+          <div className="flex-none border-b border-border bg-surface-muted/30 px-4 sm:px-5">
+            <div className="flex flex-wrap items-center gap-1 py-2">
+              <button
+                onClick={() => setActiveFile("__all__")}
+                className={cn(
+                  "rounded-md px-3 py-1.5 text-xs font-semibold transition",
+                  activeFile === "__all__"
+                    ? "bg-ink text-background"
+                    : "text-muted-foreground hover:bg-card hover:text-ink"
+                )}
+              >
+                All {statements.length} statements
+              </button>
+              {statements.map((st) => {
+                const rec = reconciliations.find((r) => r.fileName === st.fileName)?.result;
+                const failed = rec?.status === "discrepancy";
+                return (
+                  <button
+                    key={st.fileName}
+                    onClick={() => setActiveFile(st.fileName)}
+                    className={cn(
+                      "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition",
+                      activeFile === st.fileName
+                        ? "bg-ink text-background"
+                        : "text-muted-foreground hover:bg-card hover:text-ink"
+                    )}
+                  >
+                    {failed && <AlertTriangle className="h-3 w-3 shrink-0 text-amber-500" />}
+                    <span className="max-w-[16ch] truncate">{st.fileName}</span>
+                    <span className="opacity-60">{st.transactions.length}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Shared toolbar: view toggle + search + filters + row count */}
         <div className="sticky top-0 z-10 -mx-4 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background/95 px-4 py-2 backdrop-blur sm:-mx-5 sm:px-5">

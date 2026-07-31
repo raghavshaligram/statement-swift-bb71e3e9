@@ -73,8 +73,16 @@ function isImageFile(f: File): boolean {
  */
 export async function findEncryptedPdfs(files: File[]): Promise<File[]> {
   const pdfs = files.filter((f) => /\.pdf$/i.test(f.name) || f.type === "application/pdf");
-  const flags = await Promise.all(pdfs.map((f) => isPdfEncrypted(f)));
-  return pdfs.filter((_, i) => flags[i]);
+
+  // Probed one at a time, not with Promise.all. Each probe opens a pdf.js
+  // document, and running several concurrently contends on the same worker
+  // -- with two files the whole upload silently did nothing: no queue, no
+  // error. Sequential is marginally slower and actually works.
+  const encrypted: File[] = [];
+  for (const f of pdfs) {
+    if (await isPdfEncrypted(f)) encrypted.push(f);
+  }
+  return encrypted;
 }
 
 export type UploadValidation =
@@ -125,7 +133,13 @@ export async function validateUploadBatch(
   }
 
   // Signed in: PDFs and images share one lifetime pool.
-  const pdfPageCounts = await Promise.all(pdfs.map(async (f) => ({ file: f, pages: await safePageCount(f) ?? 0 })));
+  // Sequential for the same reason as the encryption probe above: each of
+  // these opens a pdf.js document, and opening several at once contends on
+  // the shared worker, which silently killed multi-file uploads entirely.
+  const pdfPageCounts: Array<{ file: File; pages: number }> = [];
+  for (const f of pdfs) {
+    pdfPageCounts.push({ file: f, pages: (await safePageCount(f)) ?? 0 });
+  }
 
   // A single file bigger than the entire lifetime allowance gets a clearer,
   // more specific message than a generic "limit reached" would.
