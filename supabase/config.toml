@@ -1,1 +1,24 @@
 project_id = "nszosplsazwdxqxkztfo"
+
+# Supabase edge functions require a valid Supabase JWT by default. Two of
+# these functions legitimately cannot supply one, so JWT verification is
+# disabled for them -- each has its own, stronger authentication instead.
+
+# Called by PayPal's servers, which have no way to send a Supabase JWT.
+# With the default setting this function would reject every real webhook
+# with a 401, silently breaking subscription activation, renewal and
+# cancellation. It is not unprotected: every request is verified against
+# PayPal's own signature-verification endpoint before anything in it is
+# trusted.
+[functions.paypal-webhook]
+verify_jwt = false
+
+# One-time setup endpoint, opened directly in a browser (no JWT available).
+# Protected by the PAYPAL_SETUP_TOKEN gate, which also means it refuses to
+# run at all unless that secret is deliberately set.
+[functions.paypal-create-plan]
+verify_jwt = false
+
+# paypal-config and paypal-record-subscription are deliberately left on the
+# default (verify_jwt = true): both are called from the browser via
+# supabase.functions.invoke, which supplies a valid token automatically.
