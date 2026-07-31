@@ -48,6 +48,12 @@ export function PayPalSubscribeButton() {
       if (cancelled) return;
 
       if (error || !data?.clientId || !data?.planId) {
+        // Surface the real reason in the console -- the user-facing copy
+        // stays friendly and generic, but a silent generic failure made a
+        // genuine CORS misconfiguration very hard to diagnose, so log
+        // enough to tell "not configured" apart from "couldn't reach the
+        // function at all."
+        console.warn("[LedgerLocal] Checkout unavailable:", error ?? data ?? "no response from paypal-config");
         setStatus("unavailable");
         return;
       }

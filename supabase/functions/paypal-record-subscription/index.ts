@@ -51,21 +51,34 @@ async function getAccessToken(): Promise<string> {
   return data.access_token as string;
 }
 
+// Same CORS requirement as paypal-config: this is called directly from the
+// browser after a user approves a subscription, so the preflight OPTIONS
+// request has to be handled or the real call never happens.
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
 Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
   if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+    return new Response("Method not allowed", { status: 405, headers: corsHeaders });
   }
 
   try {
     const { subscriptionID } = await req.json();
     if (!subscriptionID || typeof subscriptionID !== "string") {
-      return new Response("Missing subscriptionID", { status: 400 });
+      return new Response("Missing subscriptionID", { status: 400, headers: corsHeaders });
     }
 
     // Identify the calling user from their own auth token, not from
     // anything the client claims about itself.
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return new Response("Unauthorized", { status: 401 });
+    if (!authHeader) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -76,7 +89,7 @@ Deno.serve(async (req: Request) => {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (userError || !user) return new Response("Unauthorized", { status: 401 });
+    if (userError || !user) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
     // Confirm this subscription ID is real by asking PayPal directly --
     // never trust it just because the browser sent it.
@@ -85,7 +98,7 @@ Deno.serve(async (req: Request) => {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     if (!subRes.ok) {
-      return new Response("Subscription not found with PayPal", { status: 400 });
+      return new Response("Subscription not found with PayPal", { status: 400, headers: corsHeaders });
     }
     const subscription = await subRes.json();
 
@@ -101,15 +114,15 @@ Deno.serve(async (req: Request) => {
       // was already recorded (e.g. a duplicate onApprove call) -- not a
       // real error worth failing loudly over.
       if (insertError.code === "23505") {
-        return new Response("Already recorded", { status: 200 });
+        return new Response("Already recorded", { status: 200, headers: corsHeaders });
       }
       console.error("Failed to record subscription:", insertError);
-      return new Response("Database insert failed", { status: 500 });
+      return new Response("Database insert failed", { status: 500, headers: corsHeaders });
     }
 
-    return new Response("Recorded", { status: 200 });
+    return new Response("Recorded", { status: 200, headers: corsHeaders });
   } catch (err) {
     console.error("paypal-record-subscription error:", err);
-    return new Response("Internal error", { status: 500 });
+    return new Response("Internal error", { status: 500, headers: corsHeaders });
   }
 });
