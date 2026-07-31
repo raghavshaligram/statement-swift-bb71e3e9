@@ -37,8 +37,27 @@
  */
 
 import { getPdfPageCount, isPageLimitExempt } from "./extract-text";
+import { EncryptedPdfError } from "@/lib/pdf/pdf-open";
 import { ANONYMOUS_MAX_PAGES, SIGNED_IN_MAX_PAGES } from "../pricing-constants";
 import { supabase } from "@/integrations/supabase/client";
+
+
+/**
+ * Page counting opens the PDF, so an encrypted file raises EncryptedPdfError
+ * here -- before parsing ever runs. That's not a validation failure: the user
+ * simply hasn't entered the password yet, and parseStatementFile handles that
+ * case properly with a real prompt. Returning null lets validation skip the
+ * page check and hand off to parsing, instead of the error escaping as an
+ * uncaught rejection (which is exactly what it did before this).
+ */
+async function safePageCount(file: File): Promise<number | null> {
+  try {
+    return await getPdfPageCount(file);
+  } catch (err) {
+    if (err instanceof EncryptedPdfError) return null;
+    throw err;
+  }
+}
 
 const IMAGE_EXT_RE = /\.(jpe?g|png|webp)$/i;
 
@@ -70,7 +89,8 @@ export async function validateUploadBatch(files: File[], isSignedIn: boolean): P
     // above). Per-file check only, no lifetime tracking -- the "try it
     // instantly" hook.
     for (const pdf of pdfs) {
-      const pages = await getPdfPageCount(pdf);
+      const pages = await safePageCount(pdf);
+      if (pages === null) continue;
       if (pages > ANONYMOUS_MAX_PAGES) {
         return {
           ok: false,
@@ -83,7 +103,7 @@ export async function validateUploadBatch(files: File[], isSignedIn: boolean): P
   }
 
   // Signed in: PDFs and images share one lifetime pool.
-  const pdfPageCounts = await Promise.all(pdfs.map(async (f) => ({ file: f, pages: await getPdfPageCount(f) })));
+  const pdfPageCounts = await Promise.all(pdfs.map(async (f) => ({ file: f, pages: await safePageCount(f) ?? 0 })));
 
   // A single file bigger than the entire lifetime allowance gets a clearer,
   // more specific message than a generic "limit reached" would.

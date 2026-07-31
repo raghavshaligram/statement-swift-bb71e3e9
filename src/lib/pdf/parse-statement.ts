@@ -1,3 +1,4 @@
+import { EncryptedPdfError, MalformedPdfError } from "@/lib/pdf/pdf-open";
 import { extractPdfText } from "./extract-text";
 import { parseTransactionsFromPages, groupIntoRows } from "./parse-transactions";
 import { detectBank, BANK_LABELS } from "./bank-detection";
@@ -149,6 +150,21 @@ export async function parseStatementFile(
     try {
       extracted = await extractPdfText(file, onPageParsed);
     } catch (err) {
+      // Now that openPdfjs raises typed errors, say which of the three
+      // things actually went wrong instead of listing all of them and
+      // making the reader guess.
+      let warning: string;
+      if (err instanceof EncryptedPdfError) {
+        warning =
+          `"${file.name}" is password-protected. Re-upload it and enter the password when prompted — ` +
+          `the password is used entirely on your device and never sent anywhere.`;
+      } else if (err instanceof MalformedPdfError) {
+        warning = `"${file.name}" appears to be corrupted or isn't a readable PDF.`;
+      } else {
+        warning =
+          `Couldn't read "${file.name}" (${err instanceof Error ? err.message : "unknown error"}). ` +
+          `It may be scanned/image-only, or in an unexpected format.`;
+      }
       return {
         fileName: file.name,
         fileSizeBytes: file.size,
@@ -156,10 +172,7 @@ export async function parseStatementFile(
         detectedBank: null,
         currency: null,
         transactions: [],
-        warnings: [
-          `Couldn't read this PDF (${err instanceof Error ? err.message : "unknown error"}). ` +
-            `It may be password-protected, scanned/image-only, or corrupted.`,
-        ],
+        warnings: [warning],
       };
     }
   }
