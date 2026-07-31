@@ -20,6 +20,7 @@ import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ScrollReveal, ScrollRevealGroup, ScrollRevealItem } from "@/components/scroll-reveal";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import { WorkbookAnimation } from "@/components/workbook-animation";
+import { motion } from "framer-motion";
 import { HowItWorksTimeline } from "@/components/how-it-works-timeline";
 import { TransactionSideBySide } from "@/components/transaction-side-by-side";
 import { CapabilityGrid } from "@/components/capability-grid";
@@ -426,33 +427,93 @@ function Landing() {
               Simple, flat pricing
             </h2>
           </ScrollReveal>
-          <ScrollRevealGroup className="mt-10 grid gap-5 sm:grid-cols-2">
-            <ScrollRevealItem>
-              <div className="rounded-xl border border-border bg-card p-6">
-                <div className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Free</div>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-ink">$0</span>
+          {/* items-stretch + h-full so both cards match height regardless of
+              how much copy each carries -- previously they were sized by
+              their own prose and visibly mismatched. The CTA is pushed down
+              with mt-auto so the buttons line up too. */}
+          <ScrollRevealGroup className="mt-10 grid items-stretch gap-5 sm:grid-cols-2">
+            <ScrollRevealItem className="h-full">
+              <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className="flex h-full flex-col rounded-2xl border border-border bg-card p-7 shadow-sm transition-shadow hover:shadow-md"
+              >
+                <div className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Free
+                </div>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="text-4xl font-bold tracking-tight text-ink">$0</span>
                   <span className="text-sm text-muted-foreground">no signup required</span>
                 </div>
-                <p className="mt-3 text-sm text-muted-foreground">
-                  Try it free — prove it works on a real statement, no signup needed, up to {ANONYMOUS_MAX_PAGES} pages
-                  per conversion, as many conversions as you like. Sign up free for a {SIGNED_IN_MAX_PAGES}-page
-                  lifetime allowance. Excel and CSV export.
-                </p>
-              </div>
+                <p className="mt-2 text-sm text-muted-foreground">Prove it works on a real statement first.</p>
+
+                <ul className="mt-6 flex-1 space-y-3 text-sm">
+                  {[
+                    `${ANONYMOUS_MAX_PAGES} pages per conversion, no account at all`,
+                    "As many separate conversions as you like",
+                    `Sign up free for a ${SIGNED_IN_MAX_PAGES}-page lifetime allowance`,
+                    "Excel and CSV export",
+                    "Everything processed on your device",
+                  ].map((f) => (
+                    <li key={f} className="flex gap-2.5 text-muted-foreground">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  to="/upload"
+                  className="mt-7 inline-flex h-11 items-center justify-center rounded-lg border border-border text-sm font-semibold text-ink transition hover:border-emerald/50 hover:text-emerald"
+                >
+                  Start converting
+                </Link>
+              </motion.div>
             </ScrollRevealItem>
-            <ScrollRevealItem>
-              <div className="rounded-xl border-2 border-emerald bg-ink p-6 text-background">
-                <div className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald">LedgerLocal Pro</div>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <span className="text-3xl font-bold">$19</span>
+
+            <ScrollRevealItem className="h-full">
+              <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className="relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-emerald bg-ink p-7 text-background shadow-lg"
+              >
+                <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald/20 blur-3xl" aria-hidden />
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald">
+                    LedgerLocal Pro
+                  </span>
+                  <span className="rounded-full bg-emerald/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald">
+                    No page cap
+                  </span>
+                </div>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="text-4xl font-bold tracking-tight">$19</span>
                   <span className="text-sm text-background/60">/ month · flat</span>
                 </div>
-                <p className="mt-3 text-sm text-background/70">
-                  No page cap, ever, and unlimited conversions — convert a full year, every account, or a
-                  whole software migration in one sitting. All seven export formats, no credits, no per-page fees.
-                </p>
-              </div>
+                <p className="mt-2 text-sm text-background/70">One price. No credits, no per-page fees.</p>
+
+                <ul className="mt-6 flex-1 space-y-3 text-sm">
+                  {[
+                    "Unlimited pages and unlimited conversions",
+                    "A full year, every account, in one sitting",
+                    "All seven export formats, including Tally XML",
+                    "Multi-statement workbooks with a tab per statement",
+                    "Everything in Free, still fully on-device",
+                  ].map((f) => (
+                    <li key={f} className="flex gap-2.5 text-background/80">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  to="/account/billing"
+                  className="mt-7 inline-flex h-11 items-center justify-center rounded-lg bg-emerald text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-emerald/90"
+                >
+                  Get Pro
+                </Link>
+              </motion.div>
             </ScrollRevealItem>
           </ScrollRevealGroup>
           <div className="mt-8 text-center">
