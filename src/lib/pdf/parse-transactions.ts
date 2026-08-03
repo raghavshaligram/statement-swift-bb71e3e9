@@ -286,7 +286,31 @@ function groupRowsIntoBlocks(rows: Row[], dateOrder: DateOrder): Block[] {
   const blockByAnchor = new Map<number, Row[]>();
   for (const idx of anchorIndices) blockByAnchor.set(idx, []);
 
+  // A date-only anchor owns every row up to the next anchor.
+  //
+  // Confirmed on a real ICICI statement, whose layout is: date on its own
+  // line, then THREE description lines, then the amounts line. Under
+  // nearest-anchor assignment the later description lines sit closer to the
+  // FOLLOWING date and get stolen into it -- so descriptions were being
+  // scrambled across transactions ("FY025" from one row appearing on the
+  // next), not merely truncated. Reading order is unambiguous here: nothing
+  // between two dates can belong to anything but the earlier one.
+  const dateOnlyAnchors = new Set(anchorIndices.filter((idx) => isDateOnlyRow(rows[idx].text, dateOrder)));
+
   for (let i = 0; i < rows.length; i++) {
+    if (dateOnlyAnchors.size > 0) {
+      // Nearest preceding anchor, when that anchor is date-only.
+      let owner: number | null = null;
+      for (const idx of anchorIndices) {
+        if (idx <= i) owner = idx;
+        else break;
+      }
+      if (owner !== null && dateOnlyAnchors.has(owner)) {
+        blockByAnchor.get(owner)!.push(rows[i]);
+        continue;
+      }
+    }
+
     let nearest = anchorIndices[0];
     let nearestDist = Math.abs(i - nearest);
     for (const anchorIdx of anchorIndices) {
@@ -342,6 +366,37 @@ const NOISE_SEGMENT_RE = /^(upi|imps|neft|rtgs|ach|bil|inft|mmt)$/i;
 // stripping legitimate merchant names purely for being long.
 const LOOKS_LIKE_REFERENCE_RE = /^(?=.*[a-z])(?=.*\d)[a-z0-9]{8,}$/i;
 const MOSTLY_DIGITS_RE = /^\d{6,}$/; // long pure-digit account/reference numbers
+
+/**
+ * Reference tokens pulled OUT of the description (UPI/IMPS/NEFT reference
+ * numbers, bank transaction IDs). These are deliberately excluded from the
+ * readable description -- they make it unreadable -- but discarding them
+ * entirely was wrong: a UPI reference is how a transaction is matched to a
+ * counterparty record or queried with the bank, so an accountant needs it.
+ * They're returned separately and exported in their own column.
+ */
+export function extractReferenceTokens(block: Block, dateMatchedText: string, consumedAmounts: string[]): string {
+  const rawTexts = block.rows.map((r) => r.text);
+  let combined = rawTexts.join(" / ");
+  combined = combined.replace(dateMatchedText, "");
+  for (const tok of consumedAmounts) combined = combined.replace(tok, "");
+
+  const refs = combined
+    .split(/[\/\s]+/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .filter((s) => LOOKS_LIKE_REFERENCE_RE.test(s) || MOSTLY_DIGITS_RE.test(s))
+    .filter((s) => !NOISE_SEGMENT_RE.test(s))
+    // Very short numeric fragments are usually split amounts or line noise,
+    // not references worth keeping.
+    .filter((s) => s.length >= 6);
+
+  const deduped: string[] = [];
+  for (const r of refs) {
+    if (!deduped.includes(r)) deduped.push(r);
+  }
+  return deduped.join(" ");
+}
 
 function buildDescription(block: Block, dateMatchedText: string, consumedAmounts: string[]): string {
   const rawTexts = block.rows.map((r) => r.text);
@@ -481,6 +536,16 @@ function buildTransactionFromBlock(
   }
 
   const description = buildDescription(block, dateResult.matchedText, [...consumedRaw, ...consumedColumnText]);
+
+  // Reference numbers stripped out of the description are kept rather than
+  // discarded -- exported via the existing Tran ID column, which already
+  // flows through to CSV and XLSX. Only used when the statement doesn't have
+  // its own Tran ID column, so a bank-provided ID always wins over one
+  // recovered from the description text.
+  if (tranId === null) {
+    const refs = extractReferenceTokens(block, dateResult.matchedText, [...consumedRaw, ...consumedColumnText]);
+    if (refs) tranId = refs;
+  }
 
   // --- Weighted confidence score ---------------------------------------
   // Base score plus points for each independent signal that came out clean.
