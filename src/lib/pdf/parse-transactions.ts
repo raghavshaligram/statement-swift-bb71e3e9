@@ -359,7 +359,12 @@ function groupRowsIntoBlocks(rows: Row[], dateOrder: DateOrder): Block[] {
 // Noise tokens that show up constantly in UPI/bank-reference-heavy statement
 // lines and aren't part of a human-readable payee name -- filtered out when
 // assembling the description from a multi-line block.
-const NOISE_SEGMENT_RE = /^(upi|imps|neft|rtgs|ach|bil|inft|mmt)$/i;
+// Previously this dropped UPI/IMPS/NEFT/RTGS as noise. On a real Federal Bank
+// statement that removed the payment METHOD from every description -- "UPI
+// IN/546035039121/dripchatagency@okicici" became "IN dripchatagency@okicici",
+// losing both the rail and the reference. The method is meaningful to anyone
+// reconciling, so only genuinely empty connective tokens are dropped now.
+const NOISE_SEGMENT_RE = /^(bil|inft|mmt)$/i;
 // Real reference/hash codes mix letters AND digits together (e.g. a UPI
 // transaction ID) -- a plain long word like "STARBUCKS" or "SUBSCRIPTION" is
 // still just letters, so requiring both is what keeps this filter from
@@ -410,8 +415,12 @@ function buildDescription(block: Block, dateMatchedText: string, consumedAmounts
     .map((s) => s.trim())
     .filter(Boolean)
     .filter((s) => !NOISE_SEGMENT_RE.test(s))
-    .filter((s) => !LOOKS_LIKE_REFERENCE_RE.test(s))
-    .filter((s) => !MOSTLY_DIGITS_RE.test(s));
+    // References used to be deleted here. They're kept: an IFSC code
+    // (ICIC0000169) says which bank received the money, and a UPI/ATM
+    // reference is what you quote to the bank when querying a transaction.
+    // Dropping them made descriptions shorter but not more useful, and
+    // silently discarded the only identifier tying a row to its counterparty.
+    .filter((s) => !NOISE_SEGMENT_RE.test(s));
 
   // Collapse consecutive duplicate segments (e.g. a payee name split across
   // lines sometimes repeats a word right at the line break).
