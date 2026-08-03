@@ -368,6 +368,87 @@ run(
   },
 );
 
+// =============================================================================
+// 8. Federal Bank stacked two-line header — "Tran Type", "Cheque Details",
+//    and "DR/CR" each render as two PDF text items only a few px apart
+//    (closer than a real description wrap, but wider than the row-grouping
+//    tolerance), landing as their own Row above/below the single-line
+//    header labels. Found via a REAL user-submitted Federal Bank statement:
+//    the leftover fragment row was getting glued onto the first transaction
+//    as a phantom prefix, and "Tran Type" was never registered as a column
+//    at all, so its data ("TFR") collided with the neighboring "Tran ID"
+//    column and corrupted both fields for every single transaction in the
+//    document.
+// =============================================================================
+run(
+  "federal-bank-stacked-two-line-header",
+  [
+    page([
+      [
+        { str: "Tran", x: 266 },
+        { str: "Cheque", x: 373 },
+        { str: "DR", x: 563 },
+      ],
+      [
+        { str: "Date", x: 33 },
+        { str: "Value Date", x: 79 },
+        { str: "Particulars", x: 173 },
+        { str: "Tran ID", x: 311 },
+        { str: "Withdrawals", x: 419 },
+        { str: "Deposits", x: 474 },
+        { str: "Balance", x: 518 },
+      ],
+      [
+        { str: "Type", x: 266 },
+        { str: "Details", x: 374 },
+        { str: "/CR", x: 562 },
+      ],
+      [
+        { str: "04-APR-2025", x: 22 },
+        { str: "04-APR-2025", x: 79 },
+        { str: "UPI IN/546035039121", x: 129 },
+        { str: "TFR", x: 273 },
+        { str: "S82430280", x: 318 },
+        { str: "2500.00", x: 481 },
+        { str: "10089.41", x: 521 },
+        { str: "Cr", x: 572 },
+      ],
+      [{ str: "/dripchatagency@okicici/U/0000", x: 129 }],
+      [
+        { str: "19-APR-2025", x: 22 },
+        { str: "19-APR-2025", x: 79 },
+        { str: "CHRG/DEBIT CARD AMC/XX7162", x: 129 },
+        { str: "TFR", x: 273 },
+        { str: "S86257980", x: 318 },
+        { str: "797.00", x: 419 },
+        { str: "9292.41", x: 521 },
+        { str: "Cr", x: 572 },
+      ],
+    ]),
+  ],
+  (t) => {
+    check(
+      "2 transactions (header continuation row not treated as a phantom 3rd)",
+      t.length === 2,
+      `got ${t.length}`,
+    );
+    check("date parsed correctly", t[0]?.date === "2025-04-04", t[0]?.date);
+    check("tranType is TFR, not the tran ID", t[0]?.tranType === "TFR", String(t[0]?.tranType));
+    check("tranId is the real ID, not TFR", t[0]?.tranId === "S82430280", String(t[0]?.tranId));
+    check("deposit amount positive and correct", approx(t[0]?.amount, 2500), String(t[0]?.amount));
+    check("balance correct", approx(t[0]?.balance ?? NaN, 10089.41));
+    check(
+      "withdrawal amount negative and correct",
+      approx(t[1]?.amount, -797),
+      String(t[1]?.amount),
+    );
+    check(
+      "second row's tranType also correctly separated from tranId",
+      t[1]?.tranType === "TFR" && t[1]?.tranId === "S86257980",
+    );
+  },
+);
+
 // -----------------------------------------------------------------------------
 console.log("");
 if (failures > 0) {
