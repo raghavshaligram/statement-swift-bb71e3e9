@@ -21,7 +21,7 @@ export async function parseStatementFile(
   file: File,
   onPageParsed?: (pageNumber: number, totalPages: number) => void,
   ocrLanguages: string[] = ["eng"],
-  password?: string
+  password?: string,
 ): Promise<ParsedStatement> {
   const warnings: string[] = [];
 
@@ -124,7 +124,11 @@ export async function parseStatementFile(
     // Not a PDF at all -- "statement to Excel," not "PDF to Excel." Route
     // straight to image OCR (skips pdf.js entirely, no PDF to render).
     try {
-      const result = await ocrImageToTextItems(file, (e) => onPageParsed?.(e.sourcePage, e.totalPages), ocrLanguages);
+      const result = await ocrImageToTextItems(
+        file,
+        (e) => onPageParsed?.(e.sourcePage, e.totalPages),
+        ocrLanguages,
+      );
       extracted = {
         pageCount: 1,
         pages: [{ pageNumber: 1, items: result.items, rawText: result.rawText }] as PageText[],
@@ -132,7 +136,7 @@ export async function parseStatementFile(
       };
       usedOcr = true;
       warnings.push(
-        "This was read using on-device OCR from an image file, not a PDF. OCR is less precise than reading real text -- double-check extracted rows carefully before exporting."
+        "This was read using on-device OCR from an image file, not a PDF. OCR is less precise than reading real text -- double-check extracted rows carefully before exporting.",
       );
     } catch (err) {
       return {
@@ -185,7 +189,11 @@ export async function parseStatementFile(
   // text was there. Returns true only when the swap actually happened.
   const attemptOcrSwap = async (successWarning: string): Promise<boolean> => {
     try {
-      const ocrResult = await ocrPdfToTextItems(file, (e) => onPageParsed?.(e.sourcePage, e.totalPages), ocrLanguages);
+      const ocrResult = await ocrPdfToTextItems(
+        file,
+        (e) => onPageParsed?.(e.sourcePage, e.totalPages),
+        ocrLanguages,
+      );
       const ocrPages: PageText[] = ocrResult.pages.map((p) => ({
         pageNumber: p.pageNumber,
         items: p.items,
@@ -200,7 +208,7 @@ export async function parseStatementFile(
       }
     } catch (err) {
       warnings.push(
-        `This looked like a scanned statement, but on-device OCR failed (${err instanceof Error ? err.message : "unknown error"}). Falling back to whatever text could be read directly, which may be incomplete.`
+        `This looked like a scanned statement, but on-device OCR failed (${err instanceof Error ? err.message : "unknown error"}). Falling back to whatever text could be read directly, which may be incomplete.`,
       );
     }
     return false;
@@ -218,12 +226,15 @@ export async function parseStatementFile(
   // scanned, and under a strict > test it never triggered OCR at all -- the
   // scanned page (the one with the actual transactions) came back empty.
   if (!isImage) {
-    const scannedPageCount = extracted.pages.filter((p) => looksLikeScannedPage(p.items.length)).length;
-    const looksScanned = extracted.pages.length > 0 && scannedPageCount / extracted.pages.length >= 0.5;
+    const scannedPageCount = extracted.pages.filter((p) =>
+      looksLikeScannedPage(p.items.length),
+    ).length;
+    const looksScanned =
+      extracted.pages.length > 0 && scannedPageCount / extracted.pages.length >= 0.5;
 
     if (looksScanned) {
       await attemptOcrSwap(
-        "This looked like a scanned or photographed statement, so text was read using on-device OCR instead of a normal text layer. OCR is less precise than reading real text -- double-check extracted rows carefully before exporting."
+        "This looked like a scanned or photographed statement, so text was read using on-device OCR instead of a normal text layer. OCR is less precise than reading real text -- double-check extracted rows carefully before exporting.",
       );
     }
   }
@@ -249,7 +260,7 @@ export async function parseStatementFile(
     const avgItemsPerPage = totalItems / extracted.pages.length;
     if (avgItemsPerPage < 60) {
       const swapped = await attemptOcrSwap(
-        "This PDF's text layer had too little real content to read transactions from -- likely a scanned statement with a text footer or a scanner-generated text layer -- so it was re-read using on-device OCR. OCR is less precise than reading real text -- double-check extracted rows carefully before exporting."
+        "This PDF's text layer had too little real content to read transactions from -- likely a scanned statement with a text footer or a scanner-generated text layer -- so it was re-read using on-device OCR. OCR is less precise than reading real text -- double-check extracted rows carefully before exporting.",
       );
       if (swapped) raw = parseTransactionsFromPages(extracted.pages, extracted.fullText);
     }
@@ -276,14 +287,14 @@ export async function parseStatementFile(
   const detectedBank = bankId === "unknown" ? null : BANK_LABELS[bankId];
   if (bankId === "unknown") {
     warnings.push(
-      "Bank not recognized from statement text — used the generic layout parser. Double-check extracted rows before exporting."
+      "Bank not recognized from statement text — used the generic layout parser. Double-check extracted rows before exporting.",
     );
   }
 
   const currency = detectCurrency(extracted.fullText, bankId === "unknown" ? null : bankId);
   if (!currency) {
     warnings.push(
-      "Couldn't detect this statement's currency — amounts are shown as plain numbers below. Double-check before exporting if that matters for your records."
+      "Couldn't detect this statement's currency — amounts are shown as plain numbers below. Double-check before exporting if that matters for your records.",
     );
   }
 
@@ -291,14 +302,14 @@ export async function parseStatementFile(
     warnings.push(
       usedOcr
         ? "No transaction rows were detected, even after OCR. This statement's layout may not match the generic parser yet, or the scan quality may be too low to read reliably."
-        : "No transaction rows were detected. This statement's layout may not match the generic parser yet, or it may be a scanned/image-based PDF -- on-device OCR is attempted automatically when that's detected, but didn't find enough text this time."
+        : "No transaction rows were detected. This statement's layout may not match the generic parser yet, or it may be a scanned/image-based PDF -- on-device OCR is attempted automatically when that's detected, but didn't find enough text this time.",
     );
   }
 
   const lowConfidenceCount = raw.filter((t) => getConfidenceTier(t.confidence) === "low").length;
   if (lowConfidenceCount > 0) {
     warnings.push(
-      `${lowConfidenceCount} row${lowConfidenceCount > 1 ? "s" : ""} scored below 75% confidence — flagged for manual review before exporting.`
+      `${lowConfidenceCount} row${lowConfidenceCount > 1 ? "s" : ""} scored below 75% confidence — flagged for manual review before exporting.`,
     );
   }
 

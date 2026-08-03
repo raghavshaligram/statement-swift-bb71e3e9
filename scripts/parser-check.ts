@@ -107,10 +107,14 @@ run(
     check("3 transactions", t.length === 3, `got ${t.length}`);
     check("slash dates inferred MDY", t[0]?.date === "2025-06-03", t[0]?.date);
     check("deposit positive", approx(t[0]?.amount, 2000));
-    check("purchase sign corrected to negative via balance continuity", approx(t[1]?.amount, -150.25), String(t[1]?.amount));
+    check(
+      "purchase sign corrected to negative via balance continuity",
+      approx(t[1]?.amount, -150.25),
+      String(t[1]?.amount),
+    );
     check("check sign corrected to negative", approx(t[2]?.amount, -300));
     check("balances captured", approx(t[2]?.balance ?? NaN, 4549.75));
-  }
+  },
 );
 
 // =============================================================================
@@ -133,12 +137,23 @@ run(
   (t) => {
     check("3 transactions", t.length === 3, `got ${t.length}`);
     check("dash dates inferred DMY (15-04 forces it)", t[0]?.date === "2025-04-01", t[0]?.date);
-    check("withdrawal sign flipped by balance delta", approx(t[1]?.amount, -797), String(t[1]?.amount));
+    check(
+      "withdrawal sign flipped by balance delta",
+      approx(t[1]?.amount, -797),
+      String(t[1]?.amount),
+    );
     check("deposit stays positive", approx(t[2]?.amount, 50000));
     check("UPI rail kept in description", /UPI/.test(t[0]?.description ?? ""), t[0]?.description);
-    check("reference recovered into tranId", /546035039121/.test(t[0]?.tranId ?? ""), String(t[0]?.tranId));
-    check("drCr reflects balance standing (positive => Cr) even on withdrawal", t[1]?.drCr === "Cr");
-  }
+    check(
+      "reference recovered into tranId",
+      /546035039121/.test(t[0]?.tranId ?? ""),
+      String(t[0]?.tranId),
+    );
+    check(
+      "drCr reflects balance standing (positive => Cr) even on withdrawal",
+      t[1]?.drCr === "Cr",
+    );
+  },
 );
 
 // =============================================================================
@@ -189,15 +204,27 @@ run(
     ]),
   ],
   (t) => {
-    check("exactly 2 real transactions (B/F and appendix dropped)", t.length === 2, `got ${t.length}: ${t.map((x) => x.description).join(" | ")}`);
+    check(
+      "exactly 2 real transactions (B/F and appendix dropped)",
+      t.length === 2,
+      `got ${t.length}: ${t.map((x) => x.description).join(" | ")}`,
+    );
     check("lakh amount parsed", approx(t[0]?.amount, 100116), String(t[0]?.amount));
     check("deposit column => positive without needing continuity", t[0]?.amount > 0);
     check("withdrawal column => negative", approx(t[1]?.amount, -25000), String(t[1]?.amount));
-    check("value date captured separately", t[1]?.valueDate === "2025-04-04", String(t[1]?.valueDate));
+    check(
+      "value date captured separately",
+      t[1]?.valueDate === "2025-04-04",
+      String(t[1]?.valueDate),
+    );
     check("cheque number captured", t[1]?.chequeDetails === "000123", String(t[1]?.chequeDetails));
-    check("value date not leaked into description", !/04-04-2025/.test(t[1]?.description ?? ""), t[1]?.description);
+    check(
+      "value date not leaked into description",
+      !/04-04-2025/.test(t[1]?.description ?? ""),
+      t[1]?.description,
+    );
     check("lakh balance parsed", approx(t[0]?.balance ?? NaN, 197648.73));
-  }
+  },
 );
 
 // =============================================================================
@@ -217,11 +244,15 @@ run(
     ]),
   ],
   (t) => {
-    check("2 transactions (summary row not a txn, not a header)", t.length === 2, `got ${t.length}`);
+    check(
+      "2 transactions (summary row not a txn, not a header)",
+      t.length === 2,
+      `got ${t.length}`,
+    );
     check("+£ credit parsed positive", approx(t[0]?.amount, 0.04), String(t[0]?.amount));
     check("-£ debit parsed negative", approx(t[1]?.amount, -101.99), String(t[1]?.amount));
     check("no balance invented", t[0]?.balance === null && t[1]?.balance === null);
-  }
+  },
 );
 
 // =============================================================================
@@ -244,13 +275,28 @@ run(
     ]),
   ],
   (t) => {
-    check("2 transactions", t.length === 2, `got ${t.length}: ${t.map((x) => `${x.date} ${x.description} ${x.amount}`).join(" | ")}`);
-    check("split row reunited with its own date", /TRAVEL CLUB/.test(t[0]?.description ?? ""), t[0]?.description);
-    check("split row amount stays with its own txn", approx(Math.abs(t[0]?.amount ?? 0), 6500), String(t[0]?.amount));
+    check(
+      "2 transactions",
+      t.length === 2,
+      `got ${t.length}: ${t.map((x) => `${x.date} ${x.description} ${x.amount}`).join(" | ")}`,
+    );
+    check(
+      "split row reunited with its own date",
+      /TRAVEL CLUB/.test(t[0]?.description ?? ""),
+      t[0]?.description,
+    );
+    check(
+      "split row amount stays with its own txn",
+      approx(Math.abs(t[0]?.amount ?? 0), 6500),
+      String(t[0]?.amount),
+    );
     check("2-digit year expanded", t[0]?.date === "2018-01-22", t[0]?.date);
-    check("Previous Balance not absorbed anywhere", !t.some((x) => approx(Math.abs(x.amount), 25000)));
+    check(
+      "Previous Balance not absorbed anywhere",
+      !t.some((x) => approx(Math.abs(x.amount), 25000)),
+    );
     check("C suffix forces credit", approx(t[1]?.amount, 20000), String(t[1]?.amount));
-  }
+  },
 );
 
 // =============================================================================
@@ -271,8 +317,12 @@ run(
     check("3 transactions", t.length === 3, `got ${t.length}`);
     check("DD-Mon-YYYY", t[0]?.date === "2025-01-15", t[0]?.date);
     check("Mon DD, YYYY", t[1]?.date === "2025-01-16", t[1]?.date);
-    check("no-separator month name survives (Nov not corrupted)", t[2]?.date === "2023-11-01", t[2]?.date);
-  }
+    check(
+      "no-separator month name survives (Nov not corrupted)",
+      t[2]?.date === "2023-11-01",
+      t[2]?.date,
+    );
+  },
 );
 
 // =============================================================================
@@ -294,12 +344,28 @@ run(
   ],
   (t) => {
     check("2 transactions", t.length === 2, `got ${t.length}`);
-    check("prefix attached forward, not stolen by earlier txn", !/KARNATAKA/.test(t[0]?.description ?? ""), t[0]?.description);
-    check("prefix present on its own txn", /KARNATAKA/.test(t[1]?.description ?? ""), t[1]?.description);
-    check("suffix line attached backward", /SAINATH/.test(t[1]?.description ?? ""), t[1]?.description);
-    check("mid-token line wrap joined without space", /BANK\/509373283868/.test(t[1]?.description ?? ""), t[1]?.description);
+    check(
+      "prefix attached forward, not stolen by earlier txn",
+      !/KARNATAKA/.test(t[0]?.description ?? ""),
+      t[0]?.description,
+    );
+    check(
+      "prefix present on its own txn",
+      /KARNATAKA/.test(t[1]?.description ?? ""),
+      t[1]?.description,
+    );
+    check(
+      "suffix line attached backward",
+      /SAINATH/.test(t[1]?.description ?? ""),
+      t[1]?.description,
+    );
+    check(
+      "mid-token line wrap joined without space",
+      /BANK\/509373283868/.test(t[1]?.description ?? ""),
+      t[1]?.description,
+    );
     check("sign corrected via continuity", approx(t[1]?.amount, -1200), String(t[1]?.amount));
-  }
+  },
 );
 
 // -----------------------------------------------------------------------------
