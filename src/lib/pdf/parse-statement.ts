@@ -12,7 +12,7 @@ import { parseCsvText, csvResultToTransactions } from "../csv/parse-csv";
 import { parseOfxText, ofxResultToTransactions } from "../ofx/parse-ofx";
 import { parseQifText, qifResultToTransactions } from "../qif/parse-qif";
 import { parseMt940Text, mt940ResultToTransactions } from "../mt940/parse-mt940";
-import type { PageText } from "./extract-text";
+import type { ExtractedPdf, PageText } from "./extract-text";
 import type { ParsedStatement, Transaction } from "../statement-store";
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -117,7 +117,7 @@ export async function parseStatementFile(
 
   const isImage = IMAGE_TYPES.includes(file.type) || /\.(jpe?g|png|webp)$/i.test(file.name);
 
-  let extracted;
+  let extracted!: ExtractedPdf;
   let usedOcr = false;
 
   if (isImage) {
@@ -178,41 +178,80 @@ export async function parseStatementFile(
     }
   }
 
+  // Runs full-document OCR and swaps it in as the extraction result -- but
+  // only if OCR actually found more text than the fast path did. If OCR also
+  // comes back empty (a truly blank page, or an image OCR can't read), the
+  // original result is kept rather than silently discarding whatever little
+  // text was there. Returns true only when the swap actually happened.
+  const attemptOcrSwap = async (successWarning: string): Promise<boolean> => {
+    try {
+      const ocrResult = await ocrPdfToTextItems(file, (e) => onPageParsed?.(e.sourcePage, e.totalPages), ocrLanguages);
+      const ocrPages: PageText[] = ocrResult.pages.map((p) => ({
+        pageNumber: p.pageNumber,
+        items: p.items,
+        rawText: p.rawText,
+      }));
+      const ocrFullText = ocrPages.map((p) => p.rawText).join("\n");
+      if (ocrFullText.trim().length > extracted.fullText.trim().length) {
+        extracted = { pageCount: ocrResult.pageCount, pages: ocrPages, fullText: ocrFullText };
+        usedOcr = true;
+        warnings.push(successWarning);
+        return true;
+      }
+    } catch (err) {
+      warnings.push(
+        `This looked like a scanned statement, but on-device OCR failed (${err instanceof Error ? err.message : "unknown error"}). Falling back to whatever text could be read directly, which may be incomplete.`
+      );
+    }
+    return false;
+  };
+
   // A page with almost no real text items is very likely a scanned/photographed
   // page (image-only), not a text-based PDF -- fall back to on-device OCR for
   // the whole document rather than silently returning nothing. This is
   // genuinely slower than normal text extraction, so only do it when the
   // fast path actually looks scanned, not on every upload. Doesn't apply to
   // the isImage path above, which already went through OCR directly.
+  //
+  // The majority test is >= 0.5, not > 0.5: a 2-page document made of a
+  // real-text cover page plus one scanned statement page is exactly half
+  // scanned, and under a strict > test it never triggered OCR at all -- the
+  // scanned page (the one with the actual transactions) came back empty.
   if (!isImage) {
     const scannedPageCount = extracted.pages.filter((p) => looksLikeScannedPage(p.items.length)).length;
-    const looksScanned = extracted.pages.length > 0 && scannedPageCount / extracted.pages.length > 0.5;
+    const looksScanned = extracted.pages.length > 0 && scannedPageCount / extracted.pages.length >= 0.5;
 
     if (looksScanned) {
-      try {
-        const ocrResult = await ocrPdfToTextItems(file, (e) => onPageParsed?.(e.sourcePage, e.totalPages), ocrLanguages);
-        const ocrPages: PageText[] = ocrResult.pages.map((p) => ({
-          pageNumber: p.pageNumber,
-          items: p.items,
-          rawText: p.rawText,
-        }));
-        const ocrFullText = ocrPages.map((p) => p.rawText).join("\n");
-        // Only actually switch to the OCR result if it found meaningfully more
-        // text than the fast path did -- if OCR also comes back empty (a truly
-        // blank page, or an image OCR can't read), keep the original result
-        // rather than silently discarding whatever little text was there.
-        if (ocrFullText.trim().length > extracted.fullText.trim().length) {
-          extracted = { pageCount: ocrResult.pageCount, pages: ocrPages, fullText: ocrFullText };
-          usedOcr = true;
-          warnings.push(
-            "This looked like a scanned or photographed statement, so text was read using on-device OCR instead of a normal text layer. OCR is less precise than reading real text -- double-check extracted rows carefully before exporting."
-          );
-        }
-      } catch (err) {
-        warnings.push(
-          `This looked like a scanned statement, but on-device OCR failed (${err instanceof Error ? err.message : "unknown error"}). Falling back to whatever text could be read directly, which may be incomplete.`
-        );
-      }
+      await attemptOcrSwap(
+        "This looked like a scanned or photographed statement, so text was read using on-device OCR instead of a normal text layer. OCR is less precise than reading real text -- double-check extracted rows carefully before exporting."
+      );
+    }
+  }
+
+  let raw = parseTransactionsFromPages(extracted.pages, extracted.fullText);
+
+  // Rescue pass: scanned statements frequently carry a real-text WRAPPER --
+  // a bank footer stamp on every page ("Page 1 of 4", disclaimers) or a
+  // scanner app's embedded low-quality text layer -- which pushes the page
+  // over the looksLikeScannedPage item threshold, so the trigger above never
+  // fires even though the transactions themselves are only in the image. The
+  // tell is the combination: the fast path parsed ZERO transactions AND the
+  // document's text density is far below what a real text-layer statement
+  // produces (hundreds of items per page). In that case, try OCR anyway.
+  // Deliberately NOT triggered for genuinely text-dense documents that
+  // parsed to zero -- there OCR can't outdo the real text layer (and the
+  // attemptOcrSwap length guard would discard its result anyway), so running
+  // it would only add minutes of work for nothing; that failure mode is a
+  // parser-layout gap, not an extraction gap, and the honest response is the
+  // "no transaction rows" warning below.
+  if (!isImage && !usedOcr && raw.length === 0 && extracted.pages.length > 0) {
+    const totalItems = extracted.pages.reduce((sum, p) => sum + p.items.length, 0);
+    const avgItemsPerPage = totalItems / extracted.pages.length;
+    if (avgItemsPerPage < 60) {
+      const swapped = await attemptOcrSwap(
+        "This PDF's text layer had too little real content to read transactions from -- likely a scanned statement with a text footer or a scanner-generated text layer -- so it was re-read using on-device OCR. OCR is less precise than reading real text -- double-check extracted rows carefully before exporting."
+      );
+      if (swapped) raw = parseTransactionsFromPages(extracted.pages, extracted.fullText);
     }
   }
 
@@ -247,8 +286,6 @@ export async function parseStatementFile(
       "Couldn't detect this statement's currency — amounts are shown as plain numbers below. Double-check before exporting if that matters for your records."
     );
   }
-
-  const raw = parseTransactionsFromPages(extracted.pages, extracted.fullText);
 
   if (raw.length === 0) {
     warnings.push(
