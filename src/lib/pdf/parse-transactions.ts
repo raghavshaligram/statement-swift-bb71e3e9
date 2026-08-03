@@ -404,32 +404,34 @@ export function extractReferenceTokens(block: Block, dateMatchedText: string, co
 }
 
 function buildDescription(block: Block, dateMatchedText: string, consumedAmounts: string[]): string {
+  // Preserve the statement's own text.
+  //
+  // This used to split the description into tokens, drop the ones judged to
+  // be noise, and rejoin them. That was a readability decision applied to
+  // financial data, and it kept being wrong on statements it hadn't been
+  // written against: it deleted UPI references, IFSC codes and payment
+  // methods, none of which are noise to whoever is reconciling the account.
+  //
+  // Only two things are removed now, and both are removed because they are
+  // genuinely not part of the description: the date and the amounts, which
+  // share the same text stream in the PDF and are already captured in their
+  // own fields. Everything else is exported exactly as the bank printed it.
+  //
+  // The line-joining that remains is unavoidable rather than editorial --
+  // PDF extraction returns a wrapped description as separate fragments, so
+  // rejoining them is reconstructing the original text, not altering it.
   const rawTexts = block.rows.map((r) => r.text);
-  let combined = rawTexts.join(" / ");
+  let combined = rawTexts.join(" ");
 
-  combined = combined.replace(dateMatchedText, "");
-  for (const tok of consumedAmounts) combined = combined.replace(tok, "");
+  combined = combined.replace(dateMatchedText, " ");
+  for (const tok of consumedAmounts) combined = combined.replace(tok, " ");
 
-  const segments = combined
-    .split(/[\/\s]+/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .filter((s) => !NOISE_SEGMENT_RE.test(s))
-    // References used to be deleted here. They're kept: an IFSC code
-    // (ICIC0000169) says which bank received the money, and a UPI/ATM
-    // reference is what you quote to the bank when querying a transaction.
-    // Dropping them made descriptions shorter but not more useful, and
-    // silently discarded the only identifier tying a row to its counterparty.
-    .filter((s) => !NOISE_SEGMENT_RE.test(s));
+  // Collapse runs of whitespace introduced by the removals above and by
+  // line-joining. Separators the bank used (slashes, dashes, @) are left
+  // untouched -- "UPI IN/546035039121/dripchatagency@okicici" stays exactly
+  // that, rather than being flattened into space-separated tokens.
+  const description = combined.replace(/\s+/g, " ").trim();
 
-  // Collapse consecutive duplicate segments (e.g. a payee name split across
-  // lines sometimes repeats a word right at the line break).
-  const deduped: string[] = [];
-  for (const s of segments) {
-    if (deduped[deduped.length - 1]?.toLowerCase() !== s.toLowerCase()) deduped.push(s);
-  }
-
-  const description = deduped.join(" ").replace(/\s+/g, " ").trim();
   return description || "(description not detected)";
 }
 
