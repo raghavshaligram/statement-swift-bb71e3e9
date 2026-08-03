@@ -403,6 +403,28 @@ export function extractReferenceTokens(block: Block, dateMatchedText: string, co
   return deduped.join(" ");
 }
 
+/**
+ * Removes a token and the whitespace immediately around it, so deleting a
+ * date or amount from mid-line doesn't strand a space against an adjacent
+ * separator.
+ */
+function removeToken(text: string, token: string): string {
+  if (!token) return text;
+  const idx = text.indexOf(token);
+  if (idx === -1) return text;
+  let start = idx;
+  let end = idx + token.length;
+  while (start > 0 && /\s/.test(text[start - 1])) start--;
+  while (end < text.length && /\s/.test(text[end])) end++;
+  const before = text.slice(0, start);
+  const after = text.slice(end);
+  // Keep a single space only when both sides are real text; if either side
+  // ends/begins with a separator, join them directly.
+  const needsSpace =
+    before !== "" && after !== "" && !/[/\\-]$/.test(before) && !/^[/\\-]/.test(after);
+  return before + (needsSpace ? " " : "") + after;
+}
+
 function buildDescription(block: Block, dateMatchedText: string, consumedAmounts: string[]): string {
   // Preserve the statement's own text.
   //
@@ -421,10 +443,33 @@ function buildDescription(block: Block, dateMatchedText: string, consumedAmounts
   // PDF extraction returns a wrapped description as separate fragments, so
   // rejoining them is reconstructing the original text, not altering it.
   const rawTexts = block.rows.map((r) => r.text);
-  let combined = rawTexts.join(" ");
 
-  combined = combined.replace(dateMatchedText, " ");
-  for (const tok of consumedAmounts) combined = combined.replace(tok, " ");
+  // Join wrapped lines without inserting a space where the PDF broke the
+  // line mid-token. Confirmed in the source: a description wraps as
+  // "UPI/malpotesainath-/UPI/KARNATAKA BANK" then "/509373283868/ICI9c36..."
+  // -- joining those with a space yields "BANK /509373283868", where the
+  // statement itself reads "BANK/509373283868". The separator belongs to the
+  // token, not to the line break, so no space is added when one line ends or
+  // the next begins with a separator character.
+  let combined = rawTexts.reduce((acc, line, i) => {
+    if (i === 0) return line;
+    const prev = acc.trimEnd();
+    const next = line.trimStart();
+    if (!prev) return next;
+    if (!next) return prev;
+    const joinsMidToken = /[/\\-]$/.test(prev) || /^[/\\-]/.test(next);
+    return prev + (joinsMidToken ? "" : " ") + next;
+  }, "");
+
+  // Removing the date and amounts leaves the whitespace that surrounded
+  // them. Confirmed against the source layout: the date sits on the SAME
+  // visual line as the description continuation ("03-04-2025    /509373283868
+  // /ICI9c36..."), so deleting it stranded a space before the slash --
+  // producing "BANK /509373283868" where the statement reads
+  // "BANK/509373283868". Consuming the adjacent whitespace along with the
+  // token keeps the bank's own separators intact.
+  combined = removeToken(combined, dateMatchedText);
+  for (const tok of consumedAmounts) combined = removeToken(combined, tok);
 
   // Collapse runs of whitespace introduced by the removals above and by
   // line-joining. Separators the bank used (slashes, dashes, @) are left
