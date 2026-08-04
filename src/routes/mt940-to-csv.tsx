@@ -40,7 +40,14 @@ export const Route = createFileRoute("/mt940-to-csv")({
 });
 
 function Page() {
-  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
+  const steps = converterSteps("MT940", "CSV");
+  const jsonLd = converterPageJsonLd({
+    name: "Free MT940 to CSV Converter",
+    description: "Convert MT940 files to CSV in your browser.",
+    url: "/mt940-to-csv",
+    steps,
+    faq: FAQ,
+  });
 
   return (
     <div className="min-h-screen bg-background">

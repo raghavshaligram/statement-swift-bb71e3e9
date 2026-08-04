@@ -41,7 +41,14 @@ export const Route = createFileRoute("/iif-to-csv")({
 });
 
 function Page() {
-  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
+  const steps = converterSteps("IIF", "CSV");
+  const jsonLd = converterPageJsonLd({
+    name: "Free IIF to CSV Converter",
+    description: "Convert IIF files to CSV in your browser.",
+    url: "/iif-to-csv",
+    steps,
+    faq: FAQ,
+  });
 
   return (
     <div className="min-h-screen bg-background">

@@ -11,6 +11,17 @@
  *     drift caused a previous bug -- so a new page can ship unlisted and
  *     never get crawled.
  *
+ * NOT covered here: undefined identifiers. A scripted bulk edit once inserted
+ * `steps={steps}` into 13 pages while the matching `const steps = ...` failed
+ * on 7 of them, blank-screening those routes in production. Two backstops were
+ * attempted here and both were removed: enumerating declaration forms produced
+ * 67 false positives (missing array destructuring and arrow params), and the
+ * weaker "identifier appears nowhere else in the file" rule failed on the very
+ * bug it was written for, because `steps,` survived as object shorthand.
+ *
+ * `npm run lint` catches this correctly. A check that misses the case it was
+ * built for is worse than no check, because it invites trust it hasn't earned.
+ *
  * Run:  npm run check:links
  * Exits non-zero on any broken link. Sitemap gaps are reported as warnings
  * rather than failures, since some routes (auth, account, preview) are

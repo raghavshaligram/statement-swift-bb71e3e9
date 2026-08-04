@@ -64,7 +64,14 @@ export const Route = createFileRoute("/ofx-to-csv")({
 });
 
 function Page() {
-  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
+  const steps = converterSteps("OFX", "CSV");
+  const jsonLd = converterPageJsonLd({
+    name: "Free OFX to CSV Converter",
+    description: "Convert OFX files to CSV in your browser.",
+    url: "/ofx-to-csv",
+    steps,
+    faq: FAQ,
+  });
 
   return (
     <div className="min-h-screen bg-background">

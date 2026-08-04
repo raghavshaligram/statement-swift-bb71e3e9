@@ -39,7 +39,14 @@ export const Route = createFileRoute("/csv-to-qif")({
 });
 
 function Page() {
-  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
+  const steps = converterSteps("CSV", "QIF");
+  const jsonLd = converterPageJsonLd({
+    name: "Free CSV to QIF Converter for Quicken",
+    description: "Convert CSV files to QIF in your browser.",
+    url: "/csv-to-qif",
+    steps,
+    faq: FAQ,
+  });
 
   return (
     <div className="min-h-screen bg-background">

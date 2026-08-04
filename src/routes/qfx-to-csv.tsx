@@ -63,7 +63,14 @@ export const Route = createFileRoute("/qfx-to-csv")({
 });
 
 function Page() {
-  const jsonLd = { "@context": "https://schema.org", "@type": "FAQPage", mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) };
+  const steps = converterSteps("QFX", "CSV");
+  const jsonLd = converterPageJsonLd({
+    name: "Free QFX to CSV Converter",
+    description: "Convert QFX files to CSV in your browser.",
+    url: "/qfx-to-csv",
+    steps,
+    faq: FAQ,
+  });
 
   return (
     <div className="min-h-screen bg-background">
