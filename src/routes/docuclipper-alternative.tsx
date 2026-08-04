@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { FaqList, faqJsonLd, type FaqItem } from "@/components/faq-list";
 import {
   ArticleBackLink,
   ArticleHero,
@@ -29,7 +30,7 @@ import {
  * actually deciding on.
  */
 
-const FAQ = [
+const FAQ: FaqItem[] = [
   {
     q: "Is LedgerLocal a drop-in replacement for DocuClipper?",
     a: "For converting statement PDFs into CSV, Excel, QBO, OFX or QIF, yes. For direct QuickBooks Online and Xero sync, no — DocuClipper pushes data into those systems, LedgerLocal produces a file you import yourself.",
@@ -68,20 +69,13 @@ export const Route = createFileRoute("/docuclipper-alternative")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({
-      "@type": "Question",
-      name: q,
-      acceptedAnswer: { "@type": "Answer", text: a },
-    })),
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ)) }}
+      />
 
       <ArticleBackLink />
       <ArticleHero
@@ -178,16 +172,7 @@ function Page() {
       />
 
       <ArticleH2>Frequently asked questions</ArticleH2>
-      <div className="mx-auto max-w-3xl px-6 pb-4">
-        <dl className="space-y-5">
-          {FAQ.map(({ q, a }) => (
-            <div key={q}>
-              <dt className="font-semibold text-ink">{q}</dt>
-              <dd className="mt-1.5 text-muted-foreground">{a}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
+      <FaqList items={FAQ} />
 
       <ArticleCta
         heading="Convert a statement without uploading it"
@@ -212,7 +197,11 @@ function Page() {
             title: "QBO to CSV Converter",
             blurb: "Open a QuickBooks Web Connect file as a spreadsheet.",
           },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every guide and format converter." },
+          {
+            href: "/moneythumb-alternative",
+            title: "MoneyThumb Alternative",
+            blurb: "One converter for every format, versus a product per format.",
+          },
         ]}
       />
 
