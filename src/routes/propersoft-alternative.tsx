@@ -202,9 +202,9 @@ function Page() {
             blurb: "Cloud processing versus on-device, compared honestly.",
           },
           {
-            href: "/qbo-to-csv",
-            title: "QBO to CSV Converter",
-            blurb: "Open a QuickBooks Web Connect file as a spreadsheet.",
+            href: "/statementdesk-alternative",
+            title: "StatementDesk Alternative",
+            blurb: "Same price — row-metered and cloud, versus no limit and on-device.",
           },
           {
             href: "/bank-statement-to-csv",

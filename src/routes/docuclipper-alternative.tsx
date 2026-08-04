@@ -197,9 +197,9 @@ function Page() {
             blurb: "Convert any bank's PDF statement to CSV, on-device.",
           },
           {
-            href: "/bank-statement-to-ofx",
-            title: "Bank Statement to OFX",
-            blurb: "Produce an OFX file for QuickBooks, Xero or Quicken.",
+            href: "/statementdesk-alternative",
+            title: "StatementDesk Alternative",
+            blurb: "Same price — row-metered and cloud, versus no limit and on-device.",
           },
           {
             href: "/propersoft-alternative",
