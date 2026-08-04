@@ -34,6 +34,102 @@ export type HeaderInfo = {
 // transaction date -- a real bug (both columns would collide into one
 // role). Split out as its own role, since some statements (confirmed via a
 // real sample) have both as genuinely distinct columns.
+/**
+ * Non-English column headers.
+ *
+ * Number and date parsing already handle comma-decimal and dot-separated
+ * locales, but every header label above was English, so a German or Spanish
+ * statement found no header row and fell through to positional inference.
+ * That degrades rather than fails -- it still produces transactions -- but it
+ * loses the explicit debit/credit column split, which is exactly what
+ * positional inference is worst at.
+ *
+ * Diacritics are stripped before matching (see normaliseLabel), so patterns
+ * here are written unaccented: "Libelle" matches "Libellé", "Descricao"
+ * matches "Descrição". Writing both forms in every pattern would be noise.
+ *
+ * Covers German, French, Spanish, Italian, Dutch and Portuguese -- the six
+ * languages behind the comma-decimal locales the number parser now supports.
+ * Untested against real statements from these countries; this widens what CAN
+ * be recognised, and the honest claim remains that named support is US, UK,
+ * Canada and India.
+ */
+const LOCALISED_ROLE_KEYWORDS: Array<{ role: ColumnRole; patterns: RegExp[] }> = [
+  {
+    role: "valueDate",
+    patterns: [
+      /^wertstellung$/i, /^valuta$/i,            // de
+      /^date de valeur$/i,                        // fr
+      /^fecha valor$/i,                           // es
+      /^data valuta$/i,                           // it
+      /^valutadatum$/i,                           // nl
+      /^data valor$/i,                            // pt
+    ],
+  },
+  {
+    role: "date",
+    patterns: [
+      /^datum$/i, /^buchungstag$/i, /^buchungsdatum$/i,   // de + nl
+      /^date$/i, /^date operation$/i,                     // fr
+      /^fecha$/i, /^fecha operacion$/i,                   // es
+      /^data$/i, /^data operazione$/i,                    // it
+      /^data lancamento$/i,                               // pt
+    ],
+  },
+  {
+    role: "description",
+    patterns: [
+      /^buchungstext$/i, /^verwendungszweck$/i, /^umsatzart$/i,  // de
+      /^libelle$/i, /^operation$/i, /^nature de l.operation$/i,   // fr
+      /^concepto$/i, /^descripcion$/i, /^detalle$/i,              // es
+      /^descrizione$/i, /^causale$/i,                             // it
+      /^omschrijving$/i, /^mededelingen$/i,                       // nl
+      /^descricao$/i, /^historico$/i,                             // pt
+    ],
+  },
+  {
+    role: "withdrawal",
+    patterns: [
+      /^soll$/i, /^belastung$/i, /^lastschrift$/i,   // de
+      /^debit$/i, /^retrait$/i,                       // fr
+      /^cargo$/i, /^debe$/i, /^adeudo$/i,             // es
+      /^dare$/i, /^addebito$/i, /^uscite$/i,          // it
+      /^debet$/i, /^af$/i,                            // nl
+      /^debito$/i, /^saida$/i,                        // pt
+    ],
+  },
+  {
+    role: "deposit",
+    patterns: [
+      /^haben$/i, /^gutschrift$/i,                    // de
+      /^credit$/i, /^versement$/i,                    // fr
+      /^abono$/i, /^haber$/i, /^ingreso$/i,           // es
+      /^avere$/i, /^accredito$/i, /^entrate$/i,       // it
+      /^credit$/i, /^bij$/i,                          // nl
+      /^credito$/i, /^entrada$/i,                     // pt
+    ],
+  },
+  {
+    role: "balance",
+    patterns: [
+      /^saldo$/i, /^kontostand$/i, /^endsaldo$/i,     // de, es, it, nl, pt
+      /^solde$/i,                                     // fr
+      /^saldo final$/i, /^saldo contabile$/i,
+    ],
+  },
+  {
+    role: "amount",
+    patterns: [
+      /^betrag$/i, /^umsatz$/i,                       // de
+      /^montant$/i,                                   // fr
+      /^importe$/i,                                   // es
+      /^importo$/i,                                   // it
+      /^bedrag$/i,                                    // nl
+      /^valor$/i, /^montante$/i,                      // pt
+    ],
+  },
+];
+
 const ROLE_KEYWORDS: Array<{ role: ColumnRole; patterns: RegExp[] }> = [
   { role: "valueDate", patterns: [/^value date$/i] },
   { role: "date", patterns: [/^date$/i, /^transaction date$/i, /^txn date$/i] },
@@ -68,11 +164,15 @@ const ROLE_KEYWORDS: Array<{ role: ColumnRole; patterns: RegExp[] }> = [
   },
   // Recognized purely so its raw text (e.g. "Cr") gets excluded from the
   // description via consumedColumnText in parse-transactions.ts -- NOT used
-  // as the source of the authoritative drCr field, since real evidence shows
-  // this column reflects balance standing, not transaction direction, and
-  // that's computed from the balance instead (see parse-transactions.ts).
+  // as the source of the authoritative drCr field. A real Federal Bank
+  // statement prints "Cr" on every row including withdrawals, confirming this
+  // column reflects balance standing rather than transaction direction. The
+  // exported drCr is derived from the amount's sign instead, after the
+  // balance-continuity pass (see parse-transactions.ts).
   { role: "drCrColumn", patterns: [/^dr\s*\/?\s*cr\.?$/i, /^dr\/cr$/i] },
+  ...LOCALISED_ROLE_KEYWORDS,
 ];
+
 
 // Canonical words for fuzzy matching, used as a fallback when an OCR'd
 // header doesn't exactly match the regex patterns above (e.g. "Date" ->
@@ -136,8 +236,21 @@ function fuzzyMatchRole(label: string): ColumnRole | null {
   return best?.role ?? null;
 }
 
+/**
+ * Normalises a header label for matching: trims, drops trailing punctuation,
+ * and strips diacritics via NFD decomposition so the localised patterns can be
+ * written unaccented. "Libellé" -> "Libelle", "Descrição" -> "Descricao".
+ */
+function normaliseLabel(label: string): string {
+  return label
+    .trim()
+    .replace(/[*:]+$/, "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
 function matchRole(label: string): ColumnRole | null {
-  const cleaned = label.trim().replace(/[*:]+$/, "");
+  const cleaned = normaliseLabel(label);
   for (const { role, patterns } of ROLE_KEYWORDS) {
     if (patterns.some((p) => p.test(cleaned))) return role;
   }

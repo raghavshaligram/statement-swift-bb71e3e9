@@ -718,6 +718,66 @@ run(
   },
 );
 
+// =============================================================================
+// 14. Non-English column headers. Number and date parsing already handled
+//     comma-decimal locales, but every header label was English, so these
+//     statements found no header row and fell through to positional
+//     inference -- which is worst at exactly what these layouts need, an
+//     explicit Soll/Haben (debit/credit) column split.
+//
+//     Also asserts diacritic stripping: "Libellé" and "Descrição" must match
+//     patterns written unaccented.
+// =============================================================================
+// Explicit x positions so tokens land under their own header. `flow()` lays
+// out by string length, which pushes an amount under the wrong column as soon
+// as the payee is long -- the fixture geometry, not the parser, was wrong on
+// the first attempt here.
+const COLS = [10, 90, 180, 300, 380, 460];
+const at = (...cells: Array<string>): LineSpec =>
+  cells.map((str, i) => ({ str, x: COLS[i] })).filter((c) => c.str !== "");
+
+run(
+  "german-header-labels",
+  [
+    pageAtYs(
+      [
+        at("Buchungstag", "Wertstellung", "Buchungstext", "Soll", "Haben", "Saldo"),
+        at("03.04.2025", "03.04.2025", "REWE MARKT GMBH", "87,20", "", "1.234,56"),
+        at("04.04.2025", "04.04.2025", "GEHALT APRIL", "", "2.500,00", "3.734,56"),
+      ],
+      [100, 125, 150],
+      1,
+    ),
+  ],
+  (t) => {
+    check("2 transactions", t.length === 2, `got ${t.length}`);
+    check("Soll column read as a debit", approx(t[0]?.amount, -87.2), String(t[0]?.amount));
+    check("Haben column read as a credit", approx(t[1]?.amount, 2500), String(t[1]?.amount));
+    check("drCr follows the amount", t[0]?.drCr === "Dr" && t[1]?.drCr === "Cr", `${t[0]?.drCr}/${t[1]?.drCr}`);
+  },
+);
+
+run(
+  "accented-header-labels",
+  [
+    pageAtYs(
+      [
+        at("Date", "Date de valeur", "Libell\u00e9", "D\u00e9bit", "Cr\u00e9dit", "Solde"),
+        at("03/04/2025", "03/04/2025", "CARREFOUR MARKET", "87,20", "", "1.234,56"),
+        at("04/04/2025", "04/04/2025", "SALAIRE AVRIL", "", "2.500,00", "3.734,56"),
+      ],
+      [100, 125, 150],
+      1,
+    ),
+  ],
+  (t) => {
+    check("2 transactions", t.length === 2, `got ${t.length}`);
+    check("accented Debit read as a debit", approx(t[0]?.amount, -87.2), String(t[0]?.amount));
+    check("accented Credit read as a credit", approx(t[1]?.amount, 2500), String(t[1]?.amount));
+    check("Date de valeur mapped to value date", t[0]?.valueDate !== null, String(t[0]?.valueDate));
+  },
+);
+
 // -----------------------------------------------------------------------------
 console.log("");
 if (failures > 0) {

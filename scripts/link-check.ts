@@ -102,6 +102,31 @@ else {
   missing.sort().forEach((r) => console.log(`        ${r}`));
 }
 
+/**
+ * llms.txt coverage.
+ *
+ * Both the sitemap and llms.txt are maintained by hand, and both had already
+ * drifted: 14 live routes -- including all four comparison pages and every QBO
+ * converter -- were in the sitemap but absent from llms.txt. That file is how
+ * an LLM reading the site learns what exists, so a gap there is the same class
+ * of problem as a gap in the sitemap, just less visible.
+ *
+ * A warning rather than a failure, matching how sitemap gaps are treated:
+ * some pages may be deliberately omitted.
+ */
+console.log("\n=== llms.txt coverage ===\n");
+{
+  const llms = readFileSync(join(import.meta.dirname, "../public/llms.txt"), "utf8");
+  const undocumented = [...listed].filter(
+    (p) => p !== "/" && !llms.includes(`ledgerlocal.com${p}`),
+  );
+  if (undocumented.length === 0) console.log("every sitemap route appears in llms.txt");
+  else {
+    console.log("WARN  in sitemap but not llms.txt:");
+    undocumented.sort().forEach((p) => console.log(`        ${p}`));
+  }
+}
+
 console.log("");
 if (failures > 0) {
   console.error(`${failures} broken internal link(s)\n`);

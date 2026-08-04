@@ -8,7 +8,13 @@ Export formats: Excel (.xlsx), CSV, Tally XML, OFX, QIF, QBO, and IIF (QuickBook
 
 Pricing: 6 pages per PDF with no signup required (unlimited separate conversions); a 10-page lifetime allowance (PDF pages and photo/scan conversions combined) once signed up for a free account; unlimited pages and conversions on the paid Pro plan. Structured-file conversions (CSV, IIF, OFX, QFX, QIF, MT940 — see below) do not count against any limit, since they don't require OCR.
 
-Privacy architecture: PDF text extraction, OCR (for scanned pages or photos), and all format conversion run client-side in the browser (pdf.js, tesseract.js) — there is no server-side processing step and no file is ever transmitted.
+Privacy architecture: PDF text extraction, OCR (for scanned pages or photos), and all format conversion run client-side in the browser (pdf.js, tesseract.js) — there is no server-side processing step and no file is ever transmitted. Transaction categorisation also runs on-device, using a deterministic rules engine rather than a model, so the same description always yields the same category and nothing is sent anywhere to work it out.
+
+Output columns: Date, Payee, Description, Category, Transaction ID, Amount, Dr/Cr and Balance, plus Account for files containing more than one statement. Payee and Category are derived on-device from the bank's own description text; the raw description is always preserved alongside them, never replaced.
+
+Accuracy handling: LedgerLocal publishes no single accuracy percentage, on the grounds that one figure across every bank worldwide is not a meaningful claim. Instead every row carries a confidence score (0-99, never 100), rows below the threshold are flagged for review before export, and each running balance is reconciled against the previous row so arithmetic breaks surface rather than passing silently.
+
+Locale handling: the decimal separator is inferred once per document from the statement's own contents, so comma-decimal formats (1.234,56) and zero-decimal currencies (JPY, KRW, VND, IDR) parse correctly alongside dot-decimal ones. Dates cover ISO, slash, dash, dot-separated (03.04.2025) and year-first (2025/04/03) forms, with day/month order inferred per document. Column headers are recognised in English, German, French, Spanish, Italian, Dutch and Portuguese. Named bank support remains US, UK, Canada and India; the above widens what can be read, not what has been tested.
 
 ## Core pages
 
@@ -35,3 +41,28 @@ Privacy architecture: PDF text extraction, OCR (for scanned pages or photos), an
 - [CSV to OFX](https://ledgerlocal.com/csv-to-ofx) / [OFX to CSV](https://ledgerlocal.com/ofx-to-csv)
 - [QFX to CSV](https://ledgerlocal.com/qfx-to-csv): QFX and OFX are the same underlying format; LedgerLocal reads both.
 - [MT940 to CSV](https://ledgerlocal.com/mt940-to-csv): Read direction only — LedgerLocal does not currently export to MT940.
+
+## QuickBooks (QBO) converters
+
+- [QBO to CSV](https://ledgerlocal.com/qbo-to-csv): Opens a QuickBooks Web Connect file as a spreadsheet. Also accepts .ofx and .qfx, since all three share the same underlying structure.
+- [CSV to QBO](https://ledgerlocal.com/csv-to-qbo): Produces a QBO file importable by QuickBooks Online and Desktop.
+- [QFX to QBO](https://ledgerlocal.com/qfx-to-qbo) / [OFX to QBO](https://ledgerlocal.com/ofx-to-qbo) / [QIF to QBO](https://ledgerlocal.com/qif-to-qbo)
+
+Multi-account handling: a single OFX/QBO download often bundles several statements (for example a current account and a credit card). Each transaction is tagged with its own account, and Excel exports place each account on a separate sheet rather than interleaving them. FITID is preserved as the Transaction ID column so QuickBooks can detect duplicates on re-import, and timezone suffixes such as [0:GMT] are stripped from dates.
+
+## Comparisons with other tools
+
+These pages describe competitors structurally (how they charge, where processing runs) rather than quoting their prices, because pricing in this category is widely misreported across third-party sources and goes stale quickly. Each page also states plainly where the competitor is the better choice.
+
+- [DocuClipper alternative](https://ledgerlocal.com/docuclipper-alternative): Cloud, per-page metered processing versus on-device with no limit.
+- [MoneyThumb alternative](https://ledgerlocal.com/moneythumb-alternative): A separate desktop product per output format versus one converter for all of them.
+- [ProperSoft alternative](https://ledgerlocal.com/propersoft-alternative): A separate desktop app per conversion pair; their converters handle structured files rather than PDF statements.
+- [StatementDesk alternative](https://ledgerlocal.com/statementdesk-alternative): Same entry price, but metered by transaction rows and processed in the cloud.
+
+## Other pages
+
+- [Bank statement to CSV](https://ledgerlocal.com/bank-statement-to-csv): The general PDF-to-CSV guide and converter.
+- [Lloyds bank statement to CSV](https://ledgerlocal.com/lloyds-bank-statement-to-csv)
+- [Image to Excel](https://ledgerlocal.com/image-to-excel): Photos and scans of statements, via on-device OCR.
+- [Blog](https://ledgerlocal.com/blog): All guides and converters.
+- [Contact](https://ledgerlocal.com/contact)
