@@ -20,6 +20,7 @@
  */
 
 import type { Transaction } from "../statement-store";
+import { enrichTransactions, type UnenrichedTransaction } from "../enrich";
 
 function ofxField(block: string, tag: string): string | null {
   const re = new RegExp(`<${tag}>([^<\\r\\n]+)`, "i");
@@ -111,7 +112,7 @@ export function parseOfxText(content: string): OfxParseResult {
   };
 }
 
-export function ofxResultToTransactions(result: OfxParseResult, sourceFile: string): Transaction[] {
+function ofxResultToTransactionsRaw(result: OfxParseResult, sourceFile: string): UnenrichedTransaction[] {
   // OFX gives one ledger balance (as-of a point in time), not a running
   // balance per transaction the way a bank statement PDF does -- so
   // per-row balance is genuinely unknown here, same situation as IIF.
@@ -133,4 +134,13 @@ export function ofxResultToTransactions(result: OfxParseResult, sourceFile: stri
     chequeDetails: null,
     drCr: t.amount >= 0 ? "Cr" : "Dr",
   }));
+}
+
+/**
+ * Public entry point. Wraps the raw mapper with the shared enrichment pass so
+ * every input format yields payee/method/category identically -- see
+ * src/lib/enrich/index.ts.
+ */
+export function ofxResultToTransactions(...args: Parameters<typeof ofxResultToTransactionsRaw>): Transaction[] {
+  return enrichTransactions(ofxResultToTransactionsRaw(...args));
 }

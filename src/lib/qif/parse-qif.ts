@@ -11,6 +11,7 @@
 
 import type { Transaction } from "../statement-store";
 import { inferDateOrder, resolveAmbiguousDate } from "../pdf/date-inference";
+import { enrichTransactions, type UnenrichedTransaction } from "../enrich";
 
 function parseQifDate(raw: string, dateOrder: "DMY" | "MDY"): string | null {
   const trimmed = raw.trim();
@@ -111,7 +112,7 @@ export function parseQifText(content: string): QifParseResult {
   return { transactions, warnings };
 }
 
-export function qifResultToTransactions(result: QifParseResult, sourceFile: string): Transaction[] {
+function qifResultToTransactionsRaw(result: QifParseResult, sourceFile: string): UnenrichedTransaction[] {
   return result.transactions.map((t, i) => ({
     id: `${sourceFile}-${i}`,
     date: t.date,
@@ -128,4 +129,13 @@ export function qifResultToTransactions(result: QifParseResult, sourceFile: stri
     chequeDetails: null,
     drCr: t.amount >= 0 ? "Cr" : "Dr",
   }));
+}
+
+/**
+ * Public entry point. Wraps the raw mapper with the shared enrichment pass so
+ * every input format yields payee/method/category identically -- see
+ * src/lib/enrich/index.ts.
+ */
+export function qifResultToTransactions(...args: Parameters<typeof qifResultToTransactionsRaw>): Transaction[] {
+  return enrichTransactions(qifResultToTransactionsRaw(...args));
 }

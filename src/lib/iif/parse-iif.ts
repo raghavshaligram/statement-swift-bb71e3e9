@@ -25,6 +25,7 @@
  */
 
 import type { Transaction } from "../statement-store";
+import { enrichTransactions, type UnenrichedTransaction } from "../enrich";
 
 type FieldOrder = string[];
 
@@ -140,7 +141,7 @@ export function parseIifText(content: string): IifParseResult {
 }
 
 /** Converts a parsed IIF result into the app's real Transaction shape, same as parse-statement.ts does for PDFs/images -- everything downstream (Preview, Export, confidence display) works unchanged. */
-export function iifResultToTransactions(result: IifParseResult, sourceFile: string): Transaction[] {
+function iifResultToTransactionsRaw(result: IifParseResult, sourceFile: string): UnenrichedTransaction[] {
   return result.transactions.map((t, i) => ({
     id: `${sourceFile}-${i}`,
     date: t.date,
@@ -161,4 +162,13 @@ export function iifResultToTransactions(result: IifParseResult, sourceFile: stri
     chequeDetails: null,
     drCr: t.amount >= 0 ? "Cr" : "Dr",
   }));
+}
+
+/**
+ * Public entry point. Wraps the raw mapper with the shared enrichment pass so
+ * every input format yields payee/method/category identically -- see
+ * src/lib/enrich/index.ts.
+ */
+export function iifResultToTransactions(...args: Parameters<typeof iifResultToTransactionsRaw>): Transaction[] {
+  return enrichTransactions(iifResultToTransactionsRaw(...args));
 }

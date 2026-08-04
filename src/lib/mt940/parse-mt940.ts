@@ -18,6 +18,7 @@
  */
 
 import type { Transaction } from "../statement-store";
+import { enrichTransactions, type UnenrichedTransaction } from "../enrich";
 
 // :61: field: YYMMDD, optional MMDD entry-date, D/C (or reversal RD/RC)
 // mark, optional single-letter funds code, then a comma-decimal amount.
@@ -112,7 +113,7 @@ export function parseMt940Text(content: string): Mt940ParseResult {
   return { transactions, currency, warnings };
 }
 
-export function mt940ResultToTransactions(result: Mt940ParseResult, sourceFile: string): Transaction[] {
+function mt940ResultToTransactionsRaw(result: Mt940ParseResult, sourceFile: string): UnenrichedTransaction[] {
   return result.transactions.map((t, i) => ({
     id: `${sourceFile}-${i}`,
     date: t.date,
@@ -129,4 +130,13 @@ export function mt940ResultToTransactions(result: Mt940ParseResult, sourceFile: 
     chequeDetails: null,
     drCr: t.amount >= 0 ? "Cr" : "Dr",
   }));
+}
+
+/**
+ * Public entry point. Wraps the raw mapper with the shared enrichment pass so
+ * every input format yields payee/method/category identically -- see
+ * src/lib/enrich/index.ts.
+ */
+export function mt940ResultToTransactions(...args: Parameters<typeof mt940ResultToTransactionsRaw>): Transaction[] {
+  return enrichTransactions(mt940ResultToTransactionsRaw(...args));
 }

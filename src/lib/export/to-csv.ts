@@ -58,9 +58,18 @@ export function exportToCsv(
   const hasTranId = sorted.some((t) => t.tranId !== null);
   const hasChequeDetails = sorted.some((t) => t.chequeDetails !== null);
 
+  // Derived columns. Gated on the option AND on at least one row actually
+  // having a value, matching how the statement-native optional columns above
+  // behave -- an export where every Category is blank is worse than no
+  // Category column.
+  const hasPayee = options.includeEnrichment && sorted.some((t) => t.payee && t.payee !== t.description);
+  const hasCategory = options.includeEnrichment && sorted.some((t) => t.category !== null);
+
   const headers = ["Date"];
   if (hasValueDate) headers.push("Value Date");
+  if (hasPayee) headers.push("Payee");
   headers.push("Description");
+  if (hasCategory) headers.push("Category");
   if (hasTranType) headers.push("Tran Type");
   if (hasTranId) headers.push("Tran ID");
   if (hasChequeDetails) headers.push("Cheque Details");
@@ -75,7 +84,9 @@ export function exportToCsv(
   for (const t of sorted) {
     const row: (string | number)[] = [t.date];
     if (hasValueDate) row.push(t.valueDate ?? "");
+    if (hasPayee) row.push(forceExcelText(t.payee));
     row.push(forceExcelText(t.description));
+    if (hasCategory) row.push(t.category ?? "");
     if (hasTranType) row.push(t.tranType !== null ? forceExcelText(t.tranType) : "");
     if (hasTranId) row.push(t.tranId !== null ? forceExcelText(t.tranId) : "");
     if (hasChequeDetails) row.push(t.chequeDetails !== null ? forceExcelText(t.chequeDetails) : "");

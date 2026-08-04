@@ -11,6 +11,7 @@
 
 import { extractPayee } from "../src/lib/enrich/extract-payee";
 import { categorize, measureCoverage, type Category } from "../src/lib/enrich/categorize";
+import { enrichTransactions, type UnenrichedTransaction } from "../src/lib/enrich";
 
 type PayeeCase = {
   name: string;
@@ -120,6 +121,51 @@ for (const c of CATEGORY_CASES) {
     console.log(`      raw:      ${c.raw}`);
     console.log(`      expected: ${c.expect}`);
     console.log(`      got:      ${got.category} (rule=${got.rule}, conf=${got.confidence})`);
+  }
+}
+
+// --- integration: the wiring, not just the modules --------------------------
+// enrichTransactions() is what every parser calls. If the field names drift or
+// the pass stops running, the unit fixtures above still pass while the app
+// exports blank Payee/Category columns -- so assert the wired shape directly.
+console.log("\n=== enrichTransactions wiring ===\n");
+{
+  const base: UnenrichedTransaction = {
+    id: "t-0",
+    date: "2025-04-03",
+    description: "UPI/malpotesainath-/UPI/KARNATAKA BANK/509373283868/SAINATH SAKHARAM MALPOTE",
+    amount: -2500,
+    balance: 5000,
+    sourceFile: "x.pdf",
+    sourcePage: 1,
+    confidence: 90,
+    sourceLines: [],
+    valueDate: null,
+    tranType: null,
+    tranId: null,
+    chequeDetails: null,
+    drCr: "Dr",
+  };
+  const dining: UnenrichedTransaction = {
+    ...base,
+    id: "t-1",
+    description: "CARD PURCHASE STARBUCKS STORE 04821",
+    amount: -6.4,
+  };
+
+  const [a, b] = enrichTransactions([base, dining]);
+  const assertions: [string, boolean, string][] = [
+    ["payee populated", a.payee === "SAINATH SAKHARAM MALPOTE", a.payee],
+    ["method populated", a.paymentMethod === "UPI", String(a.paymentMethod)],
+    ["raw description untouched", a.description === base.description, a.description],
+    ["uncategorised stays null", a.category === null, String(a.category)],
+    ["categoryConfidence 0 when null", a.categoryConfidence === 0, String(a.categoryConfidence)],
+    ["second row categorised", b.category === "Dining", String(b.category)],
+    ["second row confident", b.categoryConfidence > 0, String(b.categoryConfidence)],
+  ];
+  for (const [name, ok, got] of assertions) {
+    if (!ok) failures++;
+    console.log(`${ok ? "PASS" : "FAIL"}  ${name}${ok ? "" : `  -> got ${JSON.stringify(got)}`}`);
   }
 }
 

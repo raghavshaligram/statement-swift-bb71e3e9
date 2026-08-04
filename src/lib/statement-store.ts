@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import type { Category } from "./enrich/categorize";
 
 export type Transaction = {
   id: string;
@@ -20,6 +21,15 @@ export type Transaction = {
   // Always computable from the amount's sign, regardless of whether the
   // statement has its own explicit DR/CR column.
   drCr: "Dr" | "Cr";
+  // Derived by src/lib/enrich, never parsed from the statement. `description`
+  // stays the bank's own text verbatim; these are additive readable fields on
+  // top of it. Always populated (enrichment runs at every assembly site), so
+  // no optionality -- `payee` falls back to the cleaned description and
+  // `category` is null when no rule matched, which the review screen flags.
+  payee: string;
+  paymentMethod: string | null;
+  category: Category | null;
+  categoryConfidence: number; // 0-99, 0 when uncategorised
 };
 
 export type ParsedStatement = {

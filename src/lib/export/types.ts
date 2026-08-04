@@ -11,6 +11,13 @@ export type ExportOptions = {
   // its value.
   includeCurrencySymbol: boolean;
   omitLowConfidence: boolean;
+  // Payee and Category are derived (src/lib/enrich), not read off the
+  // statement. On by default because the raw description is frequently
+  // unreadable on rail-heavy statements -- a real ICICI row exports as
+  // "UPI/malpotesainath-/UPI/KARNATAKA BANK/509373283868/ICI9c36.../SAINATH
+  // SAKHARAM MALPOTE". Description is still exported alongside, never
+  // replaced, so nothing is lost by having this on.
+  includeEnrichment: boolean;
 };
 
 export const DEFAULT_EXPORT_OPTIONS: ExportOptions = {
@@ -20,6 +27,7 @@ export const DEFAULT_EXPORT_OPTIONS: ExportOptions = {
   includeSourcePage: false,
   includeCurrencySymbol: false,
   omitLowConfidence: false,
+  includeEnrichment: true,
 };
 
 export function triggerDownload(blob: Blob, fileName: string) {

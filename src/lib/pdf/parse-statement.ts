@@ -14,6 +14,7 @@ import { parseQifText, qifResultToTransactions } from "../qif/parse-qif";
 import { parseMt940Text, mt940ResultToTransactions } from "../mt940/parse-mt940";
 import type { ExtractedPdf, PageText } from "./extract-text";
 import type { ParsedStatement, Transaction } from "../statement-store";
+import { enrichTransactions } from "../enrich";
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
@@ -313,7 +314,7 @@ export async function parseStatementFile(
     );
   }
 
-  const transactions: Transaction[] = raw.map((t, i) => ({
+  const transactions: Transaction[] = enrichTransactions(raw.map((t, i) => ({
     id: `${file.name}-${i}`,
     date: t.date,
     description: t.description,
@@ -328,7 +329,7 @@ export async function parseStatementFile(
     tranId: t.tranId,
     chequeDetails: t.chequeDetails,
     drCr: t.drCr,
-  }));
+  })));
 
   return {
     fileName: file.name,

@@ -12,6 +12,7 @@
 
 import { inferDateOrder, resolveAmbiguousDate } from "../pdf/date-inference";
 import type { Transaction } from "../statement-store";
+import { enrichTransactions, type UnenrichedTransaction } from "../enrich";
 
 export type CsvColumnRole = "date" | "description" | "amount" | "debit" | "credit" | "balance" | "ignore";
 
@@ -245,7 +246,7 @@ export function parseCsvText(content: string): CsvParseResult {
  * csv-to-iif/qif/ofx page converters) can reuse the exact same logic
  * instead of a second, drift-prone copy of it.
  */
-export function csvResultToTransactions(result: CsvParseResult, sourceFile: string): Transaction[] {
+function csvResultToTransactionsRaw(result: CsvParseResult, sourceFile: string): UnenrichedTransaction[] {
   return result.transactions.map((t, i) => ({
     id: `${sourceFile}-${i}`,
     date: t.date,
@@ -267,4 +268,13 @@ export function csvResultToTransactions(result: CsvParseResult, sourceFile: stri
     chequeDetails: null,
     drCr: t.amount >= 0 ? "Cr" : "Dr",
   }));
+}
+
+/**
+ * Public entry point. Wraps the raw mapper with the shared enrichment pass so
+ * every input format yields payee/method/category identically -- see
+ * src/lib/enrich/index.ts.
+ */
+export function csvResultToTransactions(...args: Parameters<typeof csvResultToTransactionsRaw>): Transaction[] {
+  return enrichTransactions(csvResultToTransactionsRaw(...args));
 }

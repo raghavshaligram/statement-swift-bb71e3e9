@@ -202,6 +202,12 @@ function ExportPage() {
                   checked={options.omitLowConfidence}
                   onChange={(v) => setOptions((o) => ({ ...o, omitLowConfidence: v }))}
                 />
+                <Toggle
+                  label="Payee & Category columns"
+                  sub="Derived on-device — Description is still exported unchanged"
+                  checked={options.includeEnrichment}
+                  onChange={(v) => setOptions((o) => ({ ...o, includeEnrichment: v }))}
+                />
               </div>
             </div>
           </div>

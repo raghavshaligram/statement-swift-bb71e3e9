@@ -36,12 +36,18 @@ function buildSheetRows(transactions: Transaction[], options: ExportOptions) {
   const hasTranType = sorted.some((t) => t.tranType !== null);
   const hasTranId = sorted.some((t) => t.tranId !== null);
   const hasChequeDetails = sorted.some((t) => t.chequeDetails !== null);
+  // Derived columns -- see to-csv.ts for why these are gated on both the
+  // option and on real data being present.
+  const hasPayee = options.includeEnrichment && sorted.some((t) => t.payee && t.payee !== t.description);
+  const hasCategory = options.includeEnrichment && sorted.some((t) => t.category !== null);
 
   const rows: Record<string, string | number>[] = [];
   for (const t of sorted) {
     const row: Record<string, string | number> = { Date: t.date };
     if (hasValueDate) row["Value Date"] = t.valueDate ?? "";
+    if (hasPayee) row["Payee"] = t.payee;
     row["Description"] = t.description;
+    if (hasCategory) row["Category"] = t.category ?? "";
     if (hasTranType) row["Tran Type"] = t.tranType ?? "";
     if (hasTranId) row["Tran ID"] = t.tranId ?? "";
     if (hasChequeDetails) row["Cheque Details"] = t.chequeDetails ?? "";
