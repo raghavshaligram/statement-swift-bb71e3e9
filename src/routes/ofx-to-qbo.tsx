@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ToolHero } from "@/components/tool-hero";
+import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
+import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseOfxText, ofxResultToTransactions } from "@/lib/ofx/parse-ofx";
 import { exportToQbo } from "@/lib/export/to-qbo";
@@ -8,6 +10,7 @@ import {
   QuickSummary,
   ArticleProse,
   ArticleH2,
+  NumberedSteps,
   ArticleTable,
   LimitsList,
   ConverterEmbed,
@@ -64,11 +67,14 @@ export const Route = createFileRoute("/ofx-to-qbo")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
-  };
+  const steps = converterSteps("OFX", "QBO");
+  const jsonLd = converterPageJsonLd({
+    name: "Free OFX to QBO Converter",
+    description: "Convert a bank-neutral OFX file into a QuickBooks-ready QBO file. Free, runs entirely in your browser — nothing uploaded.",
+    url: "/ofx-to-qbo",
+    steps,
+    faq: FAQ,
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -95,6 +101,11 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <StatementFunnel sourceFormat="OFX" targetFormat="QBO" />
+
+      <ArticleH2>How to convert OFX to QBO in 3 steps</ArticleH2>
+      <NumberedSteps steps={steps} />
 
       <ArticleProse>
         <p>
@@ -146,6 +157,7 @@ function Page() {
         ]}
       />
 
+      <StickyStatementBar />
       <SiteFooter />
     </div>
   );

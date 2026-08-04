@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ToolHero } from "@/components/tool-hero";
+import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
+import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseMt940Text, mt940ResultToTransactions } from "@/lib/mt940/parse-mt940";
 import { exportToCsv } from "@/lib/export/to-csv";
@@ -9,6 +11,7 @@ import {
   QuickSummary,
   ArticleProse,
   ArticleH2,
+  NumberedSteps,
   ArticleTable,
   LimitsList,
   ConverterEmbed,
@@ -65,6 +68,11 @@ function Page() {
         />
       </ConverterEmbed>
 
+      <StatementFunnel sourceFormat="MT940" targetFormat="CSV" />
+
+      <ArticleH2>How to convert MT940 to CSV in 3 steps</ArticleH2>
+      <NumberedSteps steps={steps} />
+
       <ArticleProse>
         <p>
           MT940 is SWIFT's international bank statement format, common outside the US, UK, and India. This guide
@@ -120,6 +128,7 @@ function Page() {
         ]}
       />
 
+      <StickyStatementBar />
       <SiteFooter />
     </div>
   );

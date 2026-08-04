@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ToolHero } from "@/components/tool-hero";
+import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
+import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseQifText, qifResultToTransactions } from "@/lib/qif/parse-qif";
 import { exportToCsv } from "@/lib/export/to-csv";
@@ -9,6 +11,7 @@ import {
   QuickSummary,
   ArticleProse,
   ArticleH2,
+  NumberedSteps,
   ArticleTable,
   LimitsList,
   ConverterEmbed,
@@ -65,6 +68,11 @@ function Page() {
         />
       </ConverterEmbed>
 
+      <StatementFunnel sourceFormat="QIF" targetFormat="CSV" />
+
+      <ArticleH2>How to convert QIF to CSV in 3 steps</ArticleH2>
+      <NumberedSteps steps={steps} />
+
       <ArticleProse>
         <p>
           QIF is a plain-text, line-based format where each transaction is a short run of prefixed lines. This
@@ -119,6 +127,7 @@ function Page() {
         ]}
       />
 
+      <StickyStatementBar />
       <SiteFooter />
     </div>
   );

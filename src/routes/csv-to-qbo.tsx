@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ToolHero } from "@/components/tool-hero";
+import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
+import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseCsvText, csvResultToTransactions } from "@/lib/csv/parse-csv";
 import { exportToQbo } from "@/lib/export/to-qbo";
@@ -8,6 +10,7 @@ import {
   QuickSummary,
   ArticleProse,
   ArticleH2,
+  NumberedSteps,
   ArticleTable,
   LimitsList,
   ConverterEmbed,
@@ -52,11 +55,14 @@ export const Route = createFileRoute("/csv-to-qbo")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
-  };
+  const steps = converterSteps("CSV", "QBO");
+  const jsonLd = converterPageJsonLd({
+    name: "Free CSV to QBO Converter",
+    description: "Convert any CSV to a QuickBooks-ready QBO file. Free, runs entirely in your browser — nothing uploaded.",
+    url: "/csv-to-qbo",
+    steps,
+    faq: FAQ,
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -83,6 +89,11 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <StatementFunnel sourceFormat="CSV" targetFormat="QBO" />
+
+      <ArticleH2>How to convert CSV to QBO in 3 steps</ArticleH2>
+      <NumberedSteps steps={steps} />
 
       <ArticleProse>
         <p>
@@ -137,6 +148,7 @@ function Page() {
         ]}
       />
 
+      <StickyStatementBar />
       <SiteFooter />
     </div>
   );

@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ToolHero } from "@/components/tool-hero";
+import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
+import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseCsvText, csvResultToTransactions } from "@/lib/csv/parse-csv";
 import { exportToIif } from "@/lib/export/to-iif";
@@ -64,11 +66,14 @@ export const Route = createFileRoute("/csv-to-iif")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })),
-  };
+  const steps = converterSteps("CSV", "IIF");
+  const jsonLd = converterPageJsonLd({
+    name: "Free CSV to IIF Converter for QuickBooks Desktop",
+    description: "QuickBooks Desktop has no native CSV import. Free CSV to IIF converter — auto-detects your columns, runs entirely in your browser.",
+    url: "/csv-to-iif",
+    steps,
+    faq: FAQ,
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -95,6 +100,11 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <StatementFunnel sourceFormat="CSV" targetFormat="IIF" />
+
+      <ArticleH2>How to convert CSV to IIF in 3 steps</ArticleH2>
+      <NumberedSteps steps={steps} />
 
       <ArticleProse>
         <p>
@@ -159,6 +169,7 @@ function Page() {
         ]}
       />
 
+      <StickyStatementBar />
       <SiteFooter />
     </div>
   );

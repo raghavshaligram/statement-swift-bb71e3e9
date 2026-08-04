@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ToolHero } from "@/components/tool-hero";
+import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
+import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseCsvText, csvResultToTransactions } from "@/lib/csv/parse-csv";
 import { exportToQif } from "@/lib/export/to-qif";
@@ -8,6 +10,7 @@ import {
   QuickSummary,
   ArticleProse,
   ArticleH2,
+  NumberedSteps,
   ArticleTable,
   LimitsList,
   ConverterEmbed,
@@ -63,6 +66,11 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <StatementFunnel sourceFormat="CSV" targetFormat="QIF" />
+
+      <ArticleH2>How to convert CSV to QIF in 3 steps</ArticleH2>
+      <NumberedSteps steps={steps} />
 
       <ArticleProse>
         <p>
@@ -122,6 +130,7 @@ function Page() {
         ]}
       />
 
+      <StickyStatementBar />
       <SiteFooter />
     </div>
   );
