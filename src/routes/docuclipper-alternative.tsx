@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { FaqList, faqJsonLd, type FaqItem } from "@/components/faq-list";
+import { PricingCallout } from "@/components/pricing-callout";
 import {
   ArticleBackLink,
   ArticleHero,
@@ -48,6 +49,10 @@ const FAQ: FaqItem[] = [
     a: "Depends on the statement. DocuClipper is a mature product with a large template library and strong results on common US bank formats. LedgerLocal infers layout from the document's own structure rather than matching a template, and flags rows it isn't confident about instead of silently guessing.",
   },
   {
+    q: "How much does LedgerLocal cost?",
+    a: "$19 a month, flat, with no page limit — the same price whether you convert ten pages or ten thousand, and all seven export formats are included. Before that, 6 pages per conversion with no signup at all, or 10 pages as a lifetime pool once you make an account.",
+  },
+  {
     q: "What happens to my data if I stop paying?",
     a: "Nothing to happen — there is no stored copy. Files never left your device, so cancelling doesn't strand data on a server you no longer have access to.",
   },
@@ -92,6 +97,8 @@ function Page() {
         distinction is the decision.
       </QuickSummary>
 
+      <PricingCallout competitorModel="DocuClipper meters by page — their own pricing page is titled &quot;Pay by Pages Processed&quot;, and every tier carries a monthly page allowance." />
+
       <ArticleProse>
         <p>
           Most "alternative" pages are a pricing table with the author's product coloured green. This
@@ -117,7 +124,9 @@ function Page() {
           ["Works offline once loaded", "No", "Yes"],
           ["Approach to layouts", "Template library plus AI", "Infers structure from the document"],
           ["QuickBooks / Xero direct sync", "Yes", "No — exports a file you import"],
-          ["Free tier", "Trial only", "Yes"],
+          ["Pricing model", "Metered — priced by pages processed", "$19/mo flat, unlimited pages"],
+          ["Cost as volume grows", "Rises with usage", "Unchanged"],
+          ["Free tier", "Trial only", "6 pages no signup, 10 pages with an account"],
           ["Rows it isn't sure about", "—", "Flagged for review before export"],
         ]}
       />

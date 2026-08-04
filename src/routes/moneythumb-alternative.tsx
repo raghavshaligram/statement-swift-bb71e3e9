@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { FaqList, faqJsonLd, type FaqItem } from "@/components/faq-list";
+import { PricingCallout } from "@/components/pricing-callout";
 import {
   ArticleBackLink,
   ArticleHero,
@@ -44,6 +45,10 @@ const FAQ: FaqItem[] = [
   {
     q: "Is there anything to install?",
     a: "No. It runs in a browser tab on any operating system, so there's no Windows-only limitation and nothing to keep updated.",
+  },
+  {
+    q: "How much does LedgerLocal cost?",
+    a: "$19 a month, flat, with no page limit, and every export format included in that one price rather than sold separately. Before that, 6 pages per conversion with no signup, or 10 pages as a lifetime pool with a free account.",
   },
   {
     q: "What if a statement converts badly?",
@@ -90,6 +95,8 @@ function Page() {
         format from one converter, and never uploads the file.
       </QuickSummary>
 
+      <PricingCallout competitorModel="MoneyThumb sells a separate licence per output format, and its cloud service is sold in conversion bundles." />
+
       <ArticleProse>
         <p>
           We deliberately don't quote MoneyThumb's prices here. Researching them in August 2026
@@ -127,7 +134,9 @@ function Page() {
           ["Where it runs", "Desktop app (plus a cloud option)", "Browser tab, any OS"],
           ["Statement leaves your device", "No on desktop; yes on cloud", "No"],
           ["Installation", "Required", "None"],
-          ["Licence model", "Per product; some licences time-limited", "Single plan"],
+          ["Licence model", "Per product; some licences time-limited", "One plan, all formats"],
+          ["Pricing model", "Per-format licence; cloud sold in conversion bundles", "$19/mo flat, unlimited pages"],
+          ["Free tier", "Trial", "6 pages no signup, 10 pages with an account"],
           ["OCR for scans", "PinPoint OCR, statement-specific", "In-browser OCR"],
           ["Row-level confidence flags", "—", "Yes, with balance reconciliation"],
         ]}

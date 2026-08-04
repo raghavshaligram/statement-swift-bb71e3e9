@@ -241,6 +241,26 @@ function Pricing() {
               Ours: <span className="font-mono font-semibold text-emerald">unlimited</span>, same price whether
               you convert 10 pages or 10,000.
             </p>
+            {/*
+              Sourcing note, deliberately visible rather than buried.
+
+              Competitor pricing in this space is genuinely hard to pin down --
+              researching one vendor's entry tier in Aug 2026 returned nine
+              different figures across ten sources, most of them published by
+              other competitors with an incentive to distort. Any number we
+              print here is a factual claim about a named company that can go
+              stale within weeks.
+
+              Dating the figures and telling readers to verify is what makes
+              the table defensible. It also costs us nothing: the structural
+              claim (flat vs metered) is the one doing the persuading, and that
+              one doesn't expire.
+            */}
+            <p className="mx-auto mt-3 max-w-2xl text-center text-xs text-muted-foreground/70">
+              Competitor figures are entry-tier list prices taken from each vendor&apos;s own pricing
+              page in August 2026, and may have changed since. Please check them directly before
+              deciding — we&apos;d rather you verify than take our word for it.
+            </p>
           </div>
 
           <div className="mt-10 overflow-x-auto rounded-2xl border border-border bg-card">
