@@ -128,6 +128,8 @@ function qifResultToTransactionsRaw(result: QifParseResult, sourceFile: string):
     tranId: null,
     chequeDetails: null,
     drCr: t.amount >= 0 ? "Cr" : "Dr",
+    // Single-account format; multi-account bundling is an OFX/QBO thing.
+    account: null,
   }));
 }
 

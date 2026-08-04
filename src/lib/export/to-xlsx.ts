@@ -38,12 +38,14 @@ function buildSheetRows(transactions: Transaction[], options: ExportOptions) {
   const hasChequeDetails = sorted.some((t) => t.chequeDetails !== null);
   // Derived columns -- see to-csv.ts for why these are gated on both the
   // option and on real data being present.
+  const hasAccount = sorted.some((t) => t.account !== null);
   const hasPayee = options.includeEnrichment && sorted.some((t) => t.payee && t.payee !== t.description);
   const hasCategory = options.includeEnrichment && sorted.some((t) => t.category !== null);
 
   const rows: Record<string, string | number>[] = [];
   for (const t of sorted) {
     const row: Record<string, string | number> = { Date: t.date };
+    if (hasAccount) row["Account"] = t.account ?? "";
     if (hasValueDate) row["Value Date"] = t.valueDate ?? "";
     if (hasPayee) row["Payee"] = t.payee;
     row["Description"] = t.description;
@@ -90,7 +92,22 @@ export function exportToXlsx(
 ) {
   const wb = XLSX.utils.book_new();
 
-  if (oneSheetPerStatement) {
+  // A multi-account OFX/QBO download is one FILE but several statements, so
+  // grouping by sourceFile would still merge them. Account grouping takes
+  // precedence when the file carries more than one, which is the behaviour
+  // that makes a bundled download usable at all.
+  const accounts = [...new Set(transactions.map((t) => t.account).filter((a): a is string => !!a))];
+  if (accounts.length > 1) {
+    for (const account of accounts) {
+      const txns = transactions.filter((t) => t.account === account);
+      const sheetRows = buildSheetRows(txns, options);
+      const ws = XLSX.utils.json_to_sheet(sheetRows);
+      if (sheetRows.length > 0) applyCurrencyFormat(ws, Object.keys(sheetRows[0]), options, currency);
+      // Excel caps sheet names at 31 chars and forbids : \ / ? * [ ]
+      const sheetName = account.replace(/[:\\/?*[\]]/g, "-").slice(0, 31);
+      XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    }
+  } else if (oneSheetPerStatement) {
     const groups = groupByFile(transactions);
     let i = 0;
     for (const [sourceFile, txns] of groups) {

@@ -202,9 +202,9 @@ function Page() {
             blurb: "Produce an OFX file for QuickBooks, Xero or Quicken.",
           },
           {
-            href: "/qbo-to-csv",
-            title: "QBO to CSV Converter",
-            blurb: "Open a QuickBooks Web Connect file as a spreadsheet.",
+            href: "/propersoft-alternative",
+            title: "ProperSoft Alternative",
+            blurb: "One converter for every direction, versus an app per conversion pair.",
           },
           {
             href: "/moneythumb-alternative",

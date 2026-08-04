@@ -42,11 +42,60 @@ export type OfxParseResult = {
     amount: number;
     tranId: string | null;
     tranType: string | null;
+    /** Owning account, when the file carries more than one statement. */
+    account: string | null;
   }>;
   currency: string | null;
   balance: number | null;
+  /** Distinct accounts found, in file order. Empty when the file has none. */
+  accounts: string[];
   warnings: string[];
 };
+
+/**
+ * Splits an OFX file into its per-account statement sections.
+ *
+ * A single .ofx/.qbo download can carry several statements -- a current
+ * account and a credit card, or every account at one bank. Each arrives as its
+ * own <STMTRS> (bank) or <CCSTMTRS> (credit card) section with its own
+ * <BANKACCTFROM>/<CCACCTFROM> identifying the account.
+ *
+ * Parsing <STMTTRN> blocks straight out of the whole file, as this previously
+ * did, silently merges them: a chequing account and a card end up interleaved
+ * in one undifferentiated list, and the running order looks like nonsense
+ * because two independent date sequences are shuffled together. The
+ * transactions were all correct; there was just no way to tell which account
+ * each belonged to.
+ *
+ * Returns one entry per section. Files with a single statement -- the common
+ * case -- yield one entry, so nothing changes for them.
+ */
+function splitAccountSections(content: string): Array<{ account: string | null; body: string }> {
+  const sectionRe = /<(STMTRS|CCSTMTRS)>([\s\S]*?)<\/\1>/gi;
+  const sections = [...content.matchAll(sectionRe)];
+
+  // SGML files in the wild don't always close <STMTRS>. Falling back to the
+  // whole document keeps those working exactly as before rather than
+  // returning nothing.
+  if (sections.length === 0) return [{ account: extractAcctId(content), body: content }];
+
+  return sections.map((m) => ({ account: extractAcctId(m[2]), body: m[2] }));
+}
+
+/**
+ * Pulls the account identifier from a statement section.
+ *
+ * Prefers ACCTID, which is the account number and what a user recognises.
+ * Credit-card sections use <CCACCTFROM> but the inner tag is still ACCTID.
+ * Appends the account type when present so "1234 (CHECKING)" distinguishes two
+ * accounts whose numbers are visually similar.
+ */
+function extractAcctId(section: string): string | null {
+  const acctId = ofxField(section, "ACCTID");
+  if (!acctId) return null;
+  const acctType = ofxField(section, "ACCTTYPE");
+  return acctType ? `${acctId} (${acctType})` : acctId;
+}
 
 export function parseOfxText(content: string): OfxParseResult {
   // Strip a leading UTF-8 BOM if present, same as every other structured-
@@ -60,7 +109,16 @@ export function parseOfxText(content: string): OfxParseResult {
   // <STMTTRN> blocks -- non-greedy match up to the closing tag OR the next
   // <STMTTRN> (covers SGML files that never close the tag at all).
   const blockRe = /<STMTTRN>([\s\S]*?)(?=<STMTTRN>|<\/STMTTRN>|<\/BANKTRANLIST>|<\/BANKMSGSRSV1>)/gi;
-  const blocks = [...content.matchAll(blockRe)].map((m) => m[1]);
+
+  // Parsed per account section so each transaction keeps its owning account.
+  const sections = splitAccountSections(content);
+  const blocks: Array<{ text: string; account: string | null }> = [];
+  for (const section of sections) {
+    for (const m of section.body.matchAll(blockRe)) {
+      blocks.push({ text: m[1], account: section.account });
+    }
+  }
+  const accounts = [...new Set(sections.map((s) => s.account).filter((a): a is string => !!a))];
 
   if (blocks.length === 0) {
     warnings.push("No <STMTTRN> transaction records were found. This may not be a valid OFX/QFX file, or it may use a variant this parser doesn't recognize.");
@@ -69,7 +127,7 @@ export function parseOfxText(content: string): OfxParseResult {
   const transactions: OfxParseResult["transactions"] = [];
   let skipped = 0;
 
-  for (const block of blocks) {
+  for (const { text: block, account } of blocks) {
     const dtposted = ofxField(block, "DTPOSTED");
     const trnamt = ofxField(block, "TRNAMT");
     const iso = dtposted ? parseOfxDate(dtposted) : null;
@@ -94,6 +152,7 @@ export function parseOfxText(content: string): OfxParseResult {
       amount,
       tranId: ofxField(block, "FITID"),
       tranType: ofxField(block, "TRNTYPE"),
+      account,
     });
   }
 
@@ -104,10 +163,17 @@ export function parseOfxText(content: string): OfxParseResult {
   const curdefMatch = content.match(/<CURDEF>([A-Z]{3})/i);
   const balMatch = content.match(/<BALAMT>([^\r\n<]+)/i);
 
+  if (accounts.length > 1) {
+    warnings.push(
+      `This file contains ${accounts.length} accounts (${accounts.join(", ")}). Each transaction is tagged with its account, and Excel exports place each account on its own sheet.`,
+    );
+  }
+
   return {
     transactions,
     currency: curdefMatch ? curdefMatch[1].toUpperCase() : null,
     balance: balMatch ? parseFloat(balMatch[1].replace(/,/g, "")) : null,
+    accounts,
     warnings,
   };
 }
@@ -133,6 +199,7 @@ function ofxResultToTransactionsRaw(result: OfxParseResult, sourceFile: string):
     tranId: t.tranId,
     chequeDetails: null,
     drCr: t.amount >= 0 ? "Cr" : "Dr",
+    account: t.account,
   }));
 }
 

@@ -1,12 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolHero } from "@/components/tool-hero";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseIifText, iifResultToTransactions } from "@/lib/iif/parse-iif";
 import { exportToCsv } from "@/lib/export/to-csv";
 import { DEFAULT_EXPORT_OPTIONS } from "@/lib/export/types";
 import {
-  ArticleBackLink,
-  ArticleHero,
   QuickSummary,
   ArticleProse,
   ArticleH2,
@@ -46,8 +45,11 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <ArticleBackLink />
-      <ArticleHero eyebrow="Format converter" title="Free IIF to CSV Converter: Reading QuickBooks Desktop's Export Format" publishedDate="July 2026" />
+      <ToolHero
+        formatLabel="Format converter"
+        title="Free IIF to CSV Converter: Reading QuickBooks Desktop's Export Format"
+        subtitle="Runs entirely in your browser — your file is never uploaded to a server."
+      />
 
       <ConverterEmbed heading="Convert an IIF file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter

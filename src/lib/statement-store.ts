@@ -26,6 +26,10 @@ export type Transaction = {
   // top of it. Always populated (enrichment runs at every assembly site), so
   // no optionality -- `payee` falls back to the cleaned description and
   // `category` is null when no rule matched, which the review screen flags.
+  // Owning account, for files that carry several statements at once (OFX/QBO
+  // downloads routinely bundle a current account and a credit card). null for
+  // single-account sources, which is every PDF statement and most files.
+  account: string | null;
   payee: string;
   paymentMethod: string | null;
   category: Category | null;

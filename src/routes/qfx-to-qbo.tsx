@@ -1,11 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolHero } from "@/components/tool-hero";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseOfxText, ofxResultToTransactions } from "@/lib/ofx/parse-ofx";
 import { exportToQbo } from "@/lib/export/to-qbo";
 import {
-  ArticleBackLink,
-  ArticleHero,
   QuickSummary,
   ArticleProse,
   ArticleH2,
@@ -21,20 +20,32 @@ function outputName(fileName: string) {
 
 const FAQ = [
   {
-    q: "Why convert QFX to QBO instead of just importing the QFX file somewhere?",
-    a: "QFX is built for Quicken specifically. If your bookkeeping actually happens in QuickBooks, converting to QBO gets you a file QuickBooks treats as a real bank feed, rather than a format it doesn't recognize at all.",
+    q: "Will importing this into QuickBooks create duplicate transactions?",
+    a: "No. Every row keeps its FITID — the unique transaction ID banks put in the file — in the Transaction ID column. QuickBooks uses it to recognise transactions it has already seen, so re-importing an overlapping date range won't double up your books.",
   },
   {
-    q: "Where do I get a QFX file to convert?",
-    a: "QFX is Quicken's own export format — you'd have one from Quicken, or from a bank's \"Download for Quicken\" export option.",
+    q: "My file has more than one account in it. What happens?",
+    a: "Each account is kept separate. Bank downloads often bundle a current account and a credit card into one file, each as its own statement section. Every transaction is tagged with its account number and type, and an Excel export puts each account on its own sheet instead of interleaving them.",
   },
   {
-    q: "Is QFX different from OFX or QBO?",
-    a: "All three share the same underlying Open Financial Exchange structure — QFX adds Quicken-specific headers, QBO adds QuickBooks-specific ones. This tool reads the Quicken-flavored version and writes the QuickBooks-flavored version.",
+    q: "Why do the dates in other converters come out with [0:GMT] on the end?",
+    a: "Because that's how the raw field is written — banks append a timezone offset to the timestamp. Only the date portion is meaningful for bookkeeping, so it's stripped here and you get a clean date.",
   },
   {
-    q: "Is my data uploaded anywhere?",
-    a: "No. The conversion runs entirely in your browser — nothing is sent to a server.",
+    q: "What's the difference between QBO, OFX and QFX files?",
+    a: "They are the same underlying format with different extensions and headers. QBO is QuickBooks' Web Connect flavour, QFX is Quicken's, and OFX is the open standard both are built on. One reader handles all three, so this converter accepts any of them regardless of which one the page is named after.",
+  },
+  {
+    q: "Do negative amounts mean what I expect?",
+    a: "Yes. Money leaving the account is negative, money arriving is positive, and each row also carries an explicit Dr/Cr marker derived from that sign. Credit-card files follow the same convention from the bank's point of view, so a purchase is negative and a payment towards the card is positive.",
+  },
+  {
+    q: "Is my financial data uploaded anywhere?",
+    a: "No. The conversion runs in your browser using JavaScript — the file is never sent to a server. You can confirm it by opening your browser's Network tab while converting, or by disconnecting from the internet after the page loads and converting anyway.",
+  },
+  {
+    q: "What columns do I get?",
+    a: "Date, Payee, Description, Category, Transaction ID, Amount and Dr/Cr, plus Account when the file contains more than one. Payee and Category are derived on your device from the description — nothing is sent anywhere to work them out.",
   },
 ];
 
@@ -64,12 +75,15 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <ArticleBackLink />
-      <ArticleHero eyebrow="Format converter" title="Free QFX to QBO Converter" publishedDate="July 2026" />
+      <ToolHero
+        formatLabel="Format converter"
+        title="Free QFX to QBO Converter"
+        subtitle="Runs entirely in your browser — your file is never uploaded to a server."
+      />
 
       <ConverterEmbed heading="Convert a QFX file to QBO" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter
-          accept=".qfx"
+          accept=".qfx,.ofx"
           sourceLabel="QFX"
           targetLabel="QBO"
           onConvert={async (file) => {

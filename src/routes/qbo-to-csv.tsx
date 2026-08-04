@@ -1,12 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolHero } from "@/components/tool-hero";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseOfxText, ofxResultToTransactions } from "@/lib/ofx/parse-ofx";
 import { exportToCsv } from "@/lib/export/to-csv";
 import { DEFAULT_EXPORT_OPTIONS } from "@/lib/export/types";
 import {
-  ArticleBackLink,
-  ArticleHero,
   QuickSummary,
   ArticleProse,
   ArticleH2,
@@ -22,24 +21,32 @@ function outputName(fileName: string) {
 
 const FAQ = [
   {
-    q: "What is a QBO file?",
-    a: "QBO is QuickBooks' Web Connect download format — the file your bank gives you when you choose \"Download for QuickBooks\" from online banking. It's built on the same underlying Open Financial Exchange (OFX) structure as OFX and QFX files, just with QuickBooks-specific headers.",
+    q: "Will importing this into QuickBooks create duplicate transactions?",
+    a: "No. Every row keeps its FITID — the unique transaction ID banks put in the file — in the Transaction ID column. QuickBooks uses it to recognise transactions it has already seen, so re-importing an overlapping date range won't double up your books.",
   },
   {
-    q: "Why would I need to convert QBO to CSV instead of just importing it into QuickBooks?",
-    a: "Reviewing the data yourself before it hits your books, auditing an old export, or handing the numbers to someone without QuickBooks access are the common reasons. QBO is built for automated import, not eyeballing.",
+    q: "My file has more than one account in it. What happens?",
+    a: "Each account is kept separate. Bank downloads often bundle a current account and a credit card into one file, each as its own statement section. Every transaction is tagged with its account number and type, and an Excel export puts each account on its own sheet instead of interleaving them.",
   },
   {
-    q: "Where do I get a QBO file to convert?",
-    a: "Most banks offer a \"Download for QuickBooks\" or \"Web Connect\" export option from online banking. That download is the QBO file.",
+    q: "Why do the dates in other converters come out with [0:GMT] on the end?",
+    a: "Because that's how the raw field is written — banks append a timezone offset to the timestamp. Only the date portion is meaningful for bookkeeping, so it's stripped here and you get a clean date.",
   },
   {
-    q: "What information does it extract?",
-    a: "Date, description, amount, transaction ID, and transaction type from each record — the same real fields OFX and QFX files carry, since QBO shares their structure.",
+    q: "What's the difference between QBO, OFX and QFX files?",
+    a: "They are the same underlying format with different extensions and headers. QBO is QuickBooks' Web Connect flavour, QFX is Quicken's, and OFX is the open standard both are built on. One reader handles all three, so this converter accepts any of them regardless of which one the page is named after.",
   },
   {
-    q: "Is my data uploaded anywhere?",
-    a: "No. The conversion runs entirely in your browser — nothing is sent to a server.",
+    q: "Do negative amounts mean what I expect?",
+    a: "Yes. Money leaving the account is negative, money arriving is positive, and each row also carries an explicit Dr/Cr marker derived from that sign. Credit-card files follow the same convention from the bank's point of view, so a purchase is negative and a payment towards the card is positive.",
+  },
+  {
+    q: "Is my financial data uploaded anywhere?",
+    a: "No. The conversion runs in your browser using JavaScript — the file is never sent to a server. You can confirm it by opening your browser's Network tab while converting, or by disconnecting from the internet after the page loads and converting anyway.",
+  },
+  {
+    q: "What columns do I get?",
+    a: "Date, Payee, Description, Category, Transaction ID, Amount and Dr/Cr, plus Account when the file contains more than one. Payee and Category are derived on your device from the description — nothing is sent anywhere to work them out.",
   },
 ];
 
@@ -69,12 +76,15 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <ArticleBackLink />
-      <ArticleHero eyebrow="Format converter" title="Free QBO to CSV Converter" publishedDate="July 2026" />
+      <ToolHero
+        formatLabel="Format converter"
+        title="Free QBO to CSV Converter"
+        subtitle="Runs entirely in your browser — your file is never uploaded to a server."
+      />
 
       <ConverterEmbed heading="Convert a QBO file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter
-          accept=".qbo"
+          accept=".qbo,.ofx,.qfx"
           sourceLabel="QBO"
           targetLabel="CSV"
           onConvert={async (file) => {

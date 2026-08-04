@@ -1,12 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolHero } from "@/components/tool-hero";
 import { InlineConverter } from "@/components/inline-converter";
 import { parseMt940Text, mt940ResultToTransactions } from "@/lib/mt940/parse-mt940";
 import { exportToCsv } from "@/lib/export/to-csv";
 import { DEFAULT_EXPORT_OPTIONS } from "@/lib/export/types";
 import {
-  ArticleBackLink,
-  ArticleHero,
   QuickSummary,
   ArticleProse,
   ArticleH2,
@@ -45,8 +44,11 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      <ArticleBackLink />
-      <ArticleHero eyebrow="Format converter" title="Free MT940 to CSV Converter" publishedDate="July 2026" />
+      <ToolHero
+        formatLabel="Format converter"
+        title="Free MT940 to CSV Converter"
+        subtitle="Runs entirely in your browser — your file is never uploaded to a server."
+      />
 
       <ConverterEmbed heading="Convert an MT940 file to CSV" body="Drop your file below — runs entirely in your browser, nothing is uploaded.">
         <InlineConverter

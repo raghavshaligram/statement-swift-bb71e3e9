@@ -212,7 +212,11 @@ function Page() {
             title: "Bank Statement to OFX",
             blurb: "Produce an OFX file for QuickBooks, Xero or Quicken.",
           },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every guide and format converter." },
+          {
+            href: "/propersoft-alternative",
+            title: "ProperSoft Alternative",
+            blurb: "One converter for every direction, versus an app per conversion pair.",
+          },
         ]}
       />
 

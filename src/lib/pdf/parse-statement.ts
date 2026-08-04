@@ -329,6 +329,8 @@ export async function parseStatementFile(
     tranId: t.tranId,
     chequeDetails: t.chequeDetails,
     drCr: t.drCr,
+    // A PDF statement covers one account by definition.
+    account: null,
   })));
 
   return {
