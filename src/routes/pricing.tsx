@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, X, ShieldCheck, Zap, Landmark, Star, ArrowRight } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ComparisonLinks } from "@/components/comparison-links";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -362,6 +363,11 @@ function Pricing() {
           </div>
         </div>
       </section>
+
+      <ComparisonLinks
+        heading="Read the full comparisons"
+        blurb="The table above is a summary. These go into how each tool charges, where it processes your file, and where it beats us."
+      />
 
       <SiteFooter />
     </div>

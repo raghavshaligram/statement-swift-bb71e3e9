@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import {
   ArticleBackLink,
@@ -109,6 +110,8 @@ function Page() {
           ))}
         </div>
       </div>
+
+      <ComparisonLinks />
 
       <RelatedArticles
         articles={[

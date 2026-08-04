@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ComparisonLinks } from "@/components/comparison-links";
 import {
   ArticleBackLink,
   ArticleHero,
@@ -224,6 +225,8 @@ function Page() {
         body="Use NatWest's own export for recent activity, and LedgerLocal for everything else. Free to try."
         buttonLabel="Try LedgerLocal Free"
       />
+
+      <ComparisonLinks />
 
       <RelatedArticles
         articles={[

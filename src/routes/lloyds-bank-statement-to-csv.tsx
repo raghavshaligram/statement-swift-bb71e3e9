@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import {
   ArticleBackLink,
@@ -282,6 +283,8 @@ function Page() {
         body="Use the Lloyds CSV export for the last 12 months, and LedgerLocal for everything else. Free to try."
         buttonLabel="Try LedgerLocal Free"
       />
+
+      <ComparisonLinks />
 
       <RelatedArticles
         articles={[

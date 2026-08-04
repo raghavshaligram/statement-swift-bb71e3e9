@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { ToolHero } from "@/components/tool-hero";
+import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
 import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
 import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { InlineConverter } from "@/components/inline-converter";
@@ -136,6 +136,8 @@ function Page() {
       />
 
       <StickyStatementBar />
+      <ToolCrossLinks links={[{ href: "/qbo-to-csv", label: "QBO to CSV" }, { href: "/bank-statement-to-csv", label: "Bank Statement to CSV" }]} />
+
       <SiteFooter />
     </div>
   );
