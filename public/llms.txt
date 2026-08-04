@@ -45,6 +45,8 @@ Locale handling: the decimal separator is inferred once per document from the st
 ## QuickBooks (QBO) converters
 
 - [QBO to Excel](https://ledgerlocal.com/qbo-to-excel): Long-form guide plus converter. Covers why Excel cannot open a .qbo file, what the OFX structure contains, the manual rename-to-XML route and its limits, and troubleshooting for raw DTPOSTED dates, OFX sign conventions, FITID and multi-account files.
+- [QFX to Excel](https://ledgerlocal.com/qfx-to-excel): Guide plus converter for Quicken Web Connect files.
+- [OFX to Excel](https://ledgerlocal.com/ofx-to-excel): Guide plus converter for the bank-neutral Open Financial Exchange format.
 - [QBO to CSV](https://ledgerlocal.com/qbo-to-csv): Opens a QuickBooks Web Connect file as a spreadsheet. Also accepts .ofx and .qfx, since all three share the same underlying structure.
 - [CSV to QBO](https://ledgerlocal.com/csv-to-qbo): Produces a QBO file importable by QuickBooks Online and Desktop.
 - [QFX to QBO](https://ledgerlocal.com/qfx-to-qbo) / [OFX to QBO](https://ledgerlocal.com/ofx-to-qbo) / [QIF to QBO](https://ledgerlocal.com/qif-to-qbo)

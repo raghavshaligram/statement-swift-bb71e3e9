@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
-import { FormatFlow } from "@/components/format-flow";
 import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
 import { FaqList, type FaqItem } from "@/components/faq-list";
@@ -113,8 +112,6 @@ function Page() {
         title="QBO to Excel: How to Open a QBO File in Excel"
         subtitle="Excel can't read .qbo files natively. Here are three ways to get the data into a spreadsheet — including one that takes about ten seconds."
       />
-
-      <FormatFlow from="QBO" to="Excel" />
 
       <ConverterEmbed
         heading="Convert a QBO file to Excel"
@@ -360,7 +357,8 @@ function Page() {
         links={[
           { href: "/qbo-to-csv", label: "QBO to CSV" },
           { href: "/ofx-to-csv", label: "OFX to CSV" },
-          { href: "/qfx-to-csv", label: "QFX to CSV" },
+          { href: "/qfx-to-excel", label: "QFX to Excel" },
+          { href: "/ofx-to-excel", label: "OFX to Excel" },
           { href: "/csv-to-qbo", label: "CSV to QBO" },
           { href: "/bank-statement-to-csv", label: "Bank statement to CSV" },
         ]}
