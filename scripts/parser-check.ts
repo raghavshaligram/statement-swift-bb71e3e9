@@ -449,6 +449,54 @@ run(
   },
 );
 
+// =============================================================================
+// 9. Leading separator strand — reported from the live app: every description
+//    rendered with a "/" in front of it.
+//
+//    Cause: statements in this family print the date on the SAME visual line as
+//    a separator-prefixed continuation ("03-04-2025    /509373283868/ICI9c36...").
+//    removeToken consumes the date plus its surrounding whitespace and joins
+//    without a space when either side is a separator — correct mid-string, but
+//    at position 0 it leaves the separator exposed. The final normalisation
+//    only trimmed whitespace, so it survived all the way into the export.
+//
+//    The bank's own internal separators must still be preserved verbatim (the
+//    decision documented in buildDescription); only the exposed edges go.
+// =============================================================================
+run(
+  "leading-separator-strand",
+  [
+    page([
+      flow("03-04-2025", "/509373283868/ICI9c363fb8fb1d43369a59", "1,000.00", "5,000.00"),
+      flow("04-04-2025", "UPI/merchant@okaxis/", "250.00", "4,750.00"),
+      flow("15-04-2025", "NEFT/HDFC0000123/ACME TRADING", "500.00", "4,250.00"),
+    ]),
+  ],
+  (t) => {
+    check("3 transactions", t.length === 3, `got ${t.length}`);
+    check(
+      "no leading separator on any description",
+      t.every((x) => !/^[/\\-]/.test(x.description)),
+      JSON.stringify(t.map((x) => x.description)),
+    );
+    check(
+      "no trailing separator on any description",
+      t.every((x) => !/[/\\-]$/.test(x.description)),
+      JSON.stringify(t.map((x) => x.description)),
+    );
+    check(
+      "internal separators preserved verbatim",
+      t[0]?.description === "509373283868/ICI9c363fb8fb1d43369a59",
+      t[0]?.description,
+    );
+    check(
+      "rail token and its slash still preserved",
+      t[1]?.description === "UPI/merchant@okaxis",
+      t[1]?.description,
+    );
+  },
+);
+
 // -----------------------------------------------------------------------------
 console.log("");
 if (failures > 0) {

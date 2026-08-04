@@ -475,7 +475,22 @@ function buildDescription(block: Block, dateMatchedText: string, consumedAmounts
   // line-joining. Separators the bank used (slashes, dashes, @) are left
   // untouched -- "UPI IN/546035039121/dripchatagency@okicici" stays exactly
   // that, rather than being flattened into space-separated tokens.
-  const description = combined.replace(/\s+/g, " ").trim();
+  let description = combined.replace(/\s+/g, " ").trim();
+
+  // Strip separators left EXPOSED AT THE EDGES by the removals above.
+  //
+  // Reported from the live app: every description rendered with a leading "/".
+  // These statements print the date on the same visual line as a
+  // separator-prefixed continuation ("03-04-2025    /509373283868/ICI9c36..."),
+  // so removing the date consumes its surrounding whitespace and joins without
+  // a space -- correct mid-string, but at position 0 it leaves the separator
+  // dangling. The same happens at the tail when a trailing amount is removed.
+  //
+  // Only the edges are touched. Internal separators are the bank's own and are
+  // preserved verbatim, which is the whole point of the decision documented
+  // above -- "UPI/merchant@okaxis" keeps its slash, "/509373283868" loses its
+  // leading one because nothing ever preceded it in the statement's own text.
+  description = description.replace(/^[\s/\\|,;-]+/, "").replace(/[\s/\\|,;-]+$/, "");
 
   return description || "(description not detected)";
 }
