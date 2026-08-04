@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { HelpCircle } from "lucide-react";
 
 export type FaqItem = { q: string; a: string };
 
@@ -16,13 +17,16 @@ export type FaqItem = { q: string; a: string };
  */
 export function FaqList({ items, children }: { items: FaqItem[]; children?: ReactNode }) {
   return (
-    <div className="mx-auto max-w-3xl px-6 pb-4">
+    <div className="mx-auto max-w-3xl px-6 pt-4 pb-4">
       {children}
-      <dl className="space-y-5">
+      <dl className="space-y-3">
         {items.map(({ q, a }) => (
-          <div key={q}>
-            <dt className="font-semibold text-ink">{q}</dt>
-            <dd className="mt-1.5 text-muted-foreground">{a}</dd>
+          <div key={q} className="rounded-xl border border-border bg-card p-5">
+            <dt className="flex items-start gap-2.5 font-semibold text-ink">
+              <HelpCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
+              <span>{q}</span>
+            </dt>
+            <dd className="mt-2 pl-[26px] text-sm leading-relaxed text-muted-foreground">{a}</dd>
           </div>
         ))}
       </dl>

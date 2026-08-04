@@ -98,8 +98,14 @@ export function ArticleProse({ children }: { children: ReactNode }) {
 
 export function ArticleH2({ children, id }: { children: ReactNode; id?: string }) {
   return (
-    <div className="mx-auto max-w-3xl px-6 pt-6">
-      <h2 id={id} className="scroll-mt-24 text-2xl font-bold tracking-tight text-ink">
+    <div className="mx-auto max-w-3xl px-6 pt-10">
+      {/* Accent rule above each H2. Long guide pages ran as one undifferentiated
+          column of text; a coloured marker gives the eye somewhere to land when
+          scanning, which is how these pages are actually read. Also widened the
+          top padding from pt-6 -- headings were sitting too close to the block
+          above them, reported directly on the FAQ section. */}
+      <div className="mb-3 h-1 w-10 rounded-full bg-emerald" aria-hidden />
+      <h2 id={id} className="text-2xl font-bold tracking-tight text-ink">
         {children}
       </h2>
     </div>
