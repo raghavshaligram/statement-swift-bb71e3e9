@@ -5,14 +5,21 @@ import { useAuth } from "./use-auth";
 export type SubscriptionRow = {
   status: string;
   plan_id: string | null;
-  paypal_subscription_id: string;
+  provider_subscription_id: string;
+  provider: string | null;
   created_at: string;
 };
 
 /**
- * The user's most recent subscription row. `status` is written by the
- * paypal-webhook edge function (the source of truth) -- the browser only
- * ever reads it here.
+ * The user's most recent subscription row. `status` is the source of truth for
+ * Pro access and is written ONLY server-side, by whichever payment processor's
+ * webhook is wired up, using the service role. The browser only ever reads it.
+ *
+ * PayPal was removed (see the 20260805 migration); no processor is currently
+ * connected, so in practice this returns null for every user until one is.
+ * Everything downstream -- upload limits, export formats, the plan badge --
+ * already handles that correctly, because it is the same state a free user has
+ * always been in.
  */
 /**
  * Shared across every caller.
@@ -46,7 +53,7 @@ async function fetchSubscription(userId: string): Promise<SubscriptionRow | null
   inFlight = Promise.resolve(
     supabase
     .from("subscriptions")
-    .select("status, plan_id, paypal_subscription_id, created_at")
+    .select("status, plan_id, provider_subscription_id, provider, created_at")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .limit(1)

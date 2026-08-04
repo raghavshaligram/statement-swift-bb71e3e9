@@ -3,7 +3,6 @@ import { Check, Minus, CreditCard } from "lucide-react";
 import { AccountShell } from "@/components/account-shell";
 import { usePageUsage } from "@/hooks/use-page-usage";
 import { SIGNED_IN_MAX_PAGES } from "@/lib/pricing-constants";
-import { PayPalSubscribeButton } from "@/components/paypal-subscribe-button";
 import { useSubscription } from "@/hooks/use-subscription";
 
 export const Route = createFileRoute("/account/billing")({
@@ -79,9 +78,9 @@ function BillingPage() {
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
             {isPro
-              ? "Unlimited pages and every export format are unlocked. Manage or cancel this subscription from your PayPal account."
+              ? "Unlimited pages and every export format are unlocked. Contact us to change or cancel this subscription."
               : subscription
-                ? "We've recorded your subscription and are waiting on PayPal to confirm it. This usually takes under a minute."
+                ? "We've recorded your subscription and are waiting on the payment processor to confirm it. This usually takes under a minute."
                 : "No payment method on file. Upgrade to Pro for unlimited pages and all export formats."}
           </p>
 
@@ -124,11 +123,25 @@ function BillingPage() {
             <span className="font-mono text-4xl font-bold tracking-tight text-ink">$19</span>
             <span className="font-mono text-sm text-muted-foreground">/ month · flat</span>
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Cancel anytime from this page once you've subscribed.
-          </p>
-
-          <PayPalSubscribeButton />
+          {/*
+            No payment processor is connected. Showing a dead "Subscribe"
+            button that errors is worse than saying so plainly -- someone who
+            clicks it and hits a failure assumes the product is broken, not
+            that checkout is pending.
+          */}
+          <div className="mt-5 rounded-xl border border-border bg-surface-muted/50 p-4">
+            <div className="text-sm font-semibold text-ink">Checkout isn't open yet</div>
+            <p className="mt-1 text-sm text-muted-foreground">
+              We're finishing our payment setup. Everything on the free tier keeps working in the
+              meantime, and nothing you've converted is affected.
+            </p>
+            <a
+              href="/contact"
+              className="mt-3 inline-block text-sm font-semibold text-emerald hover:underline"
+            >
+              Tell us you want Pro →
+            </a>
+          </div>
         </div>
       )}
 
@@ -143,7 +156,7 @@ function BillingPage() {
               <div className="text-sm font-semibold text-ink">Payment method</div>
               <div className="text-xs text-muted-foreground">
                 {isPro
-                  ? "Billed through PayPal. Update or cancel from your PayPal account."
+                  ? "Contact us to update or cancel your billing."
                   : "No card on file. You'll be asked when you upgrade."}
               </div>
             </div>
