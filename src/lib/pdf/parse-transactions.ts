@@ -667,15 +667,26 @@ function buildTransactionFromBlock(
     // Real ground-truth evidence (a real Federal Bank sample, verified this
     // session) shows DR/CR reflects the ACCOUNT BALANCE's standing (in
     // credit vs. overdrawn), not the individual transaction's debit/credit
-    // direction -- confirmed by a real withdrawal row that still showed
-    // "Cr", because the account balance stayed positive. Basing this on the
-    // amount's sign instead (the first, wrong assumption here) would have
-    // been incorrect on that exact row. Defaults to "Cr" when balance is
-    // unknown, since a positive balance is the overwhelmingly common case --
-    // this is based on one real sample confirming the pattern for positive
-    // balances specifically; worth re-checking against a real statement
-    // that goes overdrawn once more samples are available.
-    drCr: balance !== null && balance < 0 ? "Dr" : "Cr",
+    // direction, derived from the amount's sign.
+    //
+    // This was previously derived from the BALANCE's sign, generalised from a
+    // single sample where a withdrawal row showed "Cr" while the account
+    // balance stayed positive. That reading was wrong: what was observed was
+    // a balance-state indicator (is the account in credit or overdrawn),
+    // which some Indian statements print, not the transaction direction.
+    //
+    // The consequence was total, not marginal. A running balance is almost
+    // always positive, so EVERY row exported as "Cr" -- confirmed on a real
+    // 78-row Federal Bank export where all 44 debits were labelled Cr. A
+    // bookkeeper importing that gets every withdrawal booked as a deposit.
+    //
+    // The amount sign is trustworthy here: the balance-continuity pass in
+    // parseTransactionsFromPages already corrects it, and on that same export
+    // all 77 consecutive rows reconciled exactly. It is also what the
+    // Transaction type documents ("always computable from the amount's
+    // sign") and what all five non-PDF parsers already do -- the PDF path was
+    // the only one that disagreed.
+    drCr: amount < 0 ? "Dr" : "Cr",
   };
 }
 
@@ -791,6 +802,11 @@ function applyBalanceContinuityAdjustment(transactions: RawTransaction[]): void 
     if (magnitudeAgrees && signIsWrong && Math.abs(delta) > 0) {
       curr.amount = delta;
     }
+
+    // Re-derive drCr AFTER the sign correction. Deriving it at construction
+    // time reads a sign this pass may be about to flip, which is how a row
+    // ends up with amount -150.25 labelled "Cr".
+    curr.drCr = curr.amount < 0 ? "Dr" : "Cr";
 
     const expected = prev.balance + curr.amount;
     const reconciles = Math.abs(expected - curr.balance) < 0.02;

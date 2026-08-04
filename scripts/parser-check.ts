@@ -149,9 +149,16 @@ run(
       /546035039121/.test(t[0]?.tranId ?? ""),
       String(t[0]?.tranId),
     );
+    // This assertion previously required the OPPOSITE -- that a withdrawal on
+    // a positive-balance account exports as "Cr". That encoded a misreading of
+    // one sample (a balance-state indicator mistaken for transaction
+    // direction) and is precisely why the bug survived: the harness was
+    // defending it. Confirmed wrong against a real 78-row Federal Bank export
+    // where all 44 debits came out "Cr".
     check(
-      "drCr reflects balance standing (positive => Cr) even on withdrawal",
-      t[1]?.drCr === "Cr",
+      "withdrawal is Dr even though the balance stays positive",
+      t[1]?.drCr === "Dr",
+      String(t[1]?.drCr),
     );
   },
 );
@@ -554,6 +561,34 @@ run(
       String(t[0]?.amount),
     );
     check("balance is the real balance", approx(t[0]?.balance ?? NaN, 5000), String(t[0]?.balance));
+  },
+);
+
+// =============================================================================
+// 11. Dr/Cr must follow the AMOUNT, not the balance. Derived from the balance
+//     sign, every row on a normal (positive-balance) account exported as "Cr"
+//     -- confirmed on a real 78-row Federal Bank export where all 44 debits
+//     were mislabelled. Silent, and wrong in the direction that matters most.
+// =============================================================================
+run(
+  "drcr-follows-amount-not-balance",
+  [
+    page([
+      flow("03/04/2025", "DEPOSIT PAYROLL", "2,000.00", "5,000.00"),
+      flow("04/04/2025", "CARD PURCHASE GROCERY", "150.25", "4,849.75"),
+      flow("05/04/2025", "ATM WITHDRAWAL", "300.00", "4,549.75"),
+    ]),
+  ],
+  (t) => {
+    check("3 transactions", t.length === 3, `got ${t.length}`);
+    check("credit is Cr", t[0]?.drCr === "Cr", String(t[0]?.drCr));
+    check("debit is Dr despite positive balance", t[1]?.drCr === "Dr", String(t[1]?.drCr));
+    check("second debit is Dr too", t[2]?.drCr === "Dr", String(t[2]?.drCr));
+    check(
+      "drCr agrees with amount sign on every row",
+      t.every((x) => (x.amount < 0 ? x.drCr === "Dr" : x.drCr === "Cr")),
+      JSON.stringify(t.map((x) => [x.amount, x.drCr])),
+    );
   },
 );
 
