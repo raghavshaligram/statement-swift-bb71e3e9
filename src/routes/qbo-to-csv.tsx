@@ -164,7 +164,7 @@ function Page() {
       />
 
       <StickyStatementBar />
-      <ToolCrossLinks links={[{ href: "/ofx-to-csv", label: "OFX to CSV" }, { href: "/qfx-to-csv", label: "QFX to CSV" }, { href: "/qfx-to-qbo", label: "QFX to QBO" }, { href: "/ofx-to-qbo", label: "OFX to QBO" }, { href: "/csv-to-qbo", label: "CSV to QBO" }, { href: "/bank-statement-to-csv", label: "Bank Statement to CSV" }]} />
+      <ToolCrossLinks links={[{ href: "/ofx-to-csv", label: "OFX to CSV" }, { href: "/qfx-to-csv", label: "QFX to CSV" }, { href: "/qfx-to-qbo", label: "QFX to QBO" }, { href: "/ofx-to-qbo", label: "OFX to QBO" }, { href: "/qbo-to-excel", label: "QBO to Excel (full guide)" }, { href: "/csv-to-qbo", label: "CSV to QBO" }, { href: "/bank-statement-to-csv", label: "Bank Statement to CSV" }]} />
 
       <SiteFooter />
     </div>
