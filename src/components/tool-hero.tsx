@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Shield, Zap, FileSpreadsheet, UserX } from "lucide-react";
+import { Shield, Zap, FileSpreadsheet, UserX, ArrowRight } from "lucide-react";
 
 /**
  * Tool-page header, replacing the article framing on converter routes.
@@ -16,11 +16,16 @@ import { Shield, Zap, FileSpreadsheet, UserX } from "lucide-react";
  * spreadsheet output, no account required.
  */
 
+/**
+ * One colour per chip. Four identical emerald icons read as a single grey
+ * block and the eye skips the row entirely -- the same problem reported on the
+ * comparison cards. Distinct colours make it four separate claims.
+ */
 const CHIPS = [
-  { icon: Shield, label: "100% private", sub: "Never uploaded" },
-  { icon: Zap, label: "Instant", sub: "Runs in your browser" },
-  { icon: FileSpreadsheet, label: "CSV & Excel", sub: "Real spreadsheet output" },
-  { icon: UserX, label: "No signup", sub: "No account, no card" },
+  { icon: Shield, label: "100% private", sub: "Never uploaded", tint: "text-emerald bg-emerald/10" },
+  { icon: Zap, label: "Instant", sub: "Runs in your browser", tint: "text-amber-600 bg-amber-500/10" },
+  { icon: FileSpreadsheet, label: "CSV & Excel", sub: "Real spreadsheet output", tint: "text-sky-600 bg-sky-500/10" },
+  { icon: UserX, label: "No signup", sub: "No account, no card", tint: "text-violet-600 bg-violet-500/10" },
 ];
 
 export function ToolHero({
@@ -44,10 +49,12 @@ export function ToolHero({
       <p className="mt-3 text-muted-foreground">{subtitle}</p>
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {CHIPS.map(({ icon: Icon, label, sub }) => (
-          <div key={label} className="rounded-xl border border-border bg-surface-muted/40 p-3">
-            <Icon className="h-4 w-4 text-emerald" />
-            <div className="mt-1.5 text-sm font-semibold text-ink">{label}</div>
+        {CHIPS.map(({ icon: Icon, label, sub, tint }) => (
+          <div key={label} className="rounded-xl border border-border bg-card p-3">
+            <span className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ${tint}`}>
+              <Icon className="h-4 w-4" />
+            </span>
+            <div className="mt-2 text-sm font-semibold text-ink">{label}</div>
             <div className="text-xs text-muted-foreground">{sub}</div>
           </div>
         ))}
@@ -77,9 +84,10 @@ export function ToolCrossLinks({
           <Link
             key={href}
             to={href}
-            className="rounded-full border border-border px-3 py-1.5 text-sm text-ink/80 transition hover:border-emerald/40 hover:text-ink"
+            className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3.5 py-2 text-sm text-ink/80 transition hover:-translate-y-0.5 hover:border-emerald/50 hover:text-ink hover:shadow-sm"
           >
             {label}
+            <ArrowRight className="h-3.5 w-3.5 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:text-emerald" />
           </Link>
         ))}
       </div>

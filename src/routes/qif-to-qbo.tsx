@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ComparisonLinks } from "@/components/comparison-links";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
 import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
 import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
@@ -147,6 +148,8 @@ function Page() {
       />
 
       <StickyStatementBar />
+      <ComparisonLinks />
+
       <ToolCrossLinks links={[{ href: "/qif-to-csv", label: "QIF to CSV" }, { href: "/csv-to-qif", label: "CSV to QIF" }, { href: "/qbo-to-csv", label: "QBO to CSV" }, { href: "/bank-statement-to-csv", label: "Bank Statement to CSV" }]} />
 
       <SiteFooter />

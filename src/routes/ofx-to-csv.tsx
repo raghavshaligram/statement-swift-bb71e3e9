@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ComparisonLinks } from "@/components/comparison-links";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
 import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
 import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
@@ -160,6 +161,8 @@ function Page() {
       />
 
       <StickyStatementBar />
+      <ComparisonLinks />
+
       <ToolCrossLinks links={[{ href: "/ofx-to-excel", label: "OFX to Excel (full guide)" }, { href: "/qbo-to-csv", label: "QBO to CSV" }, { href: "/qfx-to-csv", label: "QFX to CSV" }, { href: "/qfx-to-qbo", label: "QFX to QBO" }, { href: "/ofx-to-qbo", label: "OFX to QBO" }, { href: "/csv-to-qbo", label: "CSV to QBO" }, { href: "/bank-statement-to-csv", label: "Bank Statement to CSV" }]} />
 
       <SiteFooter />
