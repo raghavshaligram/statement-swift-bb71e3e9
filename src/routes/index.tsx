@@ -65,8 +65,8 @@ const FEATURES = [
   },
   {
     icon: Globe,
-    title: "Any Bank",
-    body: "Named profiles for Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more.",
+    title: "23+ Banks",
+    body: "Named profiles for Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more across the US, UK, Canada and India.",
   },
   {
     icon: Layers,
@@ -181,7 +181,7 @@ function Landing() {
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald" />
-                Any bank, any layout
+                Tested on 23+ bank layouts
               </span>
               <span className="inline-flex items-center gap-2">
                 <Check className="h-4 w-4 text-emerald" />
@@ -294,14 +294,15 @@ function Landing() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="mx-auto max-w-2xl text-center">
             <div className="text-xs font-semibold uppercase tracking-wider text-emerald">
-              Global coverage from day one
+              US, UK, Canada & India
             </div>
             <h2 className="mt-3 text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-              The bank statement converter that works with any bank's PDF
+              A bank statement converter tested against real statements
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Named support for these banks today, with a generic parsing engine handling
-              standard statement layouts from any other bank in the meantime.
+              Named support for these banks today. Statements from other banks go through
+              the same generic parsing engine, and every row it isn't sure about is flagged
+              for you to check before export — so you always know what to trust.
             </p>
           </div>
           <div className="mx-auto mt-10 grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3">

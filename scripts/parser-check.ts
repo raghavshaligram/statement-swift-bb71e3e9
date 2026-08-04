@@ -497,6 +497,66 @@ run(
   },
 );
 
+// =============================================================================
+// 10. Comma-decimal locales (DE/FR/ES/IT/NL/BR) and zero-decimal currencies
+//     (JPY/KRW/VND/IDR). Both previously matched ZERO number tokens, and
+//     buildTransactionFromBlock bails on numbers.length === 0, so every row
+//     was silently dropped -- an empty result, not a wrong one. Same failure
+//     signature as the ICICI date bug.
+// =============================================================================
+run(
+  "german-comma-decimal",
+  [
+    page([
+      flow("Datum", "Buchungstext", "Betrag", "Saldo"),
+      flow("03.04.2025", "REWE MARKT GMBH", "-87,20", "1.234,56"),
+      flow("04.04.2025", "GEHALT APRIL", "2.500,00", "3.734,56"),
+      flow("15.04.2025", "MIETE WOHNUNG", "-1.100,00", "2.634,56"),
+    ]),
+  ],
+  (t) => {
+    check("3 transactions", t.length === 3, `got ${t.length}`);
+    check("comma decimal parsed", approx(t[0]?.amount, -87.2), String(t[0]?.amount));
+    check("dot grouping not eaten", approx(t[2]?.amount, -1100), String(t[2]?.amount));
+    check("grouped balance correct", approx(t[0]?.balance ?? NaN, 1234.56), String(t[0]?.balance));
+    check("credit stays positive", approx(t[1]?.amount, 2500), String(t[1]?.amount));
+  },
+);
+
+run(
+  "yen-zero-decimal",
+  [
+    page([
+      flow("2025/04/03", "SEVEN ELEVEN", "-1,500", "125,000"),
+      flow("2025/04/04", "SALARY", "350,000", "475,000"),
+    ]),
+  ],
+  (t) => {
+    check("2 transactions", t.length === 2, `got ${t.length}`);
+    check("zero-decimal amount parsed", approx(t[0]?.amount, -1500), String(t[0]?.amount));
+    check("zero-decimal balance parsed", approx(t[0]?.balance ?? NaN, 125000), String(t[0]?.balance));
+  },
+);
+
+run(
+  "reference-numbers-still-excluded",
+  [
+    page([
+      flow("03-04-2025", "UPI/509373283868/PAYEE NAME", "1,000.00", "5,000.00"),
+      flow("04-04-2025", "NEFT/123456789012/OTHER", "250.00", "4,750.00"),
+    ]),
+  ],
+  (t) => {
+    check("2 transactions", t.length === 2, `got ${t.length}`);
+    check(
+      "12-digit reference not read as an amount",
+      approx(t[0]?.amount, -1000) || approx(t[0]?.amount, 1000),
+      String(t[0]?.amount),
+    );
+    check("balance is the real balance", approx(t[0]?.balance ?? NaN, 5000), String(t[0]?.balance));
+  },
+);
+
 // -----------------------------------------------------------------------------
 console.log("");
 if (failures > 0) {

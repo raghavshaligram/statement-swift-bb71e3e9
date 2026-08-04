@@ -78,7 +78,10 @@ const PAYEE_CASES: PayeeCase[] = [
 ];
 
 const CATEGORY_CASES: CategoryCase[] = [
-  { name: "UPI to individual", raw: "UPI/malpotesainath-/UPI/KARNATAKA BANK/509373283868/SAINATH SAKHARAM MALPOTE", amount: -2500, expect: null },
+  { name: "UPI to individual -> Transfer", raw: "UPI/malpotesainath-/UPI/KARNATAKA BANK/509373283868/SAINATH SAKHARAM MALPOTE", amount: -2500, expect: "Transfer" },
+  { name: "UPI from individual -> Income", raw: "UPI/rahul-/UPI/HDFC BANK/509373283999/RAHUL KUMAR SHARMA", amount: 4000, expect: "Income" },
+  { name: "UPI to a business is not a p2p transfer", raw: "UPI/acme-/UPI/HDFC BANK/50937328/ACME TRADING PVT LTD", amount: -900, expect: null },
+  { name: "merchant over UPI still wins", raw: "UPI/swiggy-/UPI/ICICI/5093732/SWIGGY", amount: -420, expect: "Dining" },
   { name: "Starbucks debit", raw: "CARD PURCHASE STARBUCKS STORE 04821", amount: -6.4, expect: "Dining" },
   { name: "Thames Water DD", raw: "DIRECT DEBIT THAMES WATER UTILITIES", amount: -42.18, expect: "Utilities" },
   { name: "Tesco groceries", raw: "TESCO STORES 3421", amount: -87.2, expect: "Groceries" },
@@ -158,8 +161,8 @@ console.log("\n=== enrichTransactions wiring ===\n");
     ["payee populated", a.payee === "SAINATH SAKHARAM MALPOTE", a.payee],
     ["method populated", a.paymentMethod === "UPI", String(a.paymentMethod)],
     ["raw description untouched", a.description === base.description, a.description],
-    ["uncategorised stays null", a.category === null, String(a.category)],
-    ["categoryConfidence 0 when null", a.categoryConfidence === 0, String(a.categoryConfidence)],
+    ["p2p transfer categorised", a.category === "Transfer", String(a.category)],
+    ["p2p confidence is modest, not asserted", a.categoryConfidence === 62, String(a.categoryConfidence)],
     ["second row categorised", b.category === "Dining", String(b.category)],
     ["second row confident", b.categoryConfidence > 0, String(b.categoryConfidence)],
   ];

@@ -315,6 +315,21 @@ const RULES: Rule[] = [
   },
 ];
 
+/**
+ * Rails that are used person-to-person as well as merchant-to-customer.
+ * A UPI/Zelle/Interac payment to something that reads like a person's name is
+ * a transfer, not an uncategorisable row -- and on Indian statements this is
+ * the single largest bucket. No merchant rule can ever match these, because a
+ * person's name carries no category signal, so a model would not help either.
+ */
+const P2P_RAILS = /\b(UPI|IMPS|NEFT|ZELLE|INTERAC|VENMO|CASH APP|PAYTM|PHONEPE|GPAY|E-?TRANSFER)\b/i;
+
+/** Two to four capitalised alphabetic words, no digits -- i.e. a person's name. */
+const PERSON_NAME = /^[A-Za-z][A-Za-z.'-]+(?:\s+[A-Za-z][A-Za-z.'-]+){1,3}$/;
+
+/** Company suffixes that mean this is a business, not an individual. */
+const BUSINESS_SUFFIX = /\b(LTD|LIMITED|LLC|LLP|INC|PVT|PLC|GMBH|CORP|CO|COMPANY|SERVICES|SOLUTIONS|ENTERPRISES|TRADING|TECHNOLOGIES|STORES?)\b/i;
+
 function matches(payee: string, pattern: string | RegExp): boolean {
   return typeof pattern === "string"
     ? payee.toLowerCase().includes(pattern.toLowerCase())
@@ -364,6 +379,24 @@ export function categorize(
       const confidence = payeeMatched ? rule.confidence : Math.max(50, rule.confidence - 15);
       return { category: rule.category, confidence, rule: rule.id, matched: true };
     }
+  }
+
+  // Person-to-person transfer fallback. Runs after every merchant rule has
+  // been tried, so a merchant paid over UPI still categorises as the merchant.
+  // Confidence is deliberately modest -- this is a shape heuristic, not a
+  // lookup, and the review screen should treat it as reviewable.
+  if (
+    payeeMatched &&
+    P2P_RAILS.test(rawDescription) &&
+    PERSON_NAME.test(payee) &&
+    !BUSINESS_SUFFIX.test(payee)
+  ) {
+    return {
+      category: sign > 0 ? "Income" : "Transfer",
+      confidence: 62,
+      rule: "p2p.person-transfer",
+      matched: true,
+    };
   }
 
   if (resolver) {

@@ -1,4 +1,10 @@
 import type { PageText, TextItem } from "./extract-text";
+import {
+  inferNumberFormat,
+  buildAmountRegex,
+  normalizeAmountToken,
+  type NumberFormat,
+} from "./number-format";
 import { inferDateOrder, resolveAmbiguousDate, type DateOrder } from "./date-inference";
 import { findHeaderRow, classifyByColumn, type DetectedColumn } from "./detect-columns";
 
@@ -45,10 +51,17 @@ const DATE_PATTERNS: Array<{
   kind: "iso" | "monthName" | "ambiguous";
 }> = [
   { re: /\b(\d{4})-(\d{2})-(\d{2})\b/, kind: "iso" }, // YYYY-MM-DD
+  { re: /\b(\d{4})\/(\d{1,2})\/(\d{1,2})\b/, kind: "iso" }, // 2025/04/03 -- year-first slash (JP, CN, KR, TW)
   { re: /\b([\dOo]{1,2})[-\s]?([A-Za-z]{3})[-\s]?(\d{4})\b/, kind: "monthName" }, // 15-Jan-2025, tolerant of missing separator and O/0 confusion
   { re: /\b([A-Za-z]{3,9})\s+([\dOo]{1,2}),?\s+(\d{4})\b/, kind: "monthName" }, // Jan 15, 2025 (month first)
   { re: /\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/, kind: "ambiguous" }, // MM/DD/YYYY or DD/MM/YYYY
   { re: /\b(\d{1,2})-(\d{1,2})-(\d{4})\b/, kind: "ambiguous" }, // MM-DD-YYYY or DD-MM-YYYY
+  // Dot-separated: 03.04.2025. Standard across DE/AT/CH, the Nordics, Poland,
+  // Czechia and Russia. Requiring exactly 4 digits for the year keeps this off
+  // dot-grouped amounts ("1.234.567" has a 3-digit final group, so it can't
+  // match) -- which matters because on comma-decimal statements the dot is
+  // also the thousands separator.
+  { re: /\b(\d{1,2})\.(\d{1,2})\.(\d{4})\b/, kind: "ambiguous" },
 ];
 
 const MONTHS: Record<string, string> = {
@@ -193,9 +206,13 @@ function isBroughtForwardRow(description: string): boolean {
 // already recognized elsewhere in the app (detect-currency.ts) and to allow
 // a leading + as well as -, rather than silently finding zero numbers on
 // every row of a statement that uses either convention.
-const AMOUNT_ITEM_RE = /^\(?[+-]?[$£€¥₹]?(?:\d{1,2}(?:,\d{2})+,\d{3}|\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2})\)?[CDcd]?$/;
+// Built per-document from the inferred decimal separator -- see
+// number-format.ts. Previously this was a single hardcoded regex assuming
+// "." as the decimal and requiring a decimal part, which silently matched
+// ZERO tokens on comma-decimal statements (most of Europe and Latin America)
+// and on zero-decimal currencies (JPY, KRW, VND, IDR), dropping every row.
 
-function parseAmountToken(token: string): number {
+function parseAmountToken(token: string, format: NumberFormat): number {
   const trimmed = token.trim();
   const negative = /^\(.*\)$/.test(trimmed) || trimmed.startsWith("-");
   // A trailing C/D suffix is an explicit Dr/Cr marker some statements use
@@ -205,7 +222,7 @@ function parseAmountToken(token: string): number {
   // negative): "C" forces positive, "D" forces negative, taking priority
   // over a leading sign/parens if both were somehow present.
   const suffixMatch = trimmed.match(/([CDcd])$/);
-  const cleaned = token.replace(/[()$£€¥₹,+\s-]/g, "").replace(/[CDcd]$/, "");
+  const cleaned = normalizeAmountToken(token.replace(/[CDcd]$/, ""), format.decimal);
   const value = Math.abs(parseFloat(cleaned));
   if (suffixMatch) return suffixMatch[1].toUpperCase() === "D" ? -value : value;
   return negative ? -value : value;
@@ -213,10 +230,11 @@ function parseAmountToken(token: string): number {
 
 type NumberToken = { value: number; raw: string; x: number };
 
-function findNumberItems(items: TextItem[]): NumberToken[] {
+function findNumberItems(items: TextItem[], format: NumberFormat): NumberToken[] {
+  const amountRe = buildAmountRegex(format.decimal);
   return items
-    .filter((it) => AMOUNT_ITEM_RE.test(it.str.trim()))
-    .map((it) => ({ value: parseAmountToken(it.str), raw: it.str, x: it.x }));
+    .filter((it) => amountRe.test(it.str.trim()))
+    .map((it) => ({ value: parseAmountToken(it.str, format), raw: it.str, x: it.x }));
 }
 
 // --- row reconstruction -----------------------------------------------------------
@@ -499,6 +517,7 @@ function buildTransactionFromBlock(
   block: Block,
   columns: DetectedColumn[] | null,
   dateOrder: DateOrder,
+  numberFormat: NumberFormat,
   pageNumber: number
 ): RawTransaction | null {
   const anchorRow = block.anchorRow;
@@ -506,7 +525,7 @@ function buildTransactionFromBlock(
   if (!dateResult) return null;
 
   // Gather every number across every row in the block, keeping x-position.
-  const numbers = block.rows.flatMap((r) => findNumberItems(r.items));
+  const numbers = block.rows.flatMap((r) => findNumberItems(r.items, numberFormat));
   if (numbers.length === 0) return null;
 
   let amount: number | null = null;
@@ -682,6 +701,10 @@ function buildTransactionFromBlock(
  */
 export function parseTransactionsFromPages(pages: PageText[], fullText: string): RawTransaction[] {
   const dateOrder = inferDateOrder(fullText);
+  // Inferred once for the whole document, same as dateOrder -- a single token
+  // like "1.234" cannot resolve its own decimal separator, but a full
+  // statement almost always can.
+  const numberFormat = inferNumberFormat(fullText);
   const transactions: RawTransaction[] = [];
   let carriedColumns: DetectedColumn[] | null = null;
 
@@ -711,7 +734,7 @@ export function parseTransactionsFromPages(pages: PageText[], fullText: string):
     const blocks = groupRowsIntoBlocks(candidateRows, dateOrder);
 
     for (const block of blocks) {
-      const txn = buildTransactionFromBlock(block, columns, dateOrder, page.pageNumber);
+      const txn = buildTransactionFromBlock(block, columns, dateOrder, numberFormat, page.pageNumber);
       if (txn) transactions.push(txn);
     }
   }
