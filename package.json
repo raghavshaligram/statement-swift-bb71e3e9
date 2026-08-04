@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "check:parser": "tsx scripts/parser-check.ts"
+    "check:parser": "tsx scripts/parser-check.ts",
+    "check:enrich": "tsx scripts/enrich-check.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
