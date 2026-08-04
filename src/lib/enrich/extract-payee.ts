@@ -111,6 +111,11 @@ function isReference(token: string): boolean {
  * H&M) but a token that is *majority* digits is not a name.
  */
 function isNameLike(token: string): boolean {
+  // Single letters are initials, not names on their own -- but they must not
+  // BREAK a name run either. "RAGHAV B SHAL" tokenises as
+  // ["RAGHAV","B","SHAL"], and rejecting "B" split it into two runs, so the
+  // longest-run pick returned just "RAGHAV". Handled in the run builder
+  // below, which treats a lone letter as run-continuing but not run-starting.
   if (token.length < 2) return false;
   if (isReference(token)) return false;
   const letters = (token.match(/[A-Za-z]/g) ?? []).length;
@@ -183,11 +188,15 @@ export function extractPayee(raw: string): PayeeParts {
   //    fragments of the rail description ("BANK", "TRANSFER").
   const runs: string[][] = [];
   let current: string[] = [];
+  const isInitial = (t: string) => /^[A-Za-z]\.?$/.test(t);
   for (const token of tokens) {
     const cleaned = stripEmailLocalPart(token);
     const usable =
       !isReference(token) && !METHOD_TOKENS[token.toUpperCase()] && isNameLike(cleaned);
-    if (usable) {
+    // A lone letter continues an existing run (a middle initial) but never
+    // starts one, so "RAGHAV B SHAL" stays whole while a stray "U" in
+    // "/U/0000" doesn't seed a spurious run.
+    if (usable || (current.length > 0 && isInitial(cleaned))) {
       current.push(cleaned);
     } else if (current.length) {
       runs.push(current);
@@ -195,6 +204,10 @@ export function extractPayee(raw: string): PayeeParts {
     }
   }
   if (current.length) runs.push(current);
+  // A run may have picked up a trailing initial with nothing after it.
+  runs.forEach((run) => {
+    while (run.length > 1 && isInitial(run[run.length - 1])) run.pop();
+  });
 
   // Longest run by character count, ties broken by later position -- the
   // counterparty name typically trails the rail preamble.

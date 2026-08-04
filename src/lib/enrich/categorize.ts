@@ -82,6 +82,12 @@ const RULES: Rule[] = [
       /\bnsf fee\b/i, /\breturned item\b/i, /\bannual fee\b/i,
       /\bforeign transaction fee\b/i, /\bnon.?sufficient\b/i, /\bledger fee\b/i,
       /\bsms charge/i, /\bamc\b/i, /\bgst on\b/i,
+      // Indian rails bill the transfer fee as its own row, printed as
+      // "CHRG/IMPS/5000/22-08-2025" -- the rail, the amount transferred and
+      // the date of the transfer it relates to. 19 of 78 rows on a real
+      // Federal Bank statement. Anchored to CHRG so it can't catch a genuine
+      // IMPS transfer.
+      /\bCHRG\s*\/\s*(IMPS|NEFT|RTGS|UPI|ATM)\b/i, /^CHRG\b/i,
     ],
     confidence: 92,
   },
@@ -324,8 +330,23 @@ const RULES: Rule[] = [
  */
 const P2P_RAILS = /\b(UPI|IMPS|NEFT|ZELLE|INTERAC|VENMO|CASH APP|PAYTM|PHONEPE|GPAY|E-?TRANSFER)\b/i;
 
-/** Two to four capitalised alphabetic words, no digits -- i.e. a person's name. */
-const PERSON_NAME = /^[A-Za-z][A-Za-z.'-]+(?:\s+[A-Za-z][A-Za-z.'-]+){1,3}$/;
+/**
+ * Two to four alphabetic words -- i.e. a person's name.
+ *
+ * Subsequent words allow a single character so middle initials qualify:
+ * "RAGHAV B SHAL" was failing because "B" is one letter, leaving 21 of 78
+ * rows on a real Federal Bank statement uncategorised.
+ */
+const PERSON_NAME = /^[A-Za-z][A-Za-z.'-]+(?:\s+[A-Za-z][A-Za-z.'-]*){1,3}$/;
+
+/**
+ * A UPI VPA local-part: one lowercase-ish token, optionally with digits, as
+ * left behind by "dripchatagency@okicici" or "sapahia12@okaxis". These are
+ * individuals' payment handles -- 27 of 78 rows on a real Federal Bank
+ * statement -- and PERSON_NAME can never match them because a handle is a
+ * single token with no space.
+ */
+const VPA_HANDLE = /^[a-z][a-z0-9._-]{2,}$/i;
 
 /** Company suffixes that mean this is a business, not an individual. */
 const BUSINESS_SUFFIX = /\b(LTD|LIMITED|LLC|LLP|INC|PVT|PLC|GMBH|CORP|CO|COMPANY|SERVICES|SOLUTIONS|ENTERPRISES|TRADING|TECHNOLOGIES|STORES?)\b/i;
@@ -388,7 +409,7 @@ export function categorize(
   if (
     payeeMatched &&
     P2P_RAILS.test(rawDescription) &&
-    PERSON_NAME.test(payee) &&
+    (PERSON_NAME.test(payee) || VPA_HANDLE.test(payee)) &&
     !BUSINESS_SUFFIX.test(payee)
   ) {
     return {

@@ -338,11 +338,34 @@ function groupRowsIntoBlocks(rows: Row[], dateOrder: DateOrder): Block[] {
         nearestDist = dist;
       } else if (dist === nearestDist && anchorIdx !== nearest) {
         // Tie between the earlier anchor (`nearest`) and this later one.
-        // Default: prefer the later anchor, since interior prefix lines
-        // that are equidistant from the previous and next anchor usually
-        // belong to the next transaction (a payee name printed above its
-        // own date/amount line), not the previous one.
         //
+        // Row-index distance cannot tell a PREFIX line (payee printed above
+        // its own date/amount row) from a SUFFIX line (a wrapped cell
+        // continuing below its own row). Both sit exactly one row from each
+        // neighbouring anchor, so both tie -- and the previous rule resolved
+        // every tie toward the later anchor, which is right for prefixes and
+        // wrong for suffixes.
+        //
+        // Confirmed wrong on a real Federal Bank statement, where the
+        // Particulars cell wraps:
+        //
+        //   y=616.8  24-JUN-2025 ... UPI IN/554108932624 ... 9000.00
+        //   y=625.2               /dripchatagency@okicici/U/0000
+        //   y=641.9  10-JUL-2025 ... NFT/PAYPAL PAYMENTS  ... 2185.57
+        //
+        // Every counterparty was being donated to the FOLLOWING transaction,
+        // leaving each row with only a rail fragment ("IN", "IFO", "CHRG") as
+        // its description. 44 of 78 rows came out uncategorisable as a direct
+        // result -- not because categorisation was weak, but because the name
+        // was on the wrong row.
+        //
+        // Vertical distance resolves it without guessing: line spacing WITHIN
+        // a wrapped cell is tighter than the spacing BETWEEN table rows, which
+        // is a property of table layout generally rather than of this bank.
+        // Here 625.2 is 8.4 from its own anchor and 16.7 from the next.
+        const dyEarlier = Math.abs(rows[i].y - rows[nearest].y);
+        const dyLater = Math.abs(rows[i].y - rows[anchorIdx].y);
+
         // Real exception found via a scanned credit-card statement: when
         // the EARLIER anchor is a bare date-only row (its own date got
         // OCR'd onto its own line, separated from the rest of that same
@@ -356,7 +379,15 @@ function groupRowsIntoBlocks(rows: Row[], dateOrder: DateOrder): Block[] {
         // both silently corrupting the following transaction's amount and
         // dropping this one's entirely (empty block, no amount, discarded).
         const earlierIsDateOnly = isDateOnlyRow(rows[nearest].text, dateOrder);
-        if (!earlierIsDateOnly) {
+        if (earlierIsDateOnly) continue;
+
+        // Prefer whichever anchor is genuinely closer on the page. Only when
+        // the two are vertically indistinguishable does the original
+        // prefer-the-later default apply.
+        if (dyLater < dyEarlier) {
+          nearest = anchorIdx;
+          nearestDist = dist;
+        } else if (dyLater === dyEarlier) {
           nearest = anchorIdx;
           nearestDist = dist;
         }
@@ -710,7 +741,49 @@ function buildTransactionFromBlock(
  * for manual review in the preview screen -- the honest fallback for whatever
  * this generic layer can't fully resolve on its own.
  */
+/**
+ * Identifies repeated page furniture (running headers, footers, disclaimers).
+ *
+ * Generic rather than per-bank: furniture is text that repeats on 2+ pages AT
+ * THE SAME VERTICAL POSITION. Confirmed on a real Federal Bank statement,
+ * where the corporate-address footer and the CBS disclaimer were absorbed
+ * into whichever transaction ended each page -- producing "payees" like
+ * "The Federal Bank Ltd. Corporate Office: Federal Towers...".
+ *
+ * The y-stability requirement is essential and was missing on the first
+ * attempt. Repeated text alone is NOT sufficient: a wrapped continuation line
+ * carrying only a counterparty VPA ("/dripchatagency@okicici/U/0000") repeats
+ * verbatim on every page it appears, and filtering on text alone deleted it
+ * from 21 real transactions. Footers are pinned to a fixed y; transaction
+ * content is not.
+ *
+ * Short lines are excluded: a 1-2 word repeat ("Cr", a column header) is
+ * common and legitimate inside a table.
+ */
+function findRepeatedFurniture(pages: PageText[]): Set<string> {
+  const seen = new Map<string, { pages: Set<number>; ys: number[] }>();
+  for (const page of pages) {
+    for (const row of groupIntoRows(page.items)) {
+      const key = row.text.replace(/\s+/g, " ").trim();
+      if (key.length < 25) continue;
+      if (!seen.has(key)) seen.set(key, { pages: new Set(), ys: [] });
+      const entry = seen.get(key)!;
+      entry.pages.add(page.pageNumber);
+      entry.ys.push(row.y);
+    }
+  }
+  const furniture = new Set<string>();
+  const Y_TOLERANCE = 6;
+  for (const [key, { pages: pageNums, ys }] of seen) {
+    if (pageNums.size < 2) continue;
+    const spread = Math.max(...ys) - Math.min(...ys);
+    if (spread <= Y_TOLERANCE) furniture.add(key);
+  }
+  return furniture;
+}
+
 export function parseTransactionsFromPages(pages: PageText[], fullText: string): RawTransaction[] {
+  const furniture = findRepeatedFurniture(pages);
   const dateOrder = inferDateOrder(fullText);
   // Inferred once for the whole document, same as dateOrder -- a single token
   // like "1.234" cannot resolve its own decimal separator, but a full
@@ -722,7 +795,9 @@ export function parseTransactionsFromPages(pages: PageText[], fullText: string):
   for (const page of pages) {
     if (page.items.length === 0) continue;
 
-    const rows = groupIntoRows(page.items);
+    const rows = groupIntoRows(page.items).filter(
+      (r) => !furniture.has(r.text.replace(/\s+/g, " ").trim())
+    );
     const pageWidth = Math.max(...page.items.map((i) => i.x + i.width), 1);
 
     const header = findHeaderRow(rows, pageWidth);

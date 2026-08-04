@@ -50,6 +50,26 @@ function flow(...tokens: string[]): LineSpec {
   });
 }
 
+/**
+ * Page builder with EXPLICIT per-line y positions.
+ *
+ * The uniform-spacing `page()` helper below cannot represent layouts where
+ * intra-cell line spacing differs from inter-row spacing -- it puts every line
+ * exactly `lineHeight` apart, so a wrapped continuation is equidistant from
+ * both neighbouring anchors in geometry as well as in row index. That made the
+ * Federal Bank continuation bug invisible to this harness: the fixtures could
+ * not express the very property the fix relies on.
+ */
+function pageAtYs(lines: LineSpec[], ys: number[], pageNumber = 1): PageText {
+  const items: TextItem[] = [];
+  lines.forEach((line, i) => {
+    for (const tok of line) {
+      items.push({ str: tok.str, x: tok.x, y: ys[i], width: tok.str.length * 5, height: 10 });
+    }
+  });
+  return { pageNumber, items, rawText: items.map((i) => i.str).join(" ") };
+}
+
 function page(lines: LineSpec[], pageNumber = 1): PageText {
   const items = makeItems(lines);
   return { pageNumber, items, rawText: items.map((i) => i.str).join(" ") };
@@ -588,6 +608,112 @@ run(
       "drCr agrees with amount sign on every row",
       t.every((x) => (x.amount < 0 ? x.drCr === "Dr" : x.drCr === "Cr")),
       JSON.stringify(t.map((x) => [x.amount, x.drCr])),
+    );
+  },
+);
+
+// =============================================================================
+// 12. Federal Bank wrapped-cell continuation. THE bug behind the "descriptions
+//     are broken" report and behind 56% of rows being uncategorisable.
+//
+//     The Particulars cell wraps, so the counterparty sits on its own line
+//     BELOW the dated row:
+//
+//       y=616.8  24-JUN-2025 ... UPI IN/554108932624 ... 9000.00
+//       y=625.2               /dripchatagency@okicici/U/0000
+//       y=641.9  10-JUL-2025 ... NFT/PAYPAL PAYMENTS  ... 2185.57
+//
+//     By ROW INDEX that continuation is exactly 1 from each neighbouring
+//     anchor -- a tie -- and the old tie-break always preferred the LATER
+//     anchor. So every counterparty was donated to the following transaction,
+//     leaving rail fragments ("IN", "IFO", "CHRG") as descriptions.
+//
+//     Row-index distance cannot distinguish a prefix line from a suffix line.
+//     Vertical distance can, because intra-cell line spacing is tighter than
+//     inter-row spacing. Fixture below encodes both directions so neither
+//     regresses.
+// =============================================================================
+run(
+  "wrapped-cell-continuation-stays-with-own-row",
+  [
+    // y values taken from the real statement: anchors ~25pt apart, wrapped
+    // continuation only ~8pt below its own anchor.
+    pageAtYs(
+      [
+        flow("24-JUN-2025", "UPI IN/554108932624", "TFR", "9,000.00", "62,904.74"),
+        flow("/dripchatagency@okicici/U/0000"),
+        flow("10-JUL-2025", "NFT/PAYPAL PAYMENTS", "FT", "2,185.57", "65,090.31"),
+        flow("/CITIN25592084366/CITI"),
+      ],
+      [616.8, 625.2, 641.9, 650.3],
+      1,
+    ),
+  ],
+  (t) => {
+    check("2 transactions", t.length === 2, `got ${t.length}`);
+    check(
+      "counterparty stays on its own row, not the next one",
+      t[0]?.description?.includes("dripchatagency") === true,
+      t[0]?.description,
+    );
+    check(
+      "following row is not contaminated by the previous counterparty",
+      t[1]?.description?.includes("dripchatagency") === false,
+      t[1]?.description,
+    );
+    check(
+      "following row keeps its own continuation",
+      t[1]?.description?.includes("CITIN25592084366") === true,
+      t[1]?.description,
+    );
+  },
+);
+
+// =============================================================================
+// 13. Repeated page furniture (running footers, disclaimers) was being
+//     absorbed into whichever transaction ended each page.
+//
+//     Furniture requires repeated text AND a stable y. Text alone is NOT
+//     enough -- the first attempt at this filtered on repetition only and
+//     deleted "/dripchatagency@okicici/U/0000" from 21 real transactions,
+//     because the same counterparty legitimately recurs across pages. Footers
+//     are pinned to a fixed y; transaction content is not.
+// =============================================================================
+run(
+  "repeated-footer-filtered-but-repeated-content-kept",
+  [
+    // The counterparty line sits at a DIFFERENT y on each page (real content
+    // moves down the page); the footer sits at the SAME y on both.
+    pageAtYs(
+      [
+        flow("04-APR-2025", "UPI IN/546035039121", "TFR", "2,500.00", "10,089.41"),
+        flow("/dripchatagency@okicici/U/0000"),
+        flow("The Federal Bank Ltd. Corporate Office: Federal Towers Market Rd Aluva Kerala"),
+      ],
+      [120.0, 128.4, 780.0],
+      1,
+    ),
+    pageAtYs(
+      [
+        flow("12-MAY-2025", "UPI IN/549892392860", "TFR", "15,000.00", "25,089.41"),
+        flow("/dripchatagency@okicici/U/0000"),
+        flow("The Federal Bank Ltd. Corporate Office: Federal Towers Market Rd Aluva Kerala"),
+      ],
+      [402.0, 410.4, 780.0],
+      2,
+    ),
+  ],
+  (t) => {
+    check("2 transactions", t.length === 2, `got ${t.length}`);
+    check(
+      "footer not absorbed into any description",
+      t.every((x) => !/Corporate Office/i.test(x.description)),
+      JSON.stringify(t.map((x) => x.description)),
+    );
+    check(
+      "repeated counterparty NOT mistaken for furniture",
+      t.every((x) => x.description.includes("dripchatagency")),
+      JSON.stringify(t.map((x) => x.description)),
     );
   },
 );
