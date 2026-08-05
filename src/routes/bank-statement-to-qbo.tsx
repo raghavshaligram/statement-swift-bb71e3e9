@@ -108,7 +108,7 @@ function Page() {
       />
 
       <QuickSummary>
-        Turn a statement PDF into a QuickBooks Web Connect (.qbo) file and import it as a bank feed
+        Convert PDF bank statement to QBO — a QuickBooks Web Connect file you import as a bank feed
         rather than a spreadsheet. No column mapping, and every transaction keeps its FITID so
         QuickBooks won&apos;t duplicate anything you&apos;ve already brought in. Runs entirely in
         your browser — the statement never leaves your device.
@@ -121,11 +121,12 @@ function Page() {
         <EmbeddedConverter />
       </div>
 
-      <ArticleH2>Convert PDF bank statement to QBO: why a bank statement to QBO converter beats a CSV import</ArticleH2>
+      <ArticleH2>Why QBO beats a CSV import</ArticleH2>
       <ArticleProse>
         <p>
           Both get your transactions in. The difference is what QuickBooks does with them
-          afterwards.
+          afterwards — and it is the reason to convert bank statement to QBO file rather than
+          settle for columns.
         </p>
         <p>
           A CSV is just columns. You map them by hand on every import, QuickBooks has no idea which
@@ -148,7 +149,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>How to upload bank statements to QuickBooks, and import bank statements into QuickBooks Online</ArticleH2>
+      <ArticleH2>How to import bank statements into QuickBooks</ArticleH2>
       <NumberedSteps
         steps={[
           {
@@ -161,7 +162,7 @@ function Page() {
           },
           {
             title: "Import to QuickBooks Online",
-            body: "Transactions → Bank transactions → Link account → Upload from file, then pick the .qbo and tell QuickBooks which account it belongs to.",
+            body: "To import bank statements into QuickBooks Online: Transactions → Bank transactions → Link account → Upload from file, then pick the .qbo and tell QuickBooks which account it belongs to. This is also how to upload bank statements to QuickBooks if you have been doing it by hand.",
           },
           {
             title: "Or import to QuickBooks Desktop",
@@ -177,7 +178,7 @@ function Page() {
         If Desktop is the only option, CSV import is the reliable fallback.
       </Callout>
 
-      <ArticleH2>Convert bank statement to QBO file: common problems</ArticleH2>
+      <ArticleH2>Common problems</ArticleH2>
       <TroubleshootGrid
         items={[
           {

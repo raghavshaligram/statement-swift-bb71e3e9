@@ -127,10 +127,11 @@ function Page() {
         <EmbeddedConverter />
       </div>
 
-      <ArticleH2>PDF bank statement to Excel: why copying and pasting doesn&apos;t work</ArticleH2>
+      <ArticleH2>Why copying and pasting doesn&apos;t work</ArticleH2>
       <ArticleProse>
         <p>
-          A PDF has no columns. It has characters positioned on a page, and the columns you see are
+          To convert PDF bank statement to Excel, something has to reconstruct the table — and a
+          PDF has no columns. It has characters positioned on a page, and the columns you see are
           an illusion created by where those characters sit. When you select a statement table and
           paste it into Excel, that spatial information is thrown away — you get one long column
           with dates, descriptions and amounts run together, and multi-line descriptions split
@@ -242,7 +243,7 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <ArticleH2>Convert PDF bank statement to Excel: common problems</ArticleH2>
+      <ArticleH2>Common problems and what causes them</ArticleH2>
       <TroubleshootGrid
         items={[
           {
