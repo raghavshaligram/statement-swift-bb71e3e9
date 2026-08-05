@@ -83,7 +83,9 @@ export function PageTOC({ headings }: { headings: string[] }) {
   if (headings.length < 3) return null;
   return (
     <div className="mx-auto max-w-3xl px-6 pt-6">
-      <details open className="rounded-xl border border-border bg-card p-4">
+      {/* Closed by default: an expanded TOC costs a screenful on mobile, and
+          the links stay in the DOM either way so crawlers still follow them. */}
+      <details className="rounded-xl border border-border bg-card p-4">
         <summary className="cursor-pointer text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           On this page
         </summary>

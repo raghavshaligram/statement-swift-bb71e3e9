@@ -2,12 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
 import { ShieldCheck, Check, X } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolChips } from "@/components/tool-hero";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import {
-  ArticleBackLink,
   ArticleHero,
   QuickSummary,
   ArticleTOC,
@@ -71,16 +71,25 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Free ICICI Bank Statement to Excel Converter" }]} />
-      <ArticleBackLink />
       <ArticleHero
         eyebrow="Bank guide"
         title="ICICI Bank Statement to Excel: Formats and Limits"
-        publishedDate="July 2026"
       />
 
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
       </div>
+
+      <ToolChips />
+
+      <QuickSummary>
+        Most ICICI account holders can get transactions into Excel without retyping a thing, straight from
+        internet banking — ICICI's own export is genuinely one of the better native options covered on this
+        site. It exports Excel and CSV directly for the last several years of history — free for statements
+        within the standard window. Older statements (beyond roughly 3 years) can incur a charge to
+        retrieve. The iMobile app only offers PDF, not Excel or CSV. For anything outside ICICI's native
+        export, or a password-protected emailed PDF you've already unlocked, convert it here.
+      </QuickSummary>
 
       <ArticleProse>
         <p>
@@ -91,14 +100,6 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <QuickSummary>
-        Most ICICI account holders can get transactions into Excel without retyping a thing, straight from
-        internet banking — ICICI's own export is genuinely one of the better native options covered on this
-        site. It exports Excel and CSV directly for the last several years of history — free for statements
-        within the standard window. Older statements (beyond roughly 3 years) can incur a charge to
-        retrieve. The iMobile app only offers PDF, not Excel or CSV. For anything outside ICICI's native
-        export, or a password-protected emailed PDF you've already unlocked, convert it here.
-      </QuickSummary>
 
       <ArticleTOC
         items={[

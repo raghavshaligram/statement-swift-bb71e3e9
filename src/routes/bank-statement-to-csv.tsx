@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolChips } from "@/components/tool-hero";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import {
-  ArticleBackLink,
   ArticleHero,
   QuickSummary,
   ArticleProse,
@@ -63,12 +63,21 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Free Bank Statement to CSV Converter" }]} />
-      <ArticleBackLink />
       <ArticleHero eyebrow="Bank guide" title="Free Bank Statement to CSV Converter" publishedDate="July 2026" />
 
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
       </div>
+
+      <ToolChips />
+
+      <QuickSummary>
+        A CSV is the one format almost every spreadsheet and accounting tool accepts without a fight — no
+        version-specific formatting, no proprietary lock-in, just rows of data. This converts any bank's PDF
+        statement — named detection for 23+ major banks, plus a generic parser for any other text-based PDF —
+        into a clean CSV with date, description, amount, and running balance, ready to open anywhere or import
+        into whatever software actually needs the data.
+      </QuickSummary>
 
       <ArticleProse>
         <p>
@@ -79,13 +88,6 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <QuickSummary>
-        A CSV is the one format almost every spreadsheet and accounting tool accepts without a fight — no
-        version-specific formatting, no proprietary lock-in, just rows of data. This converts any bank's PDF
-        statement — named detection for 23+ major banks, plus a generic parser for any other text-based PDF —
-        into a clean CSV with date, description, amount, and running balance, ready to open anywhere or import
-        into whatever software actually needs the data.
-      </QuickSummary>
 
       <ArticleH2>Bank statement to CSV file: how it works</ArticleH2>
       <NumberedSteps

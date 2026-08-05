@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolChips } from "@/components/tool-hero";
 import { Breadcrumbs, PageTOC } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import { StickyStatementBar } from "@/components/statement-funnel";
 import {
-  ArticleBackLink,
   ArticleHero,
   QuickSummary,
   ArticleProse,
@@ -110,19 +110,11 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Convert Bank Statement PDF to Excel" }]} />
-      <ArticleBackLink />
       <ArticleHero
         eyebrow="Converter"
         title="Convert Bank Statement to Excel"
-        publishedDate="August 2026"
       />
 
-      <QuickSummary>
-        Drop a statement PDF below and download an .xlsx workbook with real dates, real numbers and
-        one sheet per account. It runs entirely in your browser, so the statement never leaves your
-        device. Every row&apos;s running balance is checked against the one before it — if the
-        statement doesn&apos;t tie out, you&apos;re told which row before you export.
-      </QuickSummary>
 
       {/* EmbeddedConverter carries no width constraint of its own -- without
           this wrapper it renders edge-to-edge while the prose above sits in a
@@ -130,6 +122,15 @@ function Page() {
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
       </div>
+
+      <ToolChips />
+
+      <QuickSummary>
+        Drop a statement PDF below and download an .xlsx workbook with real dates, real numbers and
+        one sheet per account. It runs entirely in your browser, so the statement never leaves your
+        device. Every row&apos;s running balance is checked against the one before it — if the
+        statement doesn&apos;t tie out, you&apos;re told which row before you export.
+      </QuickSummary>
 
       <PageTOC
         headings={[

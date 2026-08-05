@@ -30,6 +30,12 @@ const CHIPS = [
   { icon: UserX, label: "No signup", sub: "No account, no card", tint: "text-violet-600 bg-violet-500/10" },
 ];
 
+/**
+ * Headline only. The chip row used to live here, between the subtitle and the
+ * converter, which pushed the dropzone below the fold on a phone -- the page's
+ * entire job is "drop a file", and it was the one thing you had to scroll to
+ * reach. Chips now render after the converter via ToolChips.
+ */
 export function ToolHero({
   title,
   subtitle,
@@ -49,8 +55,22 @@ export function ToolHero({
       )}
       <h1 className="mt-2 text-3xl font-bold tracking-tight text-ink sm:text-4xl">{title}</h1>
       <p className="mt-3 text-muted-foreground">{subtitle}</p>
+    </div>
+  );
+}
 
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+/**
+ * The four claims, rendered directly beneath the converter.
+ *
+ * Below rather than above deliberately: someone who has just dropped a file is
+ * the right audience for "nothing was uploaded" and "no page cap on Pro" --
+ * they are reassurance and upsell at the moment they land, not throat-clearing
+ * before the tool. Above the fold belongs to the dropzone.
+ */
+export function ToolChips() {
+  return (
+    <div className="mx-auto max-w-3xl px-6 pt-2">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {CHIPS.map(({ icon: Icon, label, sub, tint }) => (
           <div key={label} className="rounded-xl border border-border bg-card p-3">
             <span className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ${tint}`}>

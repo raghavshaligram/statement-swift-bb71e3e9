@@ -1,5 +1,5 @@
 import { SiteHeader, SiteFooter } from "@/components/site-header";
-import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
+import { ToolHero, ToolChips, ToolCrossLinks } from "@/components/tool-hero";
 import { Breadcrumbs, PageTOC } from "@/components/breadcrumbs";
 import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
@@ -126,6 +126,8 @@ export function FormatGuide({ config }: { config: FormatGuideConfig }) {
           }}
         />
       </ConverterEmbed>
+
+      <ToolChips />
 
       <ArticleH2>Why Excel can&apos;t open a {source} file</ArticleH2>
       <ArticleProse>

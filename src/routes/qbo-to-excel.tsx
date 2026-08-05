@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { Breadcrumbs, PageTOC } from "@/components/breadcrumbs";
-import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
+import { ToolHero, ToolChips, ToolCrossLinks } from "@/components/tool-hero";
 import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
 import { FaqList, type FaqItem } from "@/components/faq-list";
@@ -142,6 +142,8 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <ToolChips />
 
       <PageTOC
         headings={[

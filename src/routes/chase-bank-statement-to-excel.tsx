@@ -2,12 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
 import { ShieldCheck, Check, X } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolChips } from "@/components/tool-hero";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import {
-  ArticleBackLink,
   ArticleHero,
   QuickSummary,
   ArticleTOC,
@@ -71,16 +71,24 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Free Chase Bank Statement to Excel Converter" }]} />
-      <ArticleBackLink />
       <ArticleHero
         eyebrow="Bank guide"
         title="Chase Bank Statement to Excel: Formats and Limits"
-        publishedDate="July 2026"
       />
 
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
       </div>
+
+      <ToolChips />
+
+      <QuickSummary>
+        Getting a full year of Chase transactions into a spreadsheet without retyping them means knowing
+        where Chase's own export actually stops. Chase's Activity page exports CSV, QFX, and QBO directly —
+        free, and the fastest option if the transactions you need are recent. The real limit: roughly the
+        last 90 days on checking and savings accounts. PDF statements go back 7 years, but Chase provides no
+        structured export for them at all — the gap this page covers.
+      </QuickSummary>
 
       <ArticleProse>
         <p>
@@ -91,13 +99,6 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <QuickSummary>
-        Getting a full year of Chase transactions into a spreadsheet without retyping them means knowing
-        where Chase's own export actually stops. Chase's Activity page exports CSV, QFX, and QBO directly —
-        free, and the fastest option if the transactions you need are recent. The real limit: roughly the
-        last 90 days on checking and savings accounts. PDF statements go back 7 years, but Chase provides no
-        structured export for them at all — the gap this page covers.
-      </QuickSummary>
 
       <ArticleTOC
         items={[

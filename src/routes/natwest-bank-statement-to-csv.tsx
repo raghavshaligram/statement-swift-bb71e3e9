@@ -2,11 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolChips } from "@/components/tool-hero";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import {
-  ArticleBackLink,
   ArticleHero,
   QuickSummary,
   ArticleTOC,
@@ -79,16 +79,26 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "NatWest Bank Statement to CSV: Formats and Limits" }]} />
-      <ArticleBackLink />
       <ArticleHero
         eyebrow="Bank guide"
         title="NatWest Bank Statement to CSV: Formats and Limits"
-        publishedDate="July 2026"
       />
 
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
       </div>
+
+      <ToolChips />
+
+      <QuickSummary>
+        Getting NatWest transactions into your books without manual entry usually starts with NatWest's own
+        export — it genuinely covers CSV, Excel, and OFX directly from online banking, often the fastest
+        route if you can log in. The real gaps: current-account history export goes back up to 7 years,
+        but credit card transaction export is limited to about 3 months, and the CSV's comma-delimited
+        version has a documented Excel-opening issue (NatWest's own fix: try the tab-delimited download
+        instead). For anything older, a closed account, or a scanned statement, convert the PDF with
+        BalanceExtract instead of typing it in by hand.
+      </QuickSummary>
 
       <ArticleProse>
         <p>
@@ -100,15 +110,6 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <QuickSummary>
-        Getting NatWest transactions into your books without manual entry usually starts with NatWest's own
-        export — it genuinely covers CSV, Excel, and OFX directly from online banking, often the fastest
-        route if you can log in. The real gaps: current-account history export goes back up to 7 years,
-        but credit card transaction export is limited to about 3 months, and the CSV's comma-delimited
-        version has a documented Excel-opening issue (NatWest's own fix: try the tab-delimited download
-        instead). For anything older, a closed account, or a scanned statement, convert the PDF with
-        BalanceExtract instead of typing it in by hand.
-      </QuickSummary>
 
       <ArticleTOC
         items={[

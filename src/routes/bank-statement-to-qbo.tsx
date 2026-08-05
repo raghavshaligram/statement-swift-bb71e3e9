@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolChips } from "@/components/tool-hero";
 import { Breadcrumbs, PageTOC } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import { StickyStatementBar } from "@/components/statement-funnel";
 import {
-  ArticleBackLink,
   ArticleHero,
   QuickSummary,
   ArticleProse,
@@ -104,19 +104,11 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Convert Bank Statement to QBO" }]} />
-      <ArticleBackLink />
       <ArticleHero
         eyebrow="Converter"
         title="Convert Bank Statement to QBO"
-        publishedDate="August 2026"
       />
 
-      <QuickSummary>
-        Convert PDF bank statement to QBO — a QuickBooks Web Connect file you import as a bank feed
-        rather than a spreadsheet. No column mapping, and every transaction keeps its FITID so
-        QuickBooks won&apos;t duplicate anything you&apos;ve already brought in. Runs entirely in
-        your browser — the statement never leaves your device.
-      </QuickSummary>
 
       {/* EmbeddedConverter carries no width constraint of its own -- without
           this wrapper it renders edge-to-edge while the prose above sits in a
@@ -124,6 +116,15 @@ function Page() {
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
       </div>
+
+      <ToolChips />
+
+      <QuickSummary>
+        Convert PDF bank statement to QBO — a QuickBooks Web Connect file you import as a bank feed
+        rather than a spreadsheet. No column mapping, and every transaction keeps its FITID so
+        QuickBooks won&apos;t duplicate anything you&apos;ve already brought in. Runs entirely in
+        your browser — the statement never leaves your device.
+      </QuickSummary>
 
       <PageTOC
         headings={[

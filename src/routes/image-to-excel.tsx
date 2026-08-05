@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolChips } from "@/components/tool-hero";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import {
-  ArticleBackLink,
   ArticleHero,
   QuickSummary,
   ArticleTOC,
@@ -66,25 +66,16 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Free Image to Excel Converter" }]} />
-      <ArticleBackLink />
       <ArticleHero
         eyebrow="Converter guide"
         title="Free Image to Excel Converter"
-        publishedDate="July 2026"
       />
 
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
       </div>
 
-      <ArticleProse>
-        <p>
-          A photo of a bank statement — a printed copy, an old paper statement, a screenshot from an app that
-          doesn't offer a real export — is one of the more common real-world starting points, and one of the
-          hardest to get real, structured data out of. This guide covers exactly how converting an image to
-          Excel actually works, what real accuracy to expect, and when a photo simply won't work well enough.
-        </p>
-      </ArticleProse>
+      <ToolChips />
 
       <QuickSummary>
         A photo is often the only record you have of a statement — printed, mailed, or screenshotted — and
@@ -95,6 +86,16 @@ function Page() {
         scans requires a free account (unlike PDF conversion, which needs no signup) — a real, deliberate
         limit, not an oversight.
       </QuickSummary>
+
+      <ArticleProse>
+        <p>
+          A photo of a bank statement — a printed copy, an old paper statement, a screenshot from an app that
+          doesn't offer a real export — is one of the more common real-world starting points, and one of the
+          hardest to get real, structured data out of. This guide covers exactly how converting an image to
+          Excel actually works, what real accuracy to expect, and when a photo simply won't work well enough.
+        </p>
+      </ArticleProse>
+
 
       <ArticleTOC
         items={[

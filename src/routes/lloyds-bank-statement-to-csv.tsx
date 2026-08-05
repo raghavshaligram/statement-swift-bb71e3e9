@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { ToolChips } from "@/components/tool-hero";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import {
-  ArticleBackLink,
   ArticleHero,
   QuickSummary,
   ArticleTOC,
@@ -87,16 +87,26 @@ function Page() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Lloyds Bank Statement to CSV: Formats and Limits" }]} />
-      <ArticleBackLink />
       <ArticleHero
         eyebrow="Bank guide"
         title="Lloyds Bank Statement to CSV: Formats and Limits"
-        publishedDate="July 2026"
       />
 
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
       </div>
+
+      <ToolChips />
+
+      <QuickSummary>
+        Getting Lloyds transactions into a spreadsheet without retyping them by hand comes down to two
+        paths. Lloyds lets you download transactions as a CSV from online banking, but only the last 12
+        months, capped at 150 transactions per download, and only on the desktop site. Lloyds keeps PDF
+        statements for 7 years (10+ years in the app), but offers no native Excel export at all. For
+        anything the CSV export can't reach — older statements, more than 150 transactions, or an Excel
+        file — upload the PDFs to BalanceExtract and export CSV, Excel, Tally XML, or IIF, without typing a
+        single row by hand.
+      </QuickSummary>
 
       <ArticleProse>
         <p>
@@ -113,15 +123,6 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <QuickSummary>
-        Getting Lloyds transactions into a spreadsheet without retyping them by hand comes down to two
-        paths. Lloyds lets you download transactions as a CSV from online banking, but only the last 12
-        months, capped at 150 transactions per download, and only on the desktop site. Lloyds keeps PDF
-        statements for 7 years (10+ years in the app), but offers no native Excel export at all. For
-        anything the CSV export can't reach — older statements, more than 150 transactions, or an Excel
-        file — upload the PDFs to BalanceExtract and export CSV, Excel, Tally XML, or IIF, without typing a
-        single row by hand.
-      </QuickSummary>
 
       <ArticleTOC
         items={[

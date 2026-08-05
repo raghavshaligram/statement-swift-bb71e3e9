@@ -4,7 +4,7 @@ import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
-import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
+import { ToolHero, ToolChips, ToolCrossLinks } from "@/components/tool-hero";
 import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
 import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { InlineConverter } from "@/components/inline-converter";
@@ -107,6 +107,8 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <ToolChips />
 
       <StatementFunnel sourceFormat="OFX" targetFormat="QBO" />
 
