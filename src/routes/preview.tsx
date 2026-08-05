@@ -235,12 +235,17 @@ function PreviewPage() {
           <div className="flex flex-wrap items-center justify-between gap-4 bg-ink px-4 py-3 text-background sm:px-5">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-1">
               <StatItem label="Transactions" value={scopedRows.length.toString()} />
-              <StatItem label="Credits" value={formatAmount(credits, currency)} tone="pos" />
-              <StatItem label="Debits" value={formatAmount(debits, currency)} tone="neg" />
-              <StatItem
-                label="Closing bal."
-                value={lastWithBalance ? formatAmount(lastWithBalance.balance!, currency) : "—"}
-              />
+              {/* Hidden below sm: five stat blocks pushed every transaction
+                  off-screen on a phone. Transactions and Flagged are the two
+                  that drive the review workflow; the rest are reference. */}
+              <div className="hidden sm:contents">
+                <StatItem label="Credits" value={formatAmount(credits, currency)} tone="pos" />
+                <StatItem label="Debits" value={formatAmount(debits, currency)} tone="neg" />
+                <StatItem
+                  label="Closing bal."
+                  value={lastWithBalance ? formatAmount(lastWithBalance.balance!, currency) : "—"}
+                />
+              </div>
               <StatItem label="Flagged" value={flaggedCount.toString()} tone={flaggedCount > 0 ? "warn" : undefined} />
             </div>
             <Link
@@ -356,9 +361,9 @@ function PreviewPage() {
         )}
 
         {/* Shared toolbar: view toggle + search + filters + row count */}
-        <div className="sticky top-0 z-10 -mx-4 flex flex-wrap items-center justify-between gap-3 border-b border-border bg-background/95 px-4 py-2 backdrop-blur sm:-mx-5 sm:px-5">
+        <div className="sticky top-0 z-10 -mx-4 flex flex-wrap items-center justify-between gap-2 border-b border-border bg-background/95 px-4 py-2 backdrop-blur sm:gap-3 sm:-mx-5 sm:px-5">
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-0.5 rounded-lg border border-border bg-card p-0.5">
+            <div className="hidden items-center gap-0.5 rounded-lg border border-border bg-card p-0.5 sm:flex">
               {(
                 [
                   ["table", "Table", TableProperties],
@@ -377,7 +382,7 @@ function PreviewPage() {
                 </button>
               ))}
             </div>
-            <div className="relative w-64">
+            <div className="relative w-full sm:w-64">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 value={q}
@@ -453,12 +458,11 @@ function PreviewPage() {
         )}
 
 
-        {view === "table" ? (
-        <>
         {/* Table view, md and up. Below that the 9 columns cannot fit and
             overflow-x-hidden CLIPPED them rather than scrolling, so data was
             simply unreachable on a phone. Now scrolls on tablet and is
-            replaced entirely by cards on mobile. */}
+            replaced entirely by the card list further down. */}
+        {view === "table" ? (
         <div className="hidden w-full overflow-x-auto md:block">
           <table className="w-full min-w-[880px] table-fixed text-sm md:min-w-0">
             <colgroup>
@@ -591,8 +595,25 @@ function PreviewPage() {
             </tbody>
           </table>
         </div>
+        ) : (
+        <div className="hidden rounded-lg bg-surface-muted/40 p-3 md:block">
+          <SideBySidePane
+            transactions={filtered}
+            currency={currency}
+            headerLine={statements[0] ? `${statements[0].detectedBank ?? "Statement"} — ${statements[0].fileName}` : undefined}
+          />
+          <p className="mt-2 text-center font-mono text-[10px] text-muted-foreground">
+            Showing {filtered.length} of {rows.length} parsed transactions · hover either panel to sync-highlight · switch to Table view to edit
+          </p>
+        </div>
 
-        {/* Card view, below md. Same data, same editing, stacked instead of
+        )}
+
+        {/* Card view, below md. Rendered OUTSIDE the view ternary: a desktop
+            user who picks side-by-side and then narrows the window would
+            otherwise be stuck with a two-pane layout at 380px and no visible
+            toggle to escape it, since that control is sm-and-up only.
+            Original note: Same data, same editing, stacked instead of
             columnar. Debit/credit collapse into one signed amount because two
             near-empty columns waste the width a phone doesn't have. */}
         <ul className="divide-y divide-border md:hidden">
@@ -643,7 +664,7 @@ function PreviewPage() {
                   {r.balance !== null && (
                     <span className="font-mono">bal {formatAmount(r.balance, currency)}</span>
                   )}
-                  <span className="ml-auto flex items-center gap-2">
+                  <span className="ml-auto flex shrink-0 items-center gap-2">
                     <ConfidenceBadge score={r.confidence} />
                     <button
                       onClick={() => deleteTransaction(r.sourceFile, r.id)}
@@ -658,19 +679,6 @@ function PreviewPage() {
             );
           })}
         </ul>
-        </>
-        ) : (
-        <div className="rounded-lg bg-surface-muted/40 p-3">
-          <SideBySidePane
-            transactions={filtered}
-            currency={currency}
-            headerLine={statements[0] ? `${statements[0].detectedBank ?? "Statement"} — ${statements[0].fileName}` : undefined}
-          />
-          <p className="mt-2 text-center font-mono text-[10px] text-muted-foreground">
-            Showing {filtered.length} of {rows.length} parsed transactions · hover either panel to sync-highlight · switch to Table view to edit
-          </p>
-        </div>
-        )}
           </div>
         </div>
 
@@ -706,7 +714,7 @@ function StatItem({ label, value, tone }: { label: string; value: string; tone?:
       </div>
       <div
         className={cn(
-          "mt-0.5 font-mono text-lg font-semibold tabular-nums",
+          "mt-0.5 font-mono text-sm font-semibold tabular-nums sm:text-lg",
           tone === "pos" && "text-emerald",
           tone === "neg" && "text-destructive",
           tone === "warn" && "text-amber-400",
