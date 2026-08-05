@@ -83,7 +83,7 @@ function Page() {
         into whatever software actually needs the data.
       </QuickSummary>
 
-      <ArticleH2>How It Works</ArticleH2>
+      <ArticleH2>Bank statement to CSV file: how it works</ArticleH2>
       <NumberedSteps
         steps={[
           { title: "Download the PDF statement from your bank", body: "No account needed for up to 6 pages." },

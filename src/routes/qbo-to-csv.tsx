@@ -107,7 +107,7 @@ function Page() {
 
       <StatementFunnel sourceFormat="QBO" targetFormat="CSV" />
 
-      <ArticleH2>How to convert QBO to CSV in 3 steps</ArticleH2>
+      <ArticleH2>Export QBO to CSV free: how to convert QBO to CSV in 3 steps</ArticleH2>
       <NumberedSteps steps={steps} />
 
       <ArticleProse>

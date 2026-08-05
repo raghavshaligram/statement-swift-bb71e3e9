@@ -79,7 +79,7 @@ const FAQ: FaqItem[] = [
 export const Route = createFileRoute("/qbo-to-excel")({
   head: () => ({
     meta: [
-      { title: "QBO to Excel: How to Open a QBO File in Excel (Free Converter)" },
+      { title: "QBO to Excel Converter — Open a QBO File in Excel (Free)" },
       {
         name: "description",
         content:

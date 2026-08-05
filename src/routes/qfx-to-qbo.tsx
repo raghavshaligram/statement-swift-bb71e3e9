@@ -106,7 +106,7 @@ function Page() {
 
       <StatementFunnel sourceFormat="QFX" targetFormat="QBO" />
 
-      <ArticleH2>How to convert QFX to QBO in 3 steps</ArticleH2>
+      <ArticleH2>QFX to QBO converter free: how to convert QFX to QBO in 3 steps</ArticleH2>
       <NumberedSteps steps={steps} />
 
       <ArticleProse>

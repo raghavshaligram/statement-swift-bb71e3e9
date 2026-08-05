@@ -103,7 +103,7 @@ function Page() {
 
       <StatementFunnel sourceFormat="OFX" targetFormat="CSV" />
 
-      <ArticleH2>What is OFX, and what is an OFX file format?</ArticleH2>
+      <ArticleH2>What is OFX format, and what is OFX file format?</ArticleH2>
       <ArticleProse>
         <p>
           OFX stands for Open Financial Exchange — a specification published in 1997 by Microsoft,

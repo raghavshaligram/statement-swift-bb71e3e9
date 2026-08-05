@@ -127,7 +127,7 @@ function Page() {
         <EmbeddedConverter />
       </div>
 
-      <ArticleH2>Why copying and pasting doesn&apos;t work</ArticleH2>
+      <ArticleH2>PDF bank statement to Excel: why copying and pasting doesn&apos;t work</ArticleH2>
       <ArticleProse>
         <p>
           A PDF has no columns. It has characters positioned on a page, and the columns you see are
@@ -201,7 +201,7 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <ArticleH2>Converting several bank statements at once</ArticleH2>
+      <ArticleH2>Convert bank statements to Excel in bulk (several at once)</ArticleH2>
       <ArticleProse>
         <p>
           Most real work is plural — twelve months for a tax return, six months for a mortgage
@@ -242,7 +242,7 @@ function Page() {
         </p>
       </ArticleProse>
 
-      <ArticleH2>Common problems and what causes them</ArticleH2>
+      <ArticleH2>Convert PDF bank statement to Excel: common problems</ArticleH2>
       <TroubleshootGrid
         items={[
           {

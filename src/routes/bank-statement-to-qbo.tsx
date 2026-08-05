@@ -121,7 +121,7 @@ function Page() {
         <EmbeddedConverter />
       </div>
 
-      <ArticleH2>Why a bank statement to QBO converter beats a CSV import</ArticleH2>
+      <ArticleH2>Convert PDF bank statement to QBO: why a bank statement to QBO converter beats a CSV import</ArticleH2>
       <ArticleProse>
         <p>
           Both get your transactions in. The difference is what QuickBooks does with them
@@ -148,7 +148,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>How to import bank statements into QuickBooks</ArticleH2>
+      <ArticleH2>How to upload bank statements to QuickBooks, and import bank statements into QuickBooks Online</ArticleH2>
       <NumberedSteps
         steps={[
           {
@@ -177,7 +177,7 @@ function Page() {
         If Desktop is the only option, CSV import is the reliable fallback.
       </Callout>
 
-      <ArticleH2>Common problems</ArticleH2>
+      <ArticleH2>Convert bank statement to QBO file: common problems</ArticleH2>
       <TroubleshootGrid
         items={[
           {
