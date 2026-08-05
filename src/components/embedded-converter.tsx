@@ -10,7 +10,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Upload, AlertTriangle, Lock } from "lucide-react";
+import { Upload, Loader2, ShieldCheck, AlertTriangle, Lock } from "lucide-react";
 import { StatementDropzone } from "@/components/statement-dropzone";
 import { OCR_LANGUAGES } from "@/lib/pdf/ocr-languages";
 import { ParseQueue } from "@/components/parse-queue";
@@ -55,6 +55,13 @@ export function EmbeddedConverter({
   const [unlockError, setUnlockError] = useState<string | null>(null);
   const [ocrLanguage, setOcrLanguage] = useState("eng");
   const [usageRefresh, setUsageRefresh] = useState(0);
+  // Covers the gap between a file being dropped and startProcessing() firing.
+  // Three async steps run in that window -- findEncryptedPdfs opens every PDF,
+  // validateUploadBatch opens them again to count pages, and
+  // increment_page_usage is a Supabase round trip. Throughout it, phase is
+  // still "idle" and pendingFiles is empty, so showQueue is false and NOTHING
+  // rendered. Reported as "I upload the statement, nothing happens".
+  const [preparing, setPreparing] = useState(false);
   const pageUsage = usePageUsage(usageRefresh);
   const { isPro, loading: subLoading } = useSubscription();
 
@@ -86,6 +93,15 @@ export function EmbeddedConverter({
   async function handleFiles(files: File[]) {
     setPageLimitError(null);
     setUnlockError(null);
+    setPreparing(true);
+    try {
+      await prepareAndRun(files);
+    } finally {
+      setPreparing(false);
+    }
+  }
+
+  async function prepareAndRun(files: File[]) {
 
     // Ask for passwords BEFORE validating or parsing -- an encrypted file
     // can't be page-counted or read until it's unlocked.
@@ -101,6 +117,7 @@ export function EmbeddedConverter({
 
   async function submitPasswords() {
     setUnlockError(null);
+    setPreparing(true);
     for (const f of lockedFiles) {
       if (!passwords[f.name]) {
         setUnlockError("Enter the password for every locked file to continue.");
@@ -110,7 +127,11 @@ export function EmbeddedConverter({
     const batch = pendingBatch;
     setLockedFiles([]);
     setPendingBatch([]);
-    await runBatch(batch, passwords);
+    try {
+      await runBatch(batch, passwords);
+    } finally {
+      setPreparing(false);
+    }
   }
 
   async function runBatch(files: File[], pwds: Record<string, string>) {
@@ -148,6 +169,7 @@ export function EmbeddedConverter({
   }
 
   const showQueue = phase !== "idle" && pendingFiles.length > 0;
+  const showPreparing = preparing && !showQueue && lockedFiles.length === 0;
 
   return (
     <div className={`relative overflow-hidden rounded-2xl border border-border bg-card p-2 shadow-lg shadow-slate-900/5 ${className ?? ""}`}>
@@ -156,6 +178,29 @@ export function EmbeddedConverter({
           <Upload className="h-16 w-16 animate-bounce-slow" />
         </div>
       )}
+      {showPreparing && (
+        <div className="px-3 py-6">
+          <div className="flex items-center gap-3">
+            <Loader2 className="h-5 w-5 shrink-0 animate-spin text-emerald" />
+            <div className="min-w-0 flex-1">
+              <div className="text-sm font-semibold text-ink">Reading your statement…</div>
+              <div className="mt-0.5 text-xs text-muted-foreground">
+                Checking the file and counting pages before conversion starts.
+              </div>
+            </div>
+          </div>
+          <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-surface-muted">
+            {/* Indeterminate on purpose: this phase has no page counter to
+                report against, and a fake percentage would be a lie. */}
+            <div className="h-full w-1/3 animate-pulse rounded-full bg-emerald/70" />
+          </div>
+          <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald" />
+            Processing on your device — nothing is uploaded
+          </div>
+        </div>
+      )}
+
       {showQueue ? (
         <>
           <ParseQueue onReview={() => navigate({ to: "/preview" })} onRemove={(i) => removePendingFile(i)} />
