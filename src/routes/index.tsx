@@ -165,10 +165,23 @@ function Landing() {
               Free Bank Statement Converter <span className="text-emerald">to Excel & CSV</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Close your books without retyping a single transaction. Convert bank statement to Excel,
-              PDF to CSV, PDF to Excel and more — <strong className="font-semibold text-ink">entirely on
-              your device</strong>, with <strong className="font-semibold text-ink">no page cap on Pro</strong>{" "}
-              at one flat price. Every row is balance-checked before you export.
+              {/*
+                Every phrase here is load-bearing for search, not filler.
+                An earlier rewrite of this paragraph tightened the prose and
+                silently dropped three targeted terms: "bank statement to Excel
+                software" (1,600/mo, KD 10 -- the highest-volume term in the
+                statement keyword set), "convert PDF to CSV" (2,400/mo, reduced
+                to the weaker "PDF to CSV"), and the 23+ banks / four-country
+                coverage line. Restored, with the page-cap claim added rather
+                than substituted. Copy edits on this paragraph need a keyword
+                check, not just a readability one.
+              */}
+              Close your books without retyping a single transaction — the{" "}
+              <strong className="font-semibold text-ink">bank statement to Excel software</strong>{" "}
+              that works everywhere. Convert bank statement to Excel, convert PDF to CSV, PDF to
+              Excel and more, entirely on your device, for 23+ banks across the US, UK, Canada and
+              India. <strong className="font-semibold text-ink">No page cap on Pro</strong> at one
+              flat price, and every row is balance-checked before you export.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
               <ClaimTag tone="local">On-device only</ClaimTag>
