@@ -7,6 +7,8 @@
  * featured images, built from LedgerLocal's own tokens rather than copied
  * colors.
  */
+
+import { SITE_HOST } from "@/lib/site";
 export function FeaturedArt({
   className,
   titleText,
@@ -97,7 +99,7 @@ export function FeaturedArt({
         <line x1="5" y1="11" x2="17" y2="11" stroke="#ffffff" strokeWidth="1.2" />
         <line x1="11" y1="5" x2="11" y2="17" stroke="#ffffff" strokeWidth="1.2" />
         <text x="30" y="16" fontSize="13" fontWeight="700" fontFamily="var(--font-sans)" fill="#0b1520" opacity="0.7">
-          ledgerlocal.com
+          {SITE_HOST}
         </text>
       </g>
     </svg>

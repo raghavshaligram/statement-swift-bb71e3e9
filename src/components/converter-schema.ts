@@ -1,3 +1,4 @@
+import { SITE_ORIGIN } from "@/lib/site";
 import type { FaqItem } from "./faq-list";
 
 /**
@@ -38,7 +39,7 @@ export function converterPageJsonLd({
   steps: HowToStep[];
   faq: FaqItem[];
 }) {
-  const origin = "https://ledgerlocal.com";
+  const origin = SITE_ORIGIN;
 
   return {
     "@context": "https://schema.org",
