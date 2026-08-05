@@ -30,6 +30,7 @@ import { BANK_LABELS } from "@/lib/pdf/bank-detection";
 import { ANONYMOUS_MAX_PAGES, SIGNED_IN_MAX_PAGES } from "@/lib/pricing-constants";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { ClaimTag, CornerRibbon } from "@/components/claim-tag";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -169,6 +170,11 @@ function Landing() {
               your device</strong>, with <strong className="font-semibold text-ink">no page cap on Pro</strong>{" "}
               at one flat price. Every row is balance-checked before you export.
             </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+              <ClaimTag tone="local">On-device only</ClaimTag>
+              <ClaimTag tone="unlimited">No page cap on Pro</ClaimTag>
+              <ClaimTag tone="free">6 pages free, no signup</ClaimTag>
+            </div>
           </ScrollReveal>
 
           <ScrollReveal className="mx-auto mt-10 max-w-2xl" delay={0.1}>
@@ -499,12 +505,10 @@ function Landing() {
                 className="relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-emerald bg-ink p-7 text-background shadow-lg"
               >
                 <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald/20 blur-3xl" aria-hidden />
+                <CornerRibbon>No page cap</CornerRibbon>
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald">
                     BalanceExtract Pro
-                  </span>
-                  <span className="rounded-full bg-emerald/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald">
-                    No page cap
                   </span>
                 </div>
                 <div className="mt-3 flex items-baseline gap-2">
