@@ -72,9 +72,15 @@ export function TransactionSideBySide() {
 
         <div className="mx-auto mt-12 max-w-5xl overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
           <div className="grid md:grid-cols-[11fr_9fr]">
-            {/* Left: original statement (styled mock) */}
-            <div className="border-b border-border md:border-b-0 md:border-r">
-              <div className="border-b border-border bg-surface-muted/60 px-5 py-3 font-mono text-xs text-muted-foreground">
+            {/* Left: original statement (styled mock).
+                min-w-0 is load-bearing. Grid children default to
+                min-width:auto, so the min-w-max mock lines below (which exist
+                so the pane can be swiped horizontally) were expanding the
+                whole grid track past the viewport on mobile. The card's
+                overflow-hidden then clipped the RIGHT pane's amounts --
+                +4250, -500 and the rest were cut off screen. */}
+            <div className="min-w-0 border-b border-border md:border-b-0 md:border-r">
+              <div className="truncate border-b border-border bg-surface-muted/60 px-5 py-3 font-mono text-xs text-muted-foreground">
                 FIRST NATIONAL BANK · Statement of Account · Feb 1 – Feb 28
               </div>
               <div className="overflow-x-auto">
@@ -103,8 +109,10 @@ export function TransactionSideBySide() {
               </div>
             </div>
 
-            {/* Right: extracted transactions */}
-            <div>
+            {/* Right: extracted transactions. min-w-0 for the same reason --
+                a grid child must be told it may be narrower than its content
+                before its own truncation can take effect. */}
+            <div className="min-w-0">
               <div className="flex items-center justify-between border-b border-border px-5 py-3">
                 <div className="text-sm font-semibold text-ink">Extracted transactions</div>
                 <span className="inline-flex items-center gap-1 rounded-full border border-emerald/30 bg-emerald-soft px-2 py-0.5 text-[10px] font-medium text-accent-foreground">
