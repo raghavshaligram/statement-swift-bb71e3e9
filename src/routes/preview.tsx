@@ -454,6 +454,7 @@ function PreviewPage() {
 
 
         {view === "table" ? (
+        <>
         {/* Table view, md and up. Below that the 9 columns cannot fit and
             overflow-x-hidden CLIPPED them rather than scrolling, so data was
             simply unreachable on a phone. Now scrolls on tablet and is
@@ -657,6 +658,7 @@ function PreviewPage() {
             );
           })}
         </ul>
+        </>
         ) : (
         <div className="rounded-lg bg-surface-muted/40 p-3">
           <SideBySidePane
