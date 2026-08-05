@@ -58,6 +58,14 @@ const FAQ: Array<{ q: string; a: string }> = [
     a: "Yes. Amounts and balances are written as numeric cells with currency formatting, and dates as real dates, so sorting and SUM work immediately. Statements pasted or scraped by hand usually arrive as text, which is why totals silently come out as zero.",
   },
   {
+    q: "Is there a way to OCR bank statements to Excel?",
+    a: "Yes — scanned statements and phone photos are handled by on-device OCR, which runs automatically when a page has no selectable text. Accuracy depends on the scan quality, so rows the parser is less sure about are flagged for review before you export rather than landing silently in your workbook.",
+  },
+  {
+    q: "Can I get the output as an Excel sheet rather than a download?",
+    a: "The conversion produces an .xlsx file you download, which opens directly in Excel, Google Sheets or Numbers. Nothing is stored online, so there's no cloud sheet to share — that's the trade-off that comes with the statement never leaving your device.",
+  },
+  {
     q: "What if my statement is a scan or a phone photo?",
     a: "It still converts — on-device OCR runs automatically when a page has no text layer. Signing in is required for scans specifically, since OCR takes real processing time.",
   },
@@ -159,6 +167,55 @@ function Page() {
         previous one plus the transaction. Every row here is verified against that, so a break points
         at the exact row rather than at a probability.
       </Callout>
+
+
+      <ArticleH2>Bank statement to Excel software: what to look for</ArticleH2>
+      <ArticleProse>
+        <p>
+          Most tools in this category do the same first 80% — read a PDF, produce rows. The
+          differences that matter show up on the statements that don&apos;t behave:
+        </p>
+        <p>
+          <strong>Does it check its own work?</strong> A converter that reports an accuracy
+          percentage is describing an average across everyone&apos;s statements, not yours. One that
+          reconciles each running balance against the previous row can tell you the exact line that
+          broke on <em>your</em> file. Bank statements are self-checking documents and surprisingly
+          little software exploits that.
+        </p>
+        <p>
+          <strong>Where does the file go?</strong> Most converters upload your statement to a server
+          to process it. If the statements belong to clients rather than to you, that&apos;s a
+          data-processing relationship you&apos;ve just entered into. On-device conversion avoids it
+          entirely, and you can verify the claim in your browser&apos;s Network tab rather than
+          trusting a privacy page.
+        </p>
+        <p>
+          <strong>How is it priced?</strong> Per-page and per-row plans mean your bill scales with
+          your workload, and month-end is exactly when you hit the ceiling. Flat pricing doesn&apos;t
+          have that failure mode.
+        </p>
+      </ArticleProse>
+
+      <ArticleH2>Converting several bank statements at once</ArticleH2>
+      <ArticleProse>
+        <p>
+          Most real work is plural — twelve months for a tax return, six months for a mortgage
+          application, or several accounts for one client. You can drop multiple statement PDFs into
+          the same batch, including statements from different banks, and convert bank statements to
+          Excel together rather than one at a time.
+        </p>
+        <p>
+          In the workbook you can keep everything on one sheet for a single continuous ledger, or
+          split per statement. Where one PDF covers more than one account, each account gets its own
+          sheet automatically — so a combined current-and-savings statement doesn&apos;t arrive as
+          two interleaved date sequences.
+        </p>
+        <p>
+          Scanned statements work in the same batch as text PDFs. OCR runs on your device only for
+          the pages that need it, so a mixed batch of downloaded and photographed statements
+          converts in one pass.
+        </p>
+      </ArticleProse>
 
       <ArticleH2>Excel or CSV?</ArticleH2>
       <ArticleTable
