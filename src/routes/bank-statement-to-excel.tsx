@@ -120,7 +120,12 @@ function Page() {
         statement doesn&apos;t tie out, you&apos;re told which row before you export.
       </QuickSummary>
 
-      <EmbeddedConverter />
+      {/* EmbeddedConverter carries no width constraint of its own -- without
+          this wrapper it renders edge-to-edge while the prose above sits in a
+          max-w-3xl column. Matches how /bank-statement-to-csv wraps it. */}
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <EmbeddedConverter />
+      </div>
 
       <ArticleH2>Why copying and pasting doesn&apos;t work</ArticleH2>
       <ArticleProse>

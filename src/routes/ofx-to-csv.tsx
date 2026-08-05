@@ -103,6 +103,24 @@ function Page() {
 
       <StatementFunnel sourceFormat="OFX" targetFormat="CSV" />
 
+      <ArticleH2>What is OFX, and what is an OFX file format?</ArticleH2>
+      <ArticleProse>
+        <p>
+          OFX stands for Open Financial Exchange — a specification published in 1997 by Microsoft,
+          Intuit and CheckFree so that banks and personal-finance software could exchange
+          transactions without anyone screen-scraping a web page. An .ofx file is a plain text file
+          written in that format: a statement section identifying the account, then one block per
+          transaction carrying a date, an amount, a description and a unique identifier.
+        </p>
+        <p>
+          Two things about the OFX file format catch people out. Older files (OFX 1.x) are SGML
+          rather than XML, so leaf tags frequently have no closing tag and generic XML tools reject
+          them outright. And QFX and QBO are the same format underneath — Quicken and QuickBooks
+          each add their own header fields, which is why a QBO file will often open perfectly well
+          in a reader that expects OFX.
+        </p>
+      </ArticleProse>
+
       <ArticleH2>How to convert OFX to CSV in 3 steps</ArticleH2>
       <NumberedSteps steps={steps} />
 

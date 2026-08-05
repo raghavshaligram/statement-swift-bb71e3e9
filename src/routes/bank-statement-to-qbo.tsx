@@ -114,9 +114,14 @@ function Page() {
         your browser — the statement never leaves your device.
       </QuickSummary>
 
-      <EmbeddedConverter />
+      {/* EmbeddedConverter carries no width constraint of its own -- without
+          this wrapper it renders edge-to-edge while the prose above sits in a
+          max-w-3xl column. Matches how /bank-statement-to-csv wraps it. */}
+      <div className="mx-auto max-w-3xl px-6 pb-4">
+        <EmbeddedConverter />
+      </div>
 
-      <ArticleH2>Why QBO beats a CSV import</ArticleH2>
+      <ArticleH2>Why a bank statement to QBO converter beats a CSV import</ArticleH2>
       <ArticleProse>
         <p>
           Both get your transactions in. The difference is what QuickBooks does with them
@@ -143,7 +148,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>How to convert and import</ArticleH2>
+      <ArticleH2>How to import bank statements into QuickBooks</ArticleH2>
       <NumberedSteps
         steps={[
           {
