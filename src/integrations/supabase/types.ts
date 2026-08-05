@@ -96,7 +96,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          provider_subscription_id: string
+          paypal_subscription_id: string
           plan_id: string
           status: string
           updated_at: string
@@ -105,7 +105,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          provider_subscription_id: string
+          paypal_subscription_id: string
           plan_id: string
           status?: string
           updated_at?: string
@@ -114,7 +114,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          provider_subscription_id?: string
+          paypal_subscription_id?: string
           plan_id?: string
           status?: string
           updated_at?: string
