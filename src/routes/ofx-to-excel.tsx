@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { FormatGuide, type FormatGuideConfig } from "@/components/format-guide";
 
 /**
@@ -64,6 +65,7 @@ const config: FormatGuideConfig = {
 
 export const Route = createFileRoute("/ofx-to-excel")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/ofx-to-excel` }],
     meta: [
       { title: config.metaTitle },
       { name: "description", content: config.metaDescription },

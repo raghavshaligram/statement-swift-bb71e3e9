@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { Check, X, ShieldCheck, Zap, Landmark, Star, ArrowRight } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { FaqList, type FaqItem } from "@/components/faq-list";
@@ -6,6 +7,7 @@ import { ComparisonLinks } from "@/components/comparison-links";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/pricing` }],
     meta: [
       { title: "Pricing — BalanceExtract" },
       {

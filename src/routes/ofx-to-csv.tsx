@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs, PageTOC } from "@/components/breadcrumbs";
 import { FaqList } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
@@ -57,6 +59,7 @@ const FAQ = [
 
 export const Route = createFileRoute("/ofx-to-csv")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/ofx-to-csv` }],
     meta: [
       { title: "Free OFX to CSV Converter — BalanceExtract" },
       { name: "description", content: "Convert an OFX or QFX file to CSV. Free, runs entirely in your browser." },
@@ -80,6 +83,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Format converters", href: "/blog" }, { label: "Free OFX to CSV Converter" }]} />
       <ToolHero
         formatLabel="Format converter"
         title="Free OFX to CSV Converter"
@@ -102,6 +106,15 @@ function Page() {
       </ConverterEmbed>
 
       <StatementFunnel sourceFormat="OFX" targetFormat="CSV" />
+
+      <PageTOC
+        headings={[
+          "What is OFX format, and what is OFX file format?",
+          "How to convert OFX to CSV in 3 steps",
+          "What's Inside an OFX File",
+          "Real Format Variations This Handles",
+        ]}
+      />
 
       <ArticleH2>What is OFX format, and what is OFX file format?</ArticleH2>
       <ArticleProse>

@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import {
   ShieldCheck,
   Lock,
@@ -34,6 +35,7 @@ import { ClaimTag, CornerRibbon } from "@/components/claim-tag";
 
 export const Route = createFileRoute("/")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/` }],
     meta: [
       { title: "BalanceExtract — Free Bank Statement Converter (PDF to CSV & Excel)" },
       {

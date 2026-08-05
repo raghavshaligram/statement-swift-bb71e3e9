@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd, type FaqItem } from "@/components/faq-list";
 import { PricingCallout } from "@/components/pricing-callout";
 import {
@@ -58,6 +60,7 @@ const FAQ: FaqItem[] = [
 
 export const Route = createFileRoute("/moneythumb-alternative")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/moneythumb-alternative` }],
     meta: [
       { title: "MoneyThumb Alternative — One Converter, Every Format | BalanceExtract" },
       {
@@ -80,6 +83,7 @@ function Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ)) }}
       />
 
+      <Breadcrumbs trail={[{ label: "Comparisons", href: "/blog" }, { label: "MoneyThumb Alternative" }]} />
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Comparison"

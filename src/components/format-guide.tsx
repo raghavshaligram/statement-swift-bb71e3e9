@@ -1,5 +1,6 @@
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
+import { Breadcrumbs, PageTOC } from "@/components/breadcrumbs";
 import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
 import { FaqList, type FaqItem } from "@/components/faq-list";
@@ -79,7 +80,26 @@ export function FormatGuide({ config }: { config: FormatGuideConfig }) {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs
+        trail={[{ label: "Format converters", href: "/blog" }, { label: `${source} to Excel` }]}
+      />
+
       <ToolHero formatLabel="Format guide" title={title} subtitle={subtitle} />
+
+      {/* Headings are interpolated with the format name, so the TOC is built
+          from the same strings the H2s render -- headingId() slugifies both
+          identically, so they cannot drift. */}
+      <PageTOC
+        headings={[
+          `Why Excel can't open a ${source} file`,
+          "What's inside the file",
+          "Method 1: use the converter on this page",
+          "Method 2: rename to .xml and import manually",
+          "Method 3: when your file is actually a PDF",
+          "Troubleshooting your converted file",
+          "Once the data is in Excel",
+        ]}
+      />
 
       <ConverterEmbed
         heading={`Convert a ${source} file to Excel`}

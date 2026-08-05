@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
@@ -57,6 +59,7 @@ const FAQ = [
 
 export const Route = createFileRoute("/qbo-to-csv")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/qbo-to-csv` }],
     meta: [
       { title: "Free QBO to CSV Converter — BalanceExtract" },
       {
@@ -84,6 +87,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Format converters", href: "/blog" }, { label: "Free QBO to CSV Converter" }]} />
       <ToolHero
         formatLabel="Format converter"
         title="Free QBO to CSV Converter"

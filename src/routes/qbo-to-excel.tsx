@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs, PageTOC } from "@/components/breadcrumbs";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
 import { StatementFunnel, StickyStatementBar } from "@/components/statement-funnel";
 import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
@@ -78,6 +80,7 @@ const FAQ: FaqItem[] = [
 
 export const Route = createFileRoute("/qbo-to-excel")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/qbo-to-excel` }],
     meta: [
       { title: "QBO to Excel Converter — Open a QBO File in Excel (Free)" },
       {
@@ -107,6 +110,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Format converters", href: "/blog" }, { label: "QBO to Excel Converter" }]} />
       <ToolHero
         formatLabel="Format guide"
         title="QBO to Excel: How to Open a QBO File in Excel"
@@ -138,6 +142,18 @@ function Page() {
           }}
         />
       </ConverterEmbed>
+
+      <PageTOC
+        headings={[
+          "Why Excel can't open a QBO file",
+          "What&apos;s actually inside a QBO file",
+          "Method 1: use the converter on this page",
+          "Method 2: rename to .xml and import manually",
+          "Method 3: when your file is actually a PDF",
+          "Troubleshooting your converted file",
+          "Once the data is in Excel",
+        ]}
+      />
 
       <ArticleH2>Why Excel can't open a QBO file</ArticleH2>
       <ArticleProse>

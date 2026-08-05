@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs, PageTOC } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
@@ -85,6 +87,7 @@ const FAQ: Array<{ q: string; a: string }> = [
 
 export const Route = createFileRoute("/bank-statement-to-excel")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/bank-statement-to-excel` }],
     meta: [
       { title: "Convert Bank Statement PDF to Excel — Free, No Page Cap | BalanceExtract" },
       {
@@ -106,6 +109,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Convert Bank Statement PDF to Excel" }]} />
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Converter"
@@ -126,6 +130,18 @@ function Page() {
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
       </div>
+
+      <PageTOC
+        headings={[
+          "Why copying and pasting doesn&apos;t work",
+          "How to convert a bank statement to Excel",
+          "Bank statement to Excel software: what to look for",
+          "Convert bank statements to Excel in bulk (several at once)",
+          "Excel or CSV?",
+          "Common problems and what causes them",
+          "Once it&apos;s in Excel",
+        ]}
+      />
 
       <ArticleH2>Why copying and pasting doesn&apos;t work</ArticleH2>
       <ArticleProse>

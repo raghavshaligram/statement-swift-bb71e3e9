@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd, type FaqItem } from "@/components/faq-list";
 import { PricingCallout } from "@/components/pricing-callout";
 import {
@@ -60,6 +62,7 @@ const FAQ: FaqItem[] = [
 
 export const Route = createFileRoute("/docuclipper-alternative")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/docuclipper-alternative` }],
     meta: [
       { title: "DocuClipper Alternative — On-Device Bank Statement Converter | BalanceExtract" },
       {
@@ -82,6 +85,7 @@ function Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ)) }}
       />
 
+      <Breadcrumbs trail={[{ label: "Comparisons", href: "/blog" }, { label: "DocuClipper Alternative" }]} />
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Comparison"

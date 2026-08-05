@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import {
@@ -54,6 +56,7 @@ const FAQ: Array<{ q: string; a: string }> = [
 
 export const Route = createFileRoute("/natwest-bank-statement-to-csv")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/natwest-bank-statement-to-csv` }],
     meta: [
       { title: "NatWest Bank Statement to CSV: Formats and Limits — BalanceExtract" },
       {
@@ -75,6 +78,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "NatWest Bank Statement to CSV: Formats and Limits" }]} />
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Bank guide"

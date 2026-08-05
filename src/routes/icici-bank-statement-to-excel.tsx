@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { ShieldCheck, Check, X } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
@@ -46,6 +48,7 @@ const FAQ: Array<{ q: string; a: string }> = [
 
 export const Route = createFileRoute("/icici-bank-statement-to-excel")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/icici-bank-statement-to-excel` }],
     meta: [
       { title: "Free ICICI Bank Statement to Excel Converter — BalanceExtract" },
       {
@@ -67,6 +70,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Free ICICI Bank Statement to Excel Converter" }]} />
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Bank guide"

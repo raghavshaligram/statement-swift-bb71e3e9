@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { SITE_ORIGIN } from "@/lib/site";
 import { createFileRoute } from "@tanstack/react-router";
 import { AlertTriangle, CheckCircle2, Paperclip, ShieldAlert } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
@@ -17,6 +18,7 @@ const MAX_ATTACHMENT_BYTES = 15 * 1024 * 1024; // 15 MB
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/contact` }],
     meta: [
       { title: "Contact Us — BalanceExtract" },
       {

@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
@@ -32,6 +34,7 @@ const FAQ = [
 
 export const Route = createFileRoute("/csv-to-ofx")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/csv-to-ofx` }],
     meta: [
       { title: "Free CSV to OFX Converter — BalanceExtract" },
       { name: "description", content: "Free CSV to OFX converter for QuickBooks or Quicken import. Runs entirely in your browser." },
@@ -55,6 +58,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Format converters", href: "/blog" }, { label: "Free CSV to OFX Converter" }]} />
       <ToolHero
         formatLabel="Format converter"
         title="Free CSV to OFX Converter"

@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs, PageTOC } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
@@ -79,6 +81,7 @@ const FAQ: Array<{ q: string; a: string }> = [
 
 export const Route = createFileRoute("/bank-statement-to-qbo")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/bank-statement-to-qbo` }],
     meta: [
       { title: "Convert Bank Statement to QBO — Import into QuickBooks | BalanceExtract" },
       {
@@ -100,6 +103,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Convert Bank Statement to QBO" }]} />
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Converter"
@@ -120,6 +124,15 @@ function Page() {
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
       </div>
+
+      <PageTOC
+        headings={[
+          "Why QBO beats a CSV import",
+          "How to import bank statements into QuickBooks",
+          "Common problems",
+          "After the import",
+        ]}
+      />
 
       <ArticleH2>Why QBO beats a CSV import</ArticleH2>
       <ArticleProse>

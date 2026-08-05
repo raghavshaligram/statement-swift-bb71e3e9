@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
@@ -44,6 +46,7 @@ const FAQ = [
 
 export const Route = createFileRoute("/qif-to-qbo")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/qif-to-qbo` }],
     meta: [
       { title: "Free QIF to QBO Converter — BalanceExtract" },
       {
@@ -71,6 +74,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Format converters", href: "/blog" }, { label: "Free QIF to QBO Converter" }]} />
       <ToolHero
         formatLabel="Format converter"
         title="Free QIF to QBO Converter"

@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { Scale, CheckCircle, AlertCircle, RefreshCcw, FileCheck, Gavel } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/terms` }],
     meta: [
       { title: "Terms & Conditions — BalanceExtract" },
       {

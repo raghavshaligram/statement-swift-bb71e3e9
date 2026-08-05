@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { Shield, Lock, ServerOff, FileText, Mail, Bot, Paperclip } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 
 export const Route = createFileRoute("/privacy")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/privacy` }],
     meta: [
       { title: "Privacy Policy — BalanceExtract" },
       {

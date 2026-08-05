@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { EmbeddedConverter } from "@/components/embedded-converter";
@@ -39,6 +41,7 @@ const FAQ: Array<{ q: string; a: string }> = [
 
 export const Route = createFileRoute("/bank-statement-to-qif")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/bank-statement-to-qif` }],
     meta: [
       { title: "Free Bank Statement to QIF Converter — BalanceExtract" },
       { name: "description", content: "Convert any bank's PDF statement to QIF for Quicken. Free to try, on-device — nothing uploaded." },
@@ -56,6 +59,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Free Bank Statement to QIF Converter" }]} />
       <ArticleBackLink />
       <ArticleHero eyebrow="Bank guide" title="Free Bank Statement to QIF Converter" publishedDate="July 2026" />
 

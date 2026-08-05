@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/app-shell";
@@ -10,6 +11,7 @@ import { useStatementStore } from "@/lib/statement-store";
 
 export const Route = createFileRoute("/upload")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/upload` }],
     meta: [
       { title: "Convert statements — BalanceExtract" },
       { name: "robots", content: "noindex" },

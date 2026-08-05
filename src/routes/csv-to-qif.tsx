@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 import { FaqList } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
@@ -32,6 +34,7 @@ const FAQ = [
 
 export const Route = createFileRoute("/csv-to-qif")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/csv-to-qif` }],
     meta: [
       { title: "Free CSV to QIF Converter for Quicken — BalanceExtract" },
       { name: "description", content: "Free CSV to QIF converter for Quicken import. Auto-detects your CSV's columns, runs entirely in your browser." },
@@ -55,6 +58,7 @@ function Page() {
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
+      <Breadcrumbs trail={[{ label: "Format converters", href: "/blog" }, { label: "Free CSV to QIF Converter for Quicken" }]} />
       <ToolHero
         formatLabel="Format converter"
         title="Free CSV to QIF Converter for Quicken"

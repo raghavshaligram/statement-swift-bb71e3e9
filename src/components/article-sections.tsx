@@ -96,16 +96,32 @@ export function ArticleProse({ children }: { children: ReactNode }) {
   );
 }
 
+/**
+ * Slugifies heading text for anchor ids.
+ *
+ * Shared with PageTOC so a heading and its table-of-contents link can never
+ * disagree -- previously each heading needed an explicit id and the TOC needed
+ * a matching href, which is two places to get wrong and no way to notice.
+ */
+export function headingId(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/&apos;|&#39;/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export function ArticleH2({ children, id }: { children: ReactNode; id?: string }) {
+  // Auto-derive the anchor from the heading text when one isn't given, so
+  // every H2 is linkable without the author remembering to add an id.
+  const auto = typeof children === "string" ? headingId(children) : undefined;
   return (
     <div className="mx-auto max-w-3xl px-6 pt-10">
       {/* Accent rule above each H2. Long guide pages ran as one undifferentiated
           column of text; a coloured marker gives the eye somewhere to land when
-          scanning, which is how these pages are actually read. Also widened the
-          top padding from pt-6 -- headings were sitting too close to the block
-          above them, reported directly on the FAQ section. */}
+          scanning, which is how these pages are actually read. */}
       <div className="mb-3 h-1 w-10 rounded-full bg-emerald" aria-hidden />
-      <h2 id={id} className="text-2xl font-bold tracking-tight text-ink">
+      <h2 id={id ?? auto} className="scroll-mt-24 text-2xl font-bold tracking-tight text-ink">
         {children}
       </h2>
     </div>

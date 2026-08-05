@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { SITE_ORIGIN } from "@/lib/site";
 import { ArrowRight } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { FeaturedArt } from "@/components/featured-art";
@@ -96,6 +97,7 @@ function PostCard({ post }: { post: Post }) {
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
+    links: [{ rel: "canonical", href: `${SITE_ORIGIN}/blog` }],
     meta: [
       { title: "Guides & Converters — BalanceExtract" },
       {
