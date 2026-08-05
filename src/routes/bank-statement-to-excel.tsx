@@ -240,6 +240,11 @@ function Page() {
       <RelatedArticles
         articles={[
           {
+            href: "/bank-statement-to-qbo",
+            title: "Bank Statement to QBO",
+            blurb: "Import into QuickBooks as a bank feed rather than a spreadsheet.",
+          },
+          {
             href: "/bank-statement-to-csv",
             title: "Bank Statement to CSV",
             blurb: "The same conversion, in the format most accounting software expects.",
