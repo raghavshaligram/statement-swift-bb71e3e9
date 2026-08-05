@@ -5,10 +5,27 @@ import { useAuth } from "./use-auth";
 export type SubscriptionRow = {
   status: string;
   plan_id: string | null;
-  provider_subscription_id: string;
-  provider: string | null;
+  /**
+   * The processor's own subscription id.
+   *
+   * Optional, and readable under either column name, because the repo and the
+   * live database are allowed to disagree here. Lovable applies migrations to
+   * the live DB by hand, so 20260805_subscriptions_provider_agnostic.sql --
+   * which renames paypal_subscription_id to provider_subscription_id -- may
+   * not have been run yet. Naming one of them explicitly in the select made
+   * the ENTIRE query fail against the un-migrated schema, which silently drops
+   * every paying user to Free rather than failing visibly.
+   */
+  provider_subscription_id?: string | null;
+  paypal_subscription_id?: string | null;
+  provider?: string | null;
   created_at: string;
 };
+
+/** Reads the subscription id under whichever column name exists. */
+export function subscriptionRef(row: SubscriptionRow | null): string | null {
+  return row?.provider_subscription_id ?? row?.paypal_subscription_id ?? null;
+}
 
 /**
  * The user's most recent subscription row. `status` is the source of truth for
@@ -53,7 +70,10 @@ async function fetchSubscription(userId: string): Promise<SubscriptionRow | null
   inFlight = Promise.resolve(
     supabase
     .from("subscriptions")
-    .select("status, plan_id, provider_subscription_id, provider, created_at")
+    // select("*") rather than naming columns: the live schema may predate
+    // the provider rename, and a named column that does not exist fails the
+    // whole query. The table is RLS-scoped to the caller's own row.
+    .select("*")
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .limit(1)
