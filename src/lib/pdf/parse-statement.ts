@@ -15,6 +15,7 @@ import { parseMt940Text, mt940ResultToTransactions } from "../mt940/parse-mt940"
 import type { ExtractedPdf, PageText } from "./extract-text";
 import type { ParsedStatement, Transaction } from "../statement-store";
 import { enrichTransactions } from "../enrich";
+import { captureForDiagnostics } from "../diagnostics/capture";
 
 const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
@@ -239,6 +240,12 @@ export async function parseStatementFile(
       );
     }
   }
+
+  // Stash the page geometry so a "Report a bad conversion" bundle can be
+  // built later. Held in memory only, never persisted, and overwritten by the
+  // next parse -- see lib/diagnostics/capture.ts for why it lives outside the
+  // store.
+  captureForDiagnostics(file.name, extracted.pages, usedOcr);
 
   let raw = parseTransactionsFromPages(extracted.pages, extracted.fullText);
 

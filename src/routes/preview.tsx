@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Download, Check, X, AlertCircle, AlertTriangle, TableProperties, FileText, ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { Search, Download, Check, X, AlertCircle, AlertTriangle, TableProperties, FileText, ArrowUpDown, MoreHorizontal, Bug } from "lucide-react";
 import { TopNav } from "@/components/top-nav";
 import { SideBySidePane } from "@/components/side-by-side-pane";
+import { buildDiagnosticBundle, downloadDiagnosticBundle, hasDiagnostics } from "@/lib/diagnostics/capture";
 import { useStatementStore } from "@/lib/statement-store";
 import { formatAmount } from "@/lib/pdf/detect-currency";
 import { getConfidenceTier } from "@/lib/pdf/confidence";
@@ -61,6 +62,28 @@ function PreviewPage() {
   }
   const [tab, setTab] = useState<FilterTab>("all");
   const [view, setView] = useState<"table" | "sidebyside">("table");
+  const [reported, setReported] = useState(false);
+
+  /**
+   * Builds a redacted bug report from the statement in front of the user.
+   *
+   * Nothing is transmitted. The bundle is generated on-device and downloaded,
+   * and the user decides whether to send it -- anything else would contradict
+   * the claim made on every page of this site.
+   */
+  function reportBadConversion() {
+    const st = statements[0];
+    if (!st) return;
+    const bundle = buildDiagnosticBundle({
+      detectedBank: st.detectedBank,
+      currency: st.currency,
+      transactions: rows,
+      warnings: st.warnings,
+    });
+    if (!bundle) return;
+    downloadDiagnosticBundle(bundle);
+    setReported(true);
+  }
   const [editing, setEditing] = useState<{ id: string; field: keyof Transaction } | null>(null);
 
   const rows = useMemo(() => statements.flatMap((st) => st.transactions), [statements]);
@@ -684,6 +707,16 @@ function PreviewPage() {
 
         {/* Sticky bottom legend */}
         <div className="flex-none flex flex-wrap items-center justify-between gap-3 border-t border-background/10 bg-ink px-4 py-2.5 text-xs text-background/80 sm:px-5">
+          {hasDiagnostics() && (
+            <button
+              onClick={reportBadConversion}
+              className="inline-flex items-center gap-1.5 rounded-md border border-background/20 px-2.5 py-1 font-medium text-background/80 transition hover:border-background/40 hover:text-background"
+              title="Downloads a redacted report to your device — nothing is sent anywhere"
+            >
+              <Bug className="h-3.5 w-3.5" />
+              {reported ? "Report downloaded" : "Report a bad conversion"}
+            </button>
+          )}
           <div className="flex flex-wrap items-center gap-3">
             <span className="font-mono uppercase tracking-wider text-background/50">confidence</span>
             <span className="inline-flex items-center gap-1 rounded-full border border-emerald/30 bg-emerald-soft px-2 py-0.5 font-mono text-[10px] font-semibold text-accent-foreground">

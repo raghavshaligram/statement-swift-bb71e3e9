@@ -13,7 +13,8 @@
     "check:parser": "tsx scripts/parser-check.ts",
     "check:enrich": "tsx scripts/enrich-check.ts",
     "check:links": "tsx scripts/link-check.ts",
-    "check:ofx": "tsx scripts/ofx-check.ts"
+    "check:ofx": "tsx scripts/ofx-check.ts",
+    "check:redact": "tsx scripts/redact-check.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
