@@ -59,32 +59,32 @@ const FEATURES = [
   {
     icon: Shield,
     title: "Private & Secure",
-    body: "Your statement never leaves your device. No server upload, no logs, no retention.",
+    body: "Never uploaded. No server, no logs, no retention.",
   },
   {
     icon: InfinityIcon,
     title: "No Page Cap on Pro",
-    body: "Every competitor meters — by page or by transaction row — so a busy month costs more. Pro is one flat price whether you convert one statement or a full year of them.",
+    body: "Competitors meter by page or row. Pro is one flat price, any volume.",
   },
   {
     icon: ScanLine,
     title: "Scans & Photos",
-    body: "Built-in OCR reads scanned PDF statements and phone-photo PDFs so you can digitize paper too.",
+    body: "On-device OCR reads scans and phone photos of paper statements.",
   },
   {
     icon: Globe,
     title: "23+ Banks",
-    body: "Named profiles for Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more across the US, UK, Canada and India.",
+    body: "Named profiles across the US, UK, Canada and India.",
   },
   {
     icon: Layers,
     title: "Multi-Account",
-    body: "Drop several PDFs from different accounts or banks and convert them together in one pass.",
+    body: "Several accounts or banks, converted together in one pass.",
   },
   {
     icon: FileOutput,
     title: "Every Format",
-    body: "Excel (.xlsx), CSV, Tally XML, OFX, QIF, QBO, IIF — exports for whatever ledger you already use.",
+    body: "Excel, CSV, QBO, OFX, QIF, IIF and Tally XML.",
   },
 ];
 
@@ -234,7 +234,10 @@ function Landing() {
       {/* FEATURE CARDS — reference-style row */}
       <section className="border-b border-border bg-surface-muted/20 py-14">
         <div className="mx-auto max-w-7xl px-6">
-          <ScrollRevealGroup className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {/* 6 across on desktop. Bodies are deliberately one line -- at this
+              width anything longer wraps to five lines and the row loses its
+              scannability, which is the only reason to have a row. */}
+          <ScrollRevealGroup className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
             {FEATURES.map((f) => (
               <ScrollRevealItem key={f.title}>
                 <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-5 text-center transition hover:border-emerald/30 hover:shadow-sm">
