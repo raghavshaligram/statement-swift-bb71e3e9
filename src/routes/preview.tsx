@@ -454,8 +454,12 @@ function PreviewPage() {
 
 
         {view === "table" ? (
-        <div className="w-full overflow-x-hidden">
-          <table className="w-full table-fixed text-sm">
+        {/* Table view, md and up. Below that the 9 columns cannot fit and
+            overflow-x-hidden CLIPPED them rather than scrolling, so data was
+            simply unreachable on a phone. Now scrolls on tablet and is
+            replaced entirely by cards on mobile. */}
+        <div className="hidden w-full overflow-x-auto md:block">
+          <table className="w-full min-w-[880px] table-fixed text-sm md:min-w-0">
             <colgroup>
               <col className="w-10" />
               <col className="w-[110px]" />
@@ -586,6 +590,73 @@ function PreviewPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Card view, below md. Same data, same editing, stacked instead of
+            columnar. Debit/credit collapse into one signed amount because two
+            near-empty columns waste the width a phone doesn't have. */}
+        <ul className="divide-y divide-border md:hidden">
+          {filtered.map((r) => {
+            const flagged = getConfidenceTier(r.confidence) === "low";
+            return (
+              <li
+                key={r.id}
+                id={`row-m-${r.id}`}
+                className={cn(
+                  "px-3 py-3",
+                  flagged && "border-l-2 border-l-amber-500 bg-amber-50/40",
+                  focusedRowId === r.id && "ring-2 ring-inset ring-emerald"
+                )}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <EditableCell
+                      value={r.payee}
+                      editing={editing?.id === r.id && editing.field === "payee"}
+                      onEdit={() => setEditing({ id: r.id, field: "payee" })}
+                      onCommit={(v) => { update(r, "payee", v); setEditing(null); }}
+                      className="block truncate text-sm font-semibold text-ink"
+                    />
+                    {r.description !== r.payee && (
+                      <div className="mt-0.5 truncate font-mono text-[11px] text-muted-foreground">
+                        {r.description}
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    className={cn(
+                      "shrink-0 font-mono text-sm font-semibold tabular-nums",
+                      r.amount < 0 ? "text-destructive" : "text-emerald"
+                    )}
+                  >
+                    {formatAmount(r.amount, currency)}
+                  </div>
+                </div>
+
+                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                  <span className="font-mono">{r.date}</span>
+                  {r.category && (
+                    <span className="rounded-full bg-surface-muted px-2 py-0.5 text-ink/70">
+                      {r.category}
+                    </span>
+                  )}
+                  {r.balance !== null && (
+                    <span className="font-mono">bal {formatAmount(r.balance, currency)}</span>
+                  )}
+                  <span className="ml-auto flex items-center gap-2">
+                    <ConfidenceBadge score={r.confidence} />
+                    <button
+                      onClick={() => deleteTransaction(r.sourceFile, r.id)}
+                      aria-label="Delete row"
+                      className="p-1 text-muted-foreground"
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                    </button>
+                  </span>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
         ) : (
         <div className="rounded-lg bg-surface-muted/40 p-3">
           <SideBySidePane
