@@ -79,14 +79,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "LedgerLocal — Bank Statement Converter & Excel Software" },
+      { title: "BalanceExtract — Bank Statement Converter & Excel Software" },
       {
         name: "description",
         content:
-          "LedgerLocal is a bank statement converter that turns PDF statements into clean, editable Excel spreadsheets — 100% on-device. Works with 23+ banks across the US, UK, Canada, and India.",
+          "BalanceExtract is a bank statement converter that turns PDF statements into clean, editable Excel spreadsheets — 100% on-device. Works with 23+ banks across the US, UK, Canada, and India.",
       },
-      { name: "author", content: "LedgerLocal" },
-      { property: "og:title", content: "LedgerLocal — Bank Statement Converter & Excel Software" },
+      { name: "author", content: "BalanceExtract" },
+      { property: "og:title", content: "BalanceExtract — Bank Statement Converter & Excel Software" },
       {
         property: "og:description",
         content: "Convert PDF bank statements to Excel, CSV, Tally, OFX, QIF, QBO. 100% on-device. Free up to 10 pages, lifetime, once signed up.",
@@ -110,7 +110,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "SoftwareApplication",
-          name: "LedgerLocal",
+          name: "BalanceExtract",
           applicationCategory: "FinanceApplication",
           operatingSystem: "Web",
           description:

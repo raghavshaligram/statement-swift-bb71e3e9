@@ -34,7 +34,7 @@ const FAQ = [
 export const Route = createFileRoute("/mt940-to-csv")({
   head: () => ({
     meta: [
-      { title: "Free MT940 to CSV Converter — LedgerLocal" },
+      { title: "Free MT940 to CSV Converter — BalanceExtract" },
       { name: "description", content: "Convert an MT940 SWIFT bank statement file to CSV. Free, runs entirely in your browser." },
     ],
   }),
@@ -124,7 +124,7 @@ function Page() {
         articles={[
           { href: "/ofx-to-csv", title: "OFX to CSV Converter", blurb: "A more common bank-neutral exchange format." },
           { href: "/lloyds-bank-statement-to-csv", title: "Lloyds Bank Statement to CSV", blurb: "A UK-specific bank guide." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

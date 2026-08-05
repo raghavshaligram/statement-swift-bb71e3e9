@@ -33,7 +33,7 @@ const FAQ = [
 export const Route = createFileRoute("/csv-to-qif")({
   head: () => ({
     meta: [
-      { title: "Free CSV to QIF Converter for Quicken — LedgerLocal" },
+      { title: "Free CSV to QIF Converter for Quicken — BalanceExtract" },
       { name: "description", content: "Free CSV to QIF converter for Quicken import. Auto-detects your CSV's columns, runs entirely in your browser." },
     ],
   }),
@@ -126,7 +126,7 @@ function Page() {
         articles={[
           { href: "/qif-to-csv", title: "QIF to CSV Converter", blurb: "Convert a Quicken export back to plain CSV." },
           { href: "/qfx-to-csv", title: "QFX to CSV Converter", blurb: "For when your Quicken version is too old to accept QFX anymore." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

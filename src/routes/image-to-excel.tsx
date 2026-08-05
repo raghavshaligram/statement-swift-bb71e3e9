@@ -31,7 +31,7 @@ const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "Can I convert a scanned PDF, not just a photo?",
-    a: "Yes — if a PDF page has no real text layer (a common case for older scanned statements), LedgerLocal automatically falls back to the same on-device OCR used for photos, no separate step needed.",
+    a: "Yes — if a PDF page has no real text layer (a common case for older scanned statements), BalanceExtract automatically falls back to the same on-device OCR used for photos, no separate step needed.",
   },
   {
     q: "Is my photo uploaded anywhere?",
@@ -42,13 +42,13 @@ const FAQ: Array<{ q: string; a: string }> = [
 export const Route = createFileRoute("/image-to-excel")({
   head: () => ({
     meta: [
-      { title: "Free Image to Excel Converter — LedgerLocal" },
+      { title: "Free Image to Excel Converter — BalanceExtract" },
       {
         name: "description",
         content:
           "Convert a photo or scanned image of a bank statement to Excel or CSV. Free to try with a signup, on-device OCR — nothing uploaded.",
       },
-      { property: "og:title", content: "Free Image to Excel Converter — LedgerLocal" },
+      { property: "og:title", content: "Free Image to Excel Converter — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -85,7 +85,7 @@ function Page() {
       <QuickSummary>
         A photo is often the only record you have of a statement — printed, mailed, or screenshotted — and
         turning it into real spreadsheet rows without retyping every line is the whole point of this tool.
-        LedgerLocal reads JPG, PNG, and WEBP images directly, using on-device OCR — no server involved.
+        BalanceExtract reads JPG, PNG, and WEBP images directly, using on-device OCR — no server involved.
         Every extracted transaction gets a confidence score, so a blurry or angled photo doesn't silently
         produce wrong numbers; it flags exactly which rows are worth double-checking. Converting photos and
         scans requires a free account (unlike PDF conversion, which needs no signup) — a real, deliberate
@@ -152,7 +152,7 @@ function Page() {
         articles={[
           { href: "/lloyds-bank-statement-to-csv", title: "Lloyds Bank Statement to CSV", blurb: "A bank-specific guide, for when you have the real PDF instead." },
           { href: "/csv-to-iif", title: "CSV to IIF Converter", blurb: "For getting your exported data into QuickBooks Desktop." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

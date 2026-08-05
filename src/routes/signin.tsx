@@ -11,10 +11,10 @@ export const Route = createFileRoute("/signin")({
   }),
   head: () => ({
     meta: [
-      { title: "Sign in — LedgerLocal" },
-      { name: "description", content: "Sign in to LedgerLocal. Your bank statements never leave your device." },
-      { property: "og:title", content: "Sign in — LedgerLocal" },
-      { property: "og:description", content: "Sign in to LedgerLocal." },
+      { title: "Sign in — BalanceExtract" },
+      { name: "description", content: "Sign in to BalanceExtract. Your bank statements never leave your device." },
+      { property: "og:title", content: "Sign in — BalanceExtract" },
+      { property: "og:description", content: "Sign in to BalanceExtract." },
       { property: "og:url", content: "/signin" },
       { name: "robots", content: "noindex" },
     ],
@@ -44,7 +44,7 @@ function SignInPage() {
   useEffect(() => {
     try {
       if (destination && destination !== "/upload") {
-        sessionStorage.setItem("ledgerlocal.postAuthRedirect", destination);
+        sessionStorage.setItem("balanceextract.postAuthRedirect", destination);
       }
     } catch {
       /* storage blocked -- falls back to the default destination */
@@ -77,7 +77,7 @@ function SignInPage() {
     // survive the round-trip.
     try {
       if (destination && destination !== "/upload") {
-        sessionStorage.setItem("ledgerlocal.postAuthRedirect", destination);
+        sessionStorage.setItem("balanceextract.postAuthRedirect", destination);
       }
     } catch {
       /* storage can be blocked; falls back to the default destination */

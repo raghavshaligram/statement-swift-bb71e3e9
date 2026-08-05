@@ -24,7 +24,7 @@ export function TopNav() {
           <div className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald text-primary-foreground">
             <FileSpreadsheet className="h-4 w-4" />
           </div>
-          <span className="text-[15px] font-bold tracking-tight text-white">LedgerLocal</span>
+          <span className="text-[15px] font-bold tracking-tight text-white">BalanceExtract</span>
         </Link>
         <span className="hidden h-4 w-px shrink-0 bg-white/15 sm:block" aria-hidden />
         <span className="hidden shrink-0 items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 font-mono text-[10px] font-medium text-white/60 sm:inline-flex">

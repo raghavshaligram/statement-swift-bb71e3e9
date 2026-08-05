@@ -36,19 +36,19 @@ const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "I need this for proof of address — will a converted CSV or Excel file work?",
-    a: "No — keep the original PDF for that. Most organisations accept a bank statement PDF downloaded directly from online banking as proof of address, but a converted file (CSV, Excel, or anything without the bank's own formatting) generally isn't accepted for this purpose. Use LedgerLocal when you need the transaction data itself — budgeting, accounting, reconciliation — not when the PDF itself is what's being requested.",
+    a: "No — keep the original PDF for that. Most organisations accept a bank statement PDF downloaded directly from online banking as proof of address, but a converted file (CSV, Excel, or anything without the bank's own formatting) generally isn't accepted for this purpose. Use BalanceExtract when you need the transaction data itself — budgeting, accounting, reconciliation — not when the PDF itself is what's being requested.",
   },
   {
     q: "Will the dates come out right, or will Excel flip day and month?",
-    a: "Lloyds statements use DD/MM/YYYY. LedgerLocal infers the date order from the statement itself rather than assuming a fixed format, and normalises output dates to ISO (YYYY-MM-DD) by default, which Excel reads unambiguously regardless of your system's regional settings.",
+    a: "Lloyds statements use DD/MM/YYYY. BalanceExtract infers the date order from the statement itself rather than assuming a fixed format, and normalises output dates to ISO (YYYY-MM-DD) by default, which Excel reads unambiguously regardless of your system's regional settings.",
   },
   {
     q: "What if my statement is a scan or a photo, not a proper PDF?",
-    a: "It still works — LedgerLocal falls back to on-device OCR automatically when a page has no real text layer, and flags it clearly in the results so you know to double-check those specific rows before exporting.",
+    a: "It still works — BalanceExtract falls back to on-device OCR automatically when a page has no real text layer, and flags it clearly in the results so you know to double-check those specific rows before exporting.",
   },
   {
     q: "Can I combine Lloyds statements with other banks?",
-    a: "Yes. Drop PDFs from Lloyds and any other bank into the same batch — LedgerLocal detects each one and processes them together into one export.",
+    a: "Yes. Drop PDFs from Lloyds and any other bank into the same batch — BalanceExtract detects each one and processes them together into one export.",
   },
   {
     q: "Is my Lloyds statement data safe?",
@@ -59,13 +59,13 @@ const FAQ: Array<{ q: string; a: string }> = [
 export const Route = createFileRoute("/lloyds-bank-statement-to-csv")({
   head: () => ({
     meta: [
-      { title: "Lloyds Bank Statement to CSV: Formats and Limits — LedgerLocal" },
+      { title: "Lloyds Bank Statement to CSV: Formats and Limits — BalanceExtract" },
       {
         name: "description",
         content:
           "Lloyds' own CSV export is capped at 12 months and 150 transactions, with no native Excel option at all. Convert any Lloyds PDF statement to CSV or Excel on-device — free to try, nothing uploaded.",
       },
-      { property: "og:title", content: "Lloyds Bank Statement to CSV: Formats and Limits — LedgerLocal" },
+      { property: "og:title", content: "Lloyds Bank Statement to CSV: Formats and Limits — BalanceExtract" },
       {
         property: "og:description",
         content: "How the Lloyds CSV export actually works, where it falls short, and how to get data out of the PDF statements it can't reach.",
@@ -115,7 +115,7 @@ function Page() {
         months, capped at 150 transactions per download, and only on the desktop site. Lloyds keeps PDF
         statements for 7 years (10+ years in the app), but offers no native Excel export at all. For
         anything the CSV export can't reach — older statements, more than 150 transactions, or an Excel
-        file — upload the PDFs to LedgerLocal and export CSV, Excel, Tally XML, or IIF, without typing a
+        file — upload the PDFs to BalanceExtract and export CSV, Excel, Tally XML, or IIF, without typing a
         single row by hand.
       </QuickSummary>
 
@@ -220,12 +220,12 @@ function Page() {
             body: "Log in, open the account, and download each monthly statement as a PDF. For a full year, that's up to 12 files.",
           },
           {
-            title: "Upload to LedgerLocal",
+            title: "Upload to BalanceExtract",
             body: "Drop your Lloyds PDFs into the converter — batch upload works, and each statement is processed on its own.",
           },
           {
             title: "Review, then export",
-            body: "LedgerLocal detects Lloyds' layout automatically and shows every extracted transaction with a confidence score before you export, so anything worth double-checking is flagged rather than silently guessed at. Export to CSV, Excel, Tally XML, or IIF.",
+            body: "BalanceExtract detects Lloyds' layout automatically and shows every extracted transaction with a confidence score before you export, so anything worth double-checking is flagged rather than silently guessed at. Export to CSV, Excel, Tally XML, or IIF.",
           },
         ]}
       />
@@ -233,7 +233,7 @@ function Page() {
         <p>
           One accuracy point worth calling out directly: Lloyds statements print dates as DD/MM/YYYY, the
           reverse of the US convention. A converter that assumes MM/DD would silently swap day and month for
-          any date under the 13th. LedgerLocal infers the real date order from the statement itself rather than
+          any date under the 13th. BalanceExtract infers the real date order from the statement itself rather than
           assuming one, and normalises output dates to ISO (YYYY-MM-DD) by default — a format Excel reads
           unambiguously no matter what regional settings your spreadsheet software is using.
         </p>
@@ -243,11 +243,11 @@ function Page() {
       <ArticleProse>
         <p>
           <strong className="text-ink">QuickBooks Desktop:</strong> QuickBooks Desktop has no native CSV import
-          for transactions. Export IIF from LedgerLocal instead — File &gt; Utilities &gt; Import &gt; IIF Files
+          for transactions. Export IIF from BalanceExtract instead — File &gt; Utilities &gt; Import &gt; IIF Files
           reads it directly.
         </p>
         <p>
-          <strong className="text-ink">Excel:</strong> Both the Lloyds CSV and the LedgerLocal CSV or Excel
+          <strong className="text-ink">Excel:</strong> Both the Lloyds CSV and the BalanceExtract CSV or Excel
           export open directly in Excel. If you're combining files from multiple Lloyds CSV downloads, watch for
           the Money In/Money Out split — summing both columns correctly (rather than just one) is what keeps
           your total reconciling against the statement.
@@ -264,8 +264,8 @@ function Page() {
 
       <ArticleCta
         heading="Ready to Get Your Lloyds Data Into a Spreadsheet?"
-        body="Use the Lloyds CSV export for the last 12 months, and LedgerLocal for everything else. Free to try."
-        buttonLabel="Try LedgerLocal Free"
+        body="Use the Lloyds CSV export for the last 12 months, and BalanceExtract for everything else. Free to try."
+        buttonLabel="Try BalanceExtract Free"
       />
 
       <ComparisonLinks />
@@ -275,7 +275,7 @@ function Page() {
           { href: "/natwest-bank-statement-to-csv", title: "NatWest Bank Statement to CSV", blurb: "How NatWest's native export compares, and converting older PDFs." },
           { href: "/csv-to-iif", title: "CSV to IIF Converter for QuickBooks Desktop", blurb: "Turn any CSV export into a QuickBooks Desktop-ready IIF file." },
           { href: "/csv-to-ofx", title: "CSV to OFX Converter", blurb: "For accounting software that prefers a real transaction feed over a spreadsheet." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

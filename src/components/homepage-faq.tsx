@@ -1,6 +1,6 @@
 /**
  * Section 9: FAQ. Categories match the design brief; answers are written to
- * be truthful about LedgerLocal's current feature set — no capability
+ * be truthful about BalanceExtract's current feature set — no capability
  * claims beyond what's actually built and tested.
  */
 import { Link } from "@tanstack/react-router";
@@ -9,7 +9,7 @@ import { ScrollReveal, ScrollRevealGroup, ScrollRevealItem } from "@/components/
 const FAQ: Array<{ q: string; a: string }> = [
   {
     q: "How do I convert a statement?",
-    a: "Drop a PDF into the converter on this page, or head to /upload. LedgerLocal reads the file and extracts transactions right in your browser — no signup needed to try it.",
+    a: "Drop a PDF into the converter on this page, or head to /upload. BalanceExtract reads the file and extracts transactions right in your browser — no signup needed to try it.",
   },
   {
     q: "Is it free?",
@@ -37,7 +37,7 @@ const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "Can I convert statements from multiple accounts at once?",
-    a: "Yes. Drop statements from different accounts, or even different banks, together and LedgerLocal processes them as a batch.",
+    a: "Yes. Drop statements from different accounts, or even different banks, together and BalanceExtract processes them as a batch.",
   },
   {
     q: "Is my data secure?",

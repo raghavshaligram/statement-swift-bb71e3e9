@@ -5,16 +5,16 @@ import { SiteHeader, SiteFooter } from "@/components/site-header";
 export const Route = createFileRoute("/privacy")({
   head: () => ({
     meta: [
-      { title: "Privacy Policy — LedgerLocal" },
+      { title: "Privacy Policy — BalanceExtract" },
       {
         name: "description",
         content:
-          "LedgerLocal processes PDF bank statements on your device. Learn what data we collect, how it is used, and how your financial documents stay private.",
+          "BalanceExtract processes PDF bank statements on your device. Learn what data we collect, how it is used, and how your financial documents stay private.",
       },
-      { property: "og:title", content: "Privacy Policy — LedgerLocal" },
+      { property: "og:title", content: "Privacy Policy — BalanceExtract" },
       {
         property: "og:description",
-        content: "Your bank statements never leave your device. Read LedgerLocal's privacy practices.",
+        content: "Your bank statements never leave your device. Read BalanceExtract's privacy practices.",
       },
     ],
   }),
@@ -30,12 +30,12 @@ const sections = [
   {
     icon: Shield,
     title: "What we collect",
-    body: "Using LedgerLocal without an account (up to 6 pages per conversion) requires nothing from you — no email, no tracking, nothing stored about you at all. Creating a free account gets you a larger page allowance; this requires an email address and password, handled by our authentication provider, Supabase, and we track a single running count of how many pages you've converted (a number, not the statement content itself) so we can enforce that allowance. We do not currently run any product analytics, error tracking, or usage-analytics tooling — we simply don't collect that data today.",
+    body: "Using BalanceExtract without an account (up to 6 pages per conversion) requires nothing from you — no email, no tracking, nothing stored about you at all. Creating a free account gets you a larger page allowance; this requires an email address and password, handled by our authentication provider, Supabase, and we track a single running count of how many pages you've converted (a number, not the statement content itself) so we can enforce that allowance. We do not currently run any product analytics, error tracking, or usage-analytics tooling — we simply don't collect that data today.",
   },
   {
     icon: Lock,
     title: "Pro billing",
-    body: "Pro subscription billing is not live yet. When it launches, payment will be handled by a third-party payment processor (such as Stripe) who collects and stores your card details directly under their own security standards — LedgerLocal itself never sees or stores your full card number. This section will be updated with the specific processor's name once billing is active.",
+    body: "Pro subscription billing is not live yet. When it launches, payment will be handled by a third-party payment processor (such as Stripe) who collects and stores your card details directly under their own security standards — BalanceExtract itself never sees or stores your full card number. This section will be updated with the specific processor's name once billing is active.",
   },
   {
     icon: FileText,

@@ -10,8 +10,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/account/")({
   head: () => ({
     meta: [
-      { title: "Account — LedgerLocal" },
-      { name: "description", content: "Manage your LedgerLocal account, profile, and connected sign-in methods." },
+      { title: "Account — BalanceExtract" },
+      { name: "description", content: "Manage your BalanceExtract account, profile, and connected sign-in methods." },
       { name: "robots", content: "noindex" },
     ],
   }),

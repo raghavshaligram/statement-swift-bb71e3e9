@@ -45,12 +45,12 @@ const FAQ = [
 export const Route = createFileRoute("/qif-to-qbo")({
   head: () => ({
     meta: [
-      { title: "Free QIF to QBO Converter — LedgerLocal" },
+      { title: "Free QIF to QBO Converter — BalanceExtract" },
       {
         name: "description",
         content: "Convert a Quicken QIF file into a QuickBooks-ready QBO file. Free, runs entirely in your browser — nothing uploaded.",
       },
-      { property: "og:title", content: "Free QIF to QBO Converter — LedgerLocal" },
+      { property: "og:title", content: "Free QIF to QBO Converter — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -135,7 +135,7 @@ function Page() {
         articles={[
           { href: "/qfx-to-qbo", title: "QFX to QBO Converter", blurb: "Same idea, from a newer Quicken export format." },
           { href: "/qbo-to-csv", title: "QBO to CSV Converter", blurb: "Convert a QuickBooks QBO file back to plain CSV." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

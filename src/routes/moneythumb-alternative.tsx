@@ -31,15 +31,15 @@ import {
 
 const FAQ: FaqItem[] = [
   {
-    q: "Do I need a separate LedgerLocal product for each output format?",
+    q: "Do I need a separate BalanceExtract product for each output format?",
     a: "No. CSV, Excel, QBO, OFX, QIF, IIF, MT940 and Tally XML all come out of the same converter. Format is a choice at export, not a separate purchase.",
   },
   {
     q: "Is MoneyThumb's desktop software more private than a web tool?",
-    a: "Against a typical cloud converter, yes — desktop software keeps the file on your machine. LedgerLocal is the unusual case: it runs in the browser but parses on-device, so the statement is never transmitted either. You can confirm that in the Network tab.",
+    a: "Against a typical cloud converter, yes — desktop software keeps the file on your machine. BalanceExtract is the unusual case: it runs in the browser but parses on-device, so the statement is never transmitted either. You can confirm that in the Network tab.",
   },
   {
-    q: "Does LedgerLocal handle scanned statements?",
+    q: "Does BalanceExtract handle scanned statements?",
     a: "Yes, via OCR in the browser. MoneyThumb's PinPoint OCR is purpose-built for bank statements and has years of tuning behind it; on difficult scans we would expect it to do well.",
   },
   {
@@ -47,7 +47,7 @@ const FAQ: FaqItem[] = [
     a: "No. It runs in a browser tab on any operating system, so there's no Windows-only limitation and nothing to keep updated.",
   },
   {
-    q: "How much does LedgerLocal cost?",
+    q: "How much does BalanceExtract cost?",
     a: "$19 a month, flat, with no page limit, and every export format included in that one price rather than sold separately. Before that, 6 pages per conversion with no signup, or 10 pages as a lifetime pool with a free account.",
   },
   {
@@ -59,13 +59,13 @@ const FAQ: FaqItem[] = [
 export const Route = createFileRoute("/moneythumb-alternative")({
   head: () => ({
     meta: [
-      { title: "MoneyThumb Alternative — One Converter, Every Format | LedgerLocal" },
+      { title: "MoneyThumb Alternative — One Converter, Every Format | BalanceExtract" },
       {
         name: "description",
         content:
-          "An honest comparison of LedgerLocal and MoneyThumb. MoneyThumb sells a separate desktop product per output format; LedgerLocal exports all of them from one on-device converter.",
+          "An honest comparison of BalanceExtract and MoneyThumb. MoneyThumb sells a separate desktop product per output format; BalanceExtract exports all of them from one on-device converter.",
       },
-      { property: "og:title", content: "MoneyThumb Alternative — LedgerLocal" },
+      { property: "og:title", content: "MoneyThumb Alternative — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -91,7 +91,7 @@ function Page() {
         MoneyThumb has converted bank statements for over a decade and its PinPoint OCR is built
         specifically for statement layouts — that experience is real and it shows on hard scans. The
         structural difference is the product model: MoneyThumb sells a separate converter for each
-        output format, so needing both CSV and QBO means two purchases. LedgerLocal exports every
+        output format, so needing both CSV and QBO means two purchases. BalanceExtract exports every
         format from one converter, and never uploads the file.
       </QuickSummary>
 
@@ -128,7 +128,7 @@ function Page() {
       </ArticleProse>
 
       <ArticleTable
-        headers={["", "MoneyThumb", "LedgerLocal"]}
+        headers={["", "MoneyThumb", "BalanceExtract"]}
         rows={[
           ["Output formats", "One product per format", "All formats, one converter"],
           ["Where it runs", "Desktop app (plus a cloud option)", "Browser tab, any OS"],
@@ -164,7 +164,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>When LedgerLocal fits better</ArticleH2>
+      <ArticleH2>When BalanceExtract fits better</ArticleH2>
       <LimitsList
         limits={[
           {

@@ -11,8 +11,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/account/settings")({
   head: () => ({
     meta: [
-      { title: "Settings — LedgerLocal" },
-      { name: "description", content: "Configure your LedgerLocal parsing defaults, export preferences, and account information." },
+      { title: "Settings — BalanceExtract" },
+      { name: "description", content: "Configure your BalanceExtract parsing defaults, export preferences, and account information." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -52,7 +52,7 @@ function SettingsPage() {
   }
 
   return (
-    <AccountShell eyebrow="Account" title="Settings" subtitle="Customize how LedgerLocal parses and exports your statements.">
+    <AccountShell eyebrow="Account" title="Settings" subtitle="Customize how BalanceExtract parses and exports your statements.">
       <div className="grid gap-6 lg:grid-cols-[200px_1fr]">
         {/* Sub-tabs */}
         <aside className="space-y-4">

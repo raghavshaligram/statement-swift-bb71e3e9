@@ -39,8 +39,8 @@ import {
 
 const FAQ: FaqItem[] = [
   {
-    q: "How is LedgerLocal's pricing different if we're both $19?",
-    a: "What the $19 buys. StatementDesk's plans are measured in transaction rows, so a long statement consumes more of your monthly allowance than a short one and a heavy month can run you out. LedgerLocal's Pro plan has no page limit and no row limit — the price is the same whether you convert one statement or two hundred.",
+    q: "How is BalanceExtract's pricing different if we're both $19?",
+    a: "What the $19 buys. StatementDesk's plans are measured in transaction rows, so a long statement consumes more of your monthly allowance than a short one and a heavy month can run you out. BalanceExtract's Pro plan has no page limit and no row limit — the price is the same whether you convert one statement or two hundred.",
   },
   {
     q: "Do both tools categorise transactions?",
@@ -52,7 +52,7 @@ const FAQ: FaqItem[] = [
   },
   {
     q: "Is my statement uploaded to a server?",
-    a: "Not with LedgerLocal — parsing runs in your browser and the file never leaves your device. StatementDesk is a cloud service, so statements are transmitted for processing. That distinction matters most if the statements belong to clients rather than to you.",
+    a: "Not with BalanceExtract — parsing runs in your browser and the file never leaves your device. StatementDesk is a cloud service, so statements are transmitted for processing. That distinction matters most if the statements belong to clients rather than to you.",
   },
   {
     q: "Which one is more accurate?",
@@ -67,13 +67,13 @@ const FAQ: FaqItem[] = [
 export const Route = createFileRoute("/statementdesk-alternative")({
   head: () => ({
     meta: [
-      { title: "StatementDesk Alternative — No Row Limits, On-Device | LedgerLocal" },
+      { title: "StatementDesk Alternative — No Row Limits, On-Device | BalanceExtract" },
       {
         name: "description",
         content:
-          "An honest comparison of LedgerLocal and StatementDesk. Same $19 entry price — but StatementDesk meters transaction rows and processes in the cloud, while LedgerLocal has no limits and never uploads your statement.",
+          "An honest comparison of BalanceExtract and StatementDesk. Same $19 entry price — but StatementDesk meters transaction rows and processes in the cloud, while BalanceExtract has no limits and never uploads your statement.",
       },
-      { property: "og:title", content: "StatementDesk Alternative — LedgerLocal" },
+      { property: "og:title", content: "StatementDesk Alternative — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -134,7 +134,7 @@ function Page() {
       </ArticleProse>
 
       <ArticleTable
-        headers={["", "StatementDesk", "LedgerLocal"]}
+        headers={["", "StatementDesk", "BalanceExtract"]}
         rows={[
           ["Metering", "Transaction rows per month", "No page or row limit"],
           ["Where processing runs", "Their servers", "Your browser"],
@@ -169,7 +169,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>When LedgerLocal fits better</ArticleH2>
+      <ArticleH2>When BalanceExtract fits better</ArticleH2>
       <LimitsList
         limits={[
           {

@@ -4,7 +4,7 @@
  * src/lib/pdf/ocr-pdf.ts) -- that implementation is mature and
  * production-tested (worker pool, per-page skip-if-already-has-text,
  * offscreen canvas), so this ports the same approach rather than
- * reinventing it, trimmed down to just what LedgerLocal needs: word-level
+ * reinventing it, trimmed down to just what BalanceExtract needs: word-level
  * text + position, not PDFMacro's fuller "rebuild a searchable PDF" output
  * (which needs pdf-lib and isn't relevant here -- we only need tokens to
  * feed into the existing transaction-parsing pipeline).

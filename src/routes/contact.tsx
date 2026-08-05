@@ -18,7 +18,7 @@ const MAX_ATTACHMENT_BYTES = 15 * 1024 * 1024; // 15 MB
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact Us — LedgerLocal" },
+      { title: "Contact Us — BalanceExtract" },
       {
         name: "description",
         content: "Get help with a statement that isn't converting correctly, a billing question, or anything else — search our help articles or reach the team directly.",

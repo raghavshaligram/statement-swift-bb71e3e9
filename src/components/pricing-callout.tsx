@@ -21,7 +21,7 @@ export function PricingCallout({ competitorModel }: { competitorModel: string })
     <div className="mx-auto max-w-3xl px-6 py-4">
       <div className="rounded-2xl border border-emerald/30 bg-emerald-soft/40 p-6">
         <div className="text-xs font-semibold uppercase tracking-wider text-emerald">
-          What LedgerLocal costs
+          What BalanceExtract costs
         </div>
 
         <div className="mt-4 grid gap-5 sm:grid-cols-2">

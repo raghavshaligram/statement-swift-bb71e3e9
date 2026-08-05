@@ -97,7 +97,7 @@ function PostCard({ post }: { post: Post }) {
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Guides & Converters — LedgerLocal" },
+      { title: "Guides & Converters — BalanceExtract" },
       {
         name: "description",
         content: "Bank-specific statement guides and free format converters (IIF, QIF, OFX, QFX, MT940, CSV) — all on-device, nothing uploaded.",

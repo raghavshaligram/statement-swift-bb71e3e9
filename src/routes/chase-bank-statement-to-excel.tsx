@@ -32,11 +32,11 @@ const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "What if my statement is a scan or a photo, not a proper PDF?",
-    a: "It still works — LedgerLocal falls back to on-device OCR automatically when a page has no real text layer, and flags it clearly in the results so you know to double-check those specific rows before exporting.",
+    a: "It still works — BalanceExtract falls back to on-device OCR automatically when a page has no real text layer, and flags it clearly in the results so you know to double-check those specific rows before exporting.",
   },
   {
     q: "Can I combine Chase statements with other banks?",
-    a: "Yes. Drop PDFs from Chase and any other bank into the same batch — LedgerLocal detects each one and processes them together into one export.",
+    a: "Yes. Drop PDFs from Chase and any other bank into the same batch — BalanceExtract detects each one and processes them together into one export.",
   },
   {
     q: "Is my Chase statement data safe?",
@@ -47,13 +47,13 @@ const FAQ: Array<{ q: string; a: string }> = [
 export const Route = createFileRoute("/chase-bank-statement-to-excel")({
   head: () => ({
     meta: [
-      { title: "Free Chase Bank Statement to Excel Converter — LedgerLocal" },
+      { title: "Free Chase Bank Statement to Excel Converter — BalanceExtract" },
       {
         name: "description",
         content:
           "Chase's own CSV/QFX/QBO export covers roughly the last 90 days. Convert any older Chase PDF statement to Excel or CSV on-device — free to try, nothing uploaded.",
       },
-      { property: "og:title", content: "Free Chase Bank Statement to Excel Converter — LedgerLocal" },
+      { property: "og:title", content: "Free Chase Bank Statement to Excel Converter — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -143,7 +143,7 @@ function Page() {
                 </li>
                 <li className="flex gap-3">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">2</span>
-                  LedgerLocal detects Chase's layout automatically, with a confidence score for anything worth double-checking.
+                  BalanceExtract detects Chase's layout automatically, with a confidence score for anything worth double-checking.
                 </li>
                 <li className="flex gap-3">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">3</span>
@@ -192,7 +192,7 @@ function Page() {
         articles={[
           { href: "/icici-bank-statement-to-excel", title: "ICICI Bank Statement to Excel", blurb: "A major Indian bank, same real gap." },
           { href: "/csv-to-iif", title: "CSV to IIF Converter", blurb: "For QuickBooks Desktop specifically." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

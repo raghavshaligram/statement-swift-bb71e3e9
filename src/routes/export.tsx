@@ -12,9 +12,9 @@ import { getConfidenceTier } from "@/lib/pdf/confidence";
 export const Route = createFileRoute("/export")({
   head: () => ({
     meta: [
-      { title: "Export · LedgerLocal" },
+      { title: "Export · BalanceExtract" },
       { name: "description", content: "Export to Excel, CSV, Tally XML, OFX, QIF, QBO." },
-      { property: "og:title", content: "Export · LedgerLocal" },
+      { property: "og:title", content: "Export · BalanceExtract" },
       { property: "og:description", content: "Six export formats. All generated on your device." },
     ],
   }),

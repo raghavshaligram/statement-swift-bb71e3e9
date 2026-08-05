@@ -31,7 +31,7 @@ import { Callout, TroubleshootGrid, NextSteps } from "@/components/guide-section
  *   bank statement excel                  90/mo   KD 12  $8.04
  *   convert pdf bank statement to excel   90/mo   KD 12  $8.12
  *
- * LedgerLocal had /bank-statement-to-csv, -ofx, -qif, -tally and two
+ * BalanceExtract had /bank-statement-to-csv, -ofx, -qif, -tally and two
  * BANK-SPECIFIC Excel pages (Chase, ICICI), but nothing generic for Excel.
  * The homepage title mentions Excel, which is not the same as a page that
  * answers the query.
@@ -86,13 +86,13 @@ const FAQ: Array<{ q: string; a: string }> = [
 export const Route = createFileRoute("/bank-statement-to-excel")({
   head: () => ({
     meta: [
-      { title: "Convert Bank Statement to Excel — Free, On-Device | LedgerLocal" },
+      { title: "Convert Bank Statement to Excel — Free, On-Device | BalanceExtract" },
       {
         name: "description",
         content:
           "Convert a bank statement PDF to Excel free. Real dates and numbers, one sheet per account, every row balance-checked. Runs in your browser — nothing is uploaded.",
       },
-      { property: "og:title", content: "Convert Bank Statement to Excel — LedgerLocal" },
+      { property: "og:title", content: "Convert Bank Statement to Excel — BalanceExtract" },
     ],
   }),
   component: Page,

@@ -57,12 +57,12 @@ const FAQ = [
 export const Route = createFileRoute("/ofx-to-qbo")({
   head: () => ({
     meta: [
-      { title: "Free OFX to QBO Converter — LedgerLocal" },
+      { title: "Free OFX to QBO Converter — BalanceExtract" },
       {
         name: "description",
         content: "Convert a bank-neutral OFX file into a QuickBooks-ready QBO file. Free, runs entirely in your browser — nothing uploaded.",
       },
-      { property: "og:title", content: "Free OFX to QBO Converter — LedgerLocal" },
+      { property: "og:title", content: "Free OFX to QBO Converter — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -146,7 +146,7 @@ function Page() {
         articles={[
           { href: "/qbo-to-csv", title: "QBO to CSV Converter", blurb: "Convert a QuickBooks QBO file back to plain CSV." },
           { href: "/qfx-to-qbo", title: "QFX to QBO Converter", blurb: "Same idea, specifically from Quicken's export format." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

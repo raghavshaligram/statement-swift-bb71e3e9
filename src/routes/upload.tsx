@@ -11,7 +11,7 @@ import { useStatementStore } from "@/lib/statement-store";
 export const Route = createFileRoute("/upload")({
   head: () => ({
     meta: [
-      { title: "Convert statements — LedgerLocal" },
+      { title: "Convert statements — BalanceExtract" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -52,9 +52,9 @@ function UploadPage() {
     // Confirmed that directly in testing before it shipped.
     if (authLoading || !user) return;
     try {
-      const pending = sessionStorage.getItem("ledgerlocal.postAuthRedirect");
+      const pending = sessionStorage.getItem("balanceextract.postAuthRedirect");
       if (pending && pending !== "/upload") {
-        sessionStorage.removeItem("ledgerlocal.postAuthRedirect");
+        sessionStorage.removeItem("balanceextract.postAuthRedirect");
         navigate({ to: pending, replace: true });
       }
     } catch {

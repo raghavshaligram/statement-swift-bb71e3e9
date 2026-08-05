@@ -57,7 +57,7 @@ const FAQ = [
 export const Route = createFileRoute("/qfx-to-csv")({
   head: () => ({
     meta: [
-      { title: "Free QFX to CSV Converter — LedgerLocal" },
+      { title: "Free QFX to CSV Converter — BalanceExtract" },
       { name: "description", content: "Convert a QFX (Quicken) file to CSV before your Quicken version stops accepting it. Free, runs entirely in your browser." },
     ],
   }),
@@ -136,7 +136,7 @@ function Page() {
         articles={[
           { href: "/ofx-to-csv", title: "OFX to CSV Converter", blurb: "The bank-neutral version of this same format." },
           { href: "/csv-to-qif", title: "CSV to QIF Converter", blurb: "QIF is the one Quicken format that also preserves categories." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

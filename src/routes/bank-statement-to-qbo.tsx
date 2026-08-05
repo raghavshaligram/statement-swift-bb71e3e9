@@ -31,7 +31,7 @@ import { Callout, TroubleshootGrid, NextSteps } from "@/components/guide-section
  * combined -- these are bookkeepers and accountants with billable time on the
  * line, which is why the ad market prices them this way.
  *
- * LedgerLocal had /bank-statement-to-csv, -ofx, -qif, -tally and -excel but
+ * BalanceExtract had /bank-statement-to-csv, -ofx, -qif, -tally and -excel but
  * nothing for QBO, despite exportToQbo existing in the codebase the whole
  * time. A dead link to this exact path was caught by check:links days ago and
  * the link was fixed rather than the gap.
@@ -80,13 +80,13 @@ const FAQ: Array<{ q: string; a: string }> = [
 export const Route = createFileRoute("/bank-statement-to-qbo")({
   head: () => ({
     meta: [
-      { title: "Convert Bank Statement to QBO — Import into QuickBooks | LedgerLocal" },
+      { title: "Convert Bank Statement to QBO — Import into QuickBooks | BalanceExtract" },
       {
         name: "description",
         content:
           "Convert a bank statement PDF to a QBO file and import it into QuickBooks Online or Desktop. FITIDs preserved so nothing duplicates. Runs in your browser — nothing uploaded.",
       },
-      { property: "og:title", content: "Bank Statement to QBO Converter — LedgerLocal" },
+      { property: "og:title", content: "Bank Statement to QBO Converter — BalanceExtract" },
     ],
   }),
   component: Page,

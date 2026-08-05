@@ -28,19 +28,19 @@ const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "So when do I actually need a converter?",
-    a: "When you only have a PDF and can't (or don't want to) re-export from online banking — an old statement someone emailed you, a closed account, or a paper statement you scanned. LedgerLocal reads the PDF directly and gives you CSV, Excel, or other formats from that.",
+    a: "When you only have a PDF and can't (or don't want to) re-export from online banking — an old statement someone emailed you, a closed account, or a paper statement you scanned. BalanceExtract reads the PDF directly and gives you CSV, Excel, or other formats from that.",
   },
   {
     q: "Will the dates come out right, or will Excel flip day and month?",
-    a: "NatWest statements use DD/MM/YYYY. LedgerLocal infers the date order from the statement itself and normalises output dates to ISO (YYYY-MM-DD) by default, which Excel reads unambiguously regardless of your system's regional settings.",
+    a: "NatWest statements use DD/MM/YYYY. BalanceExtract infers the date order from the statement itself and normalises output dates to ISO (YYYY-MM-DD) by default, which Excel reads unambiguously regardless of your system's regional settings.",
   },
   {
     q: "What if my statement is a scan or a photo, not a proper PDF?",
-    a: "It still works — LedgerLocal falls back to on-device OCR automatically when a page has no real text layer, and flags it clearly in the results so you know to double-check those specific rows before exporting.",
+    a: "It still works — BalanceExtract falls back to on-device OCR automatically when a page has no real text layer, and flags it clearly in the results so you know to double-check those specific rows before exporting.",
   },
   {
     q: "Can I combine NatWest statements with other banks?",
-    a: "Yes. Drop PDFs from NatWest and any other bank into the same batch — LedgerLocal detects each one and processes them together into one export.",
+    a: "Yes. Drop PDFs from NatWest and any other bank into the same batch — BalanceExtract detects each one and processes them together into one export.",
   },
   {
     q: "Does this work for NatWest business accounts, not just personal?",
@@ -55,13 +55,13 @@ const FAQ: Array<{ q: string; a: string }> = [
 export const Route = createFileRoute("/natwest-bank-statement-to-csv")({
   head: () => ({
     meta: [
-      { title: "NatWest Bank Statement to CSV: Formats and Limits — LedgerLocal" },
+      { title: "NatWest Bank Statement to CSV: Formats and Limits — BalanceExtract" },
       {
         name: "description",
         content:
           "NatWest lets you export CSV, Excel, and OFX directly from online banking. Here's exactly what the export contains, where it falls short, and how to convert older PDF statements.",
       },
-      { property: "og:title", content: "NatWest Bank Statement to CSV: Formats and Limits — LedgerLocal" },
+      { property: "og:title", content: "NatWest Bank Statement to CSV: Formats and Limits — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -103,7 +103,7 @@ function Page() {
         but credit card transaction export is limited to about 3 months, and the CSV's comma-delimited
         version has a documented Excel-opening issue (NatWest's own fix: try the tab-delimited download
         instead). For anything older, a closed account, or a scanned statement, convert the PDF with
-        LedgerLocal instead of typing it in by hand.
+        BalanceExtract instead of typing it in by hand.
       </QuickSummary>
 
       <ArticleTOC
@@ -178,8 +178,8 @@ function Page() {
       <NumberedSteps
         steps={[
           { title: "Download the PDF statements from NatWest", body: "Log in, open the account, and download each statement as a PDF from the Statements section." },
-          { title: "Upload to LedgerLocal", body: "Drop your NatWest PDFs into the converter — batch upload works, and each statement is processed on its own." },
-          { title: "Review, then export", body: "LedgerLocal detects NatWest's layout automatically and shows every extracted transaction with a confidence score before you export. Export to CSV, Excel, Tally XML, or IIF." },
+          { title: "Upload to BalanceExtract", body: "Drop your NatWest PDFs into the converter — batch upload works, and each statement is processed on its own." },
+          { title: "Review, then export", body: "BalanceExtract detects NatWest's layout automatically and shows every extracted transaction with a confidence score before you export. Export to CSV, Excel, Tally XML, or IIF." },
         ]}
       />
 
@@ -187,12 +187,12 @@ function Page() {
       <ArticleProse>
         <p>
           <strong className="text-ink">QuickBooks Desktop:</strong> QuickBooks Desktop has no native CSV import
-          for transactions. Export IIF from LedgerLocal instead — File &gt; Utilities &gt; Import &gt; IIF Files
+          for transactions. Export IIF from BalanceExtract instead — File &gt; Utilities &gt; Import &gt; IIF Files
           reads it directly.
         </p>
         <p>
           <strong className="text-ink">Excel:</strong> If NatWest's own CSV opens with everything in one column,
-          that's the tab-delimiter issue above, not a problem with LedgerLocal's own CSV or Excel export, which
+          that's the tab-delimiter issue above, not a problem with BalanceExtract's own CSV or Excel export, which
           opens correctly either way.
         </p>
         <p>
@@ -206,8 +206,8 @@ function Page() {
 
       <ArticleCta
         heading="Ready to Get Your NatWest Data Into a Spreadsheet?"
-        body="Use NatWest's own export for recent activity, and LedgerLocal for everything else. Free to try."
-        buttonLabel="Try LedgerLocal Free"
+        body="Use NatWest's own export for recent activity, and BalanceExtract for everything else. Free to try."
+        buttonLabel="Try BalanceExtract Free"
       />
 
       <ComparisonLinks />
@@ -217,7 +217,7 @@ function Page() {
           { href: "/lloyds-bank-statement-to-csv", title: "Lloyds Bank Statement to CSV", blurb: "How Lloyds' native export compares, and converting older PDFs." },
           { href: "/csv-to-ofx", title: "CSV to OFX Converter", blurb: "For accounting software that prefers a real transaction feed over a spreadsheet." },
           { href: "/csv-to-iif", title: "CSV to IIF Converter for QuickBooks Desktop", blurb: "Turn any CSV export into a QuickBooks Desktop-ready IIF file." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

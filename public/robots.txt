@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ledgerlocal.com/sitemap.xml
+Sitemap: https://balanceextract.com/sitemap.xml

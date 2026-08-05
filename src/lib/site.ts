@@ -14,7 +14,7 @@
  * 301 redirects from the old host if it was ever indexed, and resubmitting the
  * sitemap in Search Console. The constant is the easy part.
  */
-export const SITE_ORIGIN = "https://ledgerlocal.com";
+export const SITE_ORIGIN = "https://balanceextract.com";
 
 /** Bare host, for copy that shouldn't show a scheme. */
 export const SITE_HOST = SITE_ORIGIN.replace(/^https?:\/\//, "");

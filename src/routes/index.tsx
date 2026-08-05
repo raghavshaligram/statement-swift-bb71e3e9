@@ -34,13 +34,13 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "LedgerLocal — Free Bank Statement Converter (PDF to CSV & Excel)" },
+      { title: "BalanceExtract — Free Bank Statement Converter (PDF to CSV & Excel)" },
       {
         name: "description",
         content:
           "Close your books without retyping transactions — the bank statement to Excel software that works everywhere. Convert PDF bank statements to CSV and Excel on your device, free to try, unlimited pages on Pro. Works with Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more.",
       },
-      { property: "og:title", content: "LedgerLocal — Free Bank Statement Converter (PDF to CSV & Excel)" },
+      { property: "og:title", content: "BalanceExtract — Free Bank Statement Converter (PDF to CSV & Excel)" },
       {
         property: "og:description",
         content: "100% on-device. Unlimited pages on Pro. Real software for real accountants.",
@@ -113,10 +113,10 @@ function Landing() {
     // that rather than dropping them on the converter.
     let target = "/upload";
     try {
-      const stashed = sessionStorage.getItem("ledgerlocal.postAuthRedirect");
+      const stashed = sessionStorage.getItem("balanceextract.postAuthRedirect");
       if (stashed) {
         target = stashed;
-        sessionStorage.removeItem("ledgerlocal.postAuthRedirect");
+        sessionStorage.removeItem("balanceextract.postAuthRedirect");
       }
     } catch {
       /* fall through to the default */
@@ -267,7 +267,7 @@ function Landing() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
               Any tool can pull text off a PDF. The question that matters is whether the figures are right —
-              so LedgerLocal checks its own work and tells you where it isn't sure.
+              so BalanceExtract checks its own work and tells you where it isn't sure.
             </p>
           </ScrollReveal>
 
@@ -369,7 +369,7 @@ function Landing() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-background/70">
               Competing "converters" upload your PDF to their servers, parse it there, then email
-              you the result. LedgerLocal parses everything locally using WebAssembly — the file never
+              you the result. BalanceExtract parses everything locally using WebAssembly — the file never
               touches the network, even though the page itself is a normal web app you load online.
             </p>
             <ul className="mt-6 space-y-3 text-sm">
@@ -389,13 +389,13 @@ function Landing() {
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
             <div className="rounded-lg border border-white/10 bg-black/40 p-4 font-mono text-xs text-emerald/90">
               <div className="mb-2 text-background/40">// network activity during conversion</div>
-              <div>[ledgerlocal] loading pdf.wasm ................. ok</div>
-              <div>[ledgerlocal] parsing hdfc-statement-oct.pdf</div>
-              <div>[ledgerlocal] page 1 → 14 transactions</div>
-              <div>[ledgerlocal] page 2 → 22 transactions</div>
-              <div>[ledgerlocal] ...</div>
-              <div className="mt-2 text-emerald">[ledgerlocal] uploads to server: 0</div>
-              <div className="text-emerald">[ledgerlocal] pdf leaves device: never</div>
+              <div>[balanceextract] loading pdf.wasm ................. ok</div>
+              <div>[balanceextract] parsing hdfc-statement-oct.pdf</div>
+              <div>[balanceextract] page 1 → 14 transactions</div>
+              <div>[balanceextract] page 2 → 22 transactions</div>
+              <div>[balanceextract] ...</div>
+              <div className="mt-2 text-emerald">[balanceextract] uploads to server: 0</div>
+              <div className="text-emerald">[balanceextract] pdf leaves device: never</div>
             </div>
             <div className="mt-4 flex items-center gap-2 text-xs text-background/60">
               <Lock className="h-3.5 w-3.5" />
@@ -495,7 +495,7 @@ function Landing() {
                 <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald/20 blur-3xl" aria-hidden />
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald">
-                    LedgerLocal Pro
+                    BalanceExtract Pro
                   </span>
                   <span className="rounded-full bg-emerald/20 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald">
                     No page cap

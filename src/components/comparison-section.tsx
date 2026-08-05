@@ -1,5 +1,5 @@
 /**
- * Section 6: "Manual entry vs. LedgerLocal" comparison.
+ * Section 6: "Manual entry vs. BalanceExtract" comparison.
  */
 import { X, Check, ArrowRight } from "lucide-react";
 import { ScrollReveal, ScrollRevealGroup, ScrollRevealItem } from "@/components/scroll-reveal";
@@ -18,14 +18,14 @@ export function ComparisonSection() {
       <div className="mx-auto max-w-5xl px-6">
         <ScrollReveal className="mx-auto max-w-2xl text-center">
           <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
-            Manual entry vs. LedgerLocal
+            Manual entry vs. BalanceExtract
           </h2>
         </ScrollReveal>
 
         <div className="mt-12 overflow-hidden rounded-2xl border border-border bg-card">
           <div className="grid grid-cols-2 border-b border-border text-center text-xs font-semibold uppercase tracking-wider">
             <div className="border-r border-border px-4 py-3 text-muted-foreground">Manual entry</div>
-            <div className="px-4 py-3 text-emerald">With LedgerLocal</div>
+            <div className="px-4 py-3 text-emerald">With BalanceExtract</div>
           </div>
           <ScrollRevealGroup>
             {ROWS.map(([left, right]) => (

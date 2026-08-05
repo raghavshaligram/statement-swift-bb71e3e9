@@ -58,7 +58,7 @@ export function SiteFooter() {
             <div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
               <FileSpreadsheet className="h-3.5 w-3.5" />
             </div>
-            <span className="font-semibold">LedgerLocal</span>
+            <span className="font-semibold">BalanceExtract</span>
           </div>
           <p className="mt-3 max-w-xs text-xs leading-relaxed">
             Bank statement to Excel software. Processed on your device — never uploaded to a server.
@@ -102,7 +102,7 @@ export function SiteFooter() {
       </div>
 
       <div className="border-t border-border/60 px-6 py-4 text-center text-xs text-muted-foreground">
-        © {new Date().getFullYear()} LedgerLocal. Your statements never leave your device.
+        © {new Date().getFullYear()} BalanceExtract. Your statements never leave your device.
       </div>
     </footer>
   );

@@ -28,7 +28,7 @@ const COMPARISONS = [
 ];
 
 export function ComparisonLinks({
-  heading = "How LedgerLocal compares",
+  heading = "How BalanceExtract compares",
   blurb = "Honest side-by-side write-ups, including where each of them is the better choice.",
 }: {
   heading?: string;
@@ -49,7 +49,7 @@ export function ComparisonLinks({
             <span className={`absolute inset-y-0 left-0 w-1 ${accent}`} aria-hidden />
             <div className="min-w-0 flex-1 pl-2">
               <div className="text-sm font-semibold text-ink">
-                LedgerLocal <span className="text-muted-foreground">vs</span> {label}
+                BalanceExtract <span className="text-muted-foreground">vs</span> {label}
               </div>
               <div className="mt-0.5 text-xs text-muted-foreground">{note}</div>
             </div>

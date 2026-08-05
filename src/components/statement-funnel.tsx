@@ -51,7 +51,7 @@ export function StatementFunnel({
             <p className="mt-2 text-sm leading-relaxed text-ink/80">
               A {sourceFormat} file means your bank gave you structured data — which most banks only
               do for the last few months. Beyond that you get a PDF, and a PDF won&apos;t open in
-              Excel. LedgerLocal reads those directly: it works out the column layout from the
+              Excel. BalanceExtract reads those directly: it works out the column layout from the
               document itself, handles scanned statements with OCR, checks that every running
               balance reconciles, and flags any row it isn&apos;t confident about before you export.
             </p>

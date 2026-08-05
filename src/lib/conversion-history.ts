@@ -29,6 +29,15 @@ export type ConversionRecord = {
   at: string;
 };
 
+// NOTE: deliberately NOT renamed with the balanceextract rebrand.
+//
+// This is a localStorage key, not copy. Changing it would orphan the stored
+// history of every existing user -- their past conversions would silently
+// vanish rather than migrate. The old namespace is cosmetically wrong and
+// functionally correct, which is the right trade.
+//
+// If it ever does need renaming, it needs a migration that reads the old key,
+// writes the new one, then deletes the old -- not a find-and-replace.
 const KEY = "ledgerlocal.conversion-history.v1";
 /** Cap the log so it can't grow without bound in localStorage. */
 const MAX_ENTRIES = 100;

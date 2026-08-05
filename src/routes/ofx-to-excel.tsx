@@ -5,7 +5,7 @@ import { FormatGuide, type FormatGuideConfig } from "@/components/format-guide";
  * The OFX-to-Excel cluster is smaller per term than QBO or QFX but broader:
  * "ofx to excel converter free", "ofx file to excel", "ofx to excel converter"
  * and "ofx to excel" together carry a few hundred searches a month, all at
- * keyword difficulty 0-5. LedgerLocal ranked for none of them.
+ * keyword difficulty 0-5. BalanceExtract ranked for none of them.
  *
  * OFX is the bank-neutral case -- the open standard the other two are built
  * on -- so the copy here leans on that rather than on a vendor.
@@ -16,7 +16,7 @@ const config: FormatGuideConfig = {
   title: "OFX to Excel: How to Open an OFX File in Excel",
   subtitle:
     "Excel can't read .ofx files natively. Here are three ways to get the data into a spreadsheet — one takes about ten seconds.",
-  metaTitle: "OFX to Excel — Free Converter & Guide | LedgerLocal",
+  metaTitle: "OFX to Excel — Free Converter & Guide | BalanceExtract",
   metaDescription:
     "Excel can't open .ofx files. Convert Open Financial Exchange data to an Excel workbook in your browser — free, no signup, nothing uploaded.",
   origin:

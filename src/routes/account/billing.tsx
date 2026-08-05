@@ -8,8 +8,8 @@ import { useSubscription } from "@/hooks/use-subscription";
 export const Route = createFileRoute("/account/billing")({
   head: () => ({
     meta: [
-      { title: "Billing & subscription — LedgerLocal" },
-      { name: "description", content: "Manage your LedgerLocal subscription, page usage, and upgrade to Pro for unlimited pages." },
+      { title: "Billing & subscription — BalanceExtract" },
+      { name: "description", content: "Manage your BalanceExtract subscription, page usage, and upgrade to Pro for unlimited pages." },
       { name: "robots", content: "noindex" },
     ],
   }),

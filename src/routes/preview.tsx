@@ -14,9 +14,9 @@ import type { Transaction } from "@/lib/statement-store";
 export const Route = createFileRoute("/preview")({
   head: () => ({
     meta: [
-      { title: "Preview & edit · LedgerLocal" },
+      { title: "Preview & edit · BalanceExtract" },
       { name: "description", content: "Review extracted transactions before export." },
-      { property: "og:title", content: "Preview & edit · LedgerLocal" },
+      { property: "og:title", content: "Preview & edit · BalanceExtract" },
       { property: "og:description", content: "Editable transaction table with inline correction." },
     ],
   }),

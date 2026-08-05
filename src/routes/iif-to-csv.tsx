@@ -27,7 +27,7 @@ function outputName(fileName: string) {
 const FAQ = [
   { q: "Why would I need to go from IIF back to CSV?", a: "Common when you're migrating off QuickBooks Desktop, sharing data with someone who doesn't have QuickBooks, or auditing historical exports in a spreadsheet." },
   { q: "Where do I get an IIF file to convert?", a: "IIF is QuickBooks Desktop's own export/import format — you'd have one if you or your accountant exported transactions from QuickBooks Desktop." },
-  { q: "What if my IIF file has multiple accounts or a different column order?", a: "Handled. Real QuickBooks exports can redefine the field order partway through the file (e.g. once per account section) — LedgerLocal reads each section's own header line rather than assuming one fixed layout for the whole file." },
+  { q: "What if my IIF file has multiple accounts or a different column order?", a: "Handled. Real QuickBooks exports can redefine the field order partway through the file (e.g. once per account section) — BalanceExtract reads each section's own header line rather than assuming one fixed layout for the whole file." },
   { q: "What if a row is missing a date or amount?", a: "It's skipped, and you're told exactly how many rows were skipped and why — never silently dropped or guessed at." },
   { q: "Is my data uploaded anywhere?", a: "No. The conversion runs entirely in your browser — nothing is sent to a server." },
 ];
@@ -35,7 +35,7 @@ const FAQ = [
 export const Route = createFileRoute("/iif-to-csv")({
   head: () => ({
     meta: [
-      { title: "Free IIF to CSV Converter — LedgerLocal" },
+      { title: "Free IIF to CSV Converter — BalanceExtract" },
       { name: "description", content: "Convert a QuickBooks Desktop IIF file to CSV. Free, unlimited, runs entirely in your browser." },
     ],
   }),
@@ -125,7 +125,7 @@ function Page() {
         articles={[
           { href: "/csv-to-iif", title: "CSV to IIF Converter", blurb: "Convert a plain CSV into a QuickBooks Desktop-ready IIF file." },
           { href: "/qif-to-csv", title: "QIF to CSV Converter", blurb: "Same idea for a Quicken export." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

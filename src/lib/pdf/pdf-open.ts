@@ -3,9 +3,9 @@
  *
  * Ported from PDFMacro (counsel-s-lovable, src/lib/pdf/pdf-open.ts), where
  * this has been shipping and debugged in production. Adapted here to use
- * LedgerLocal's own loadPdfJs loader rather than PDFMacro's worker module.
+ * BalanceExtract's own loadPdfJs loader rather than PDFMacro's worker module.
  *
- * Solves a real gap: LedgerLocal previously reported one vague message --
+ * Solves a real gap: BalanceExtract previously reported one vague message --
  * "It may be password-protected, scanned/image-only, or corrupted" -- for
  * three completely different failures, and had no way to actually open a
  * password-protected PDF at all. That's a hard blocker for Indian bank

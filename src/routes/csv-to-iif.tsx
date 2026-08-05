@@ -57,7 +57,7 @@ const FAQ = [
 export const Route = createFileRoute("/csv-to-iif")({
   head: () => ({
     meta: [
-      { title: "Free CSV to IIF Converter for QuickBooks Desktop — LedgerLocal" },
+      { title: "Free CSV to IIF Converter for QuickBooks Desktop — BalanceExtract" },
       {
         name: "description",
         content: "QuickBooks Desktop has no native CSV import. Free CSV to IIF converter — auto-detects your columns, runs entirely in your browser.",
@@ -158,7 +158,7 @@ function Page() {
           { href: "/iif-to-csv", title: "IIF to CSV Converter", blurb: "Convert a QuickBooks Desktop export back to plain CSV." },
           { href: "/csv-to-ofx", title: "CSV to OFX Converter", blurb: "For QuickBooks Online and other accounting software." },
           { href: "/lloyds-bank-statement-to-csv", title: "Lloyds Bank Statement to CSV", blurb: "Get your CSV in the first place from a Lloyds PDF statement." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

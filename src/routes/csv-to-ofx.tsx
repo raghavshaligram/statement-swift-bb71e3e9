@@ -33,7 +33,7 @@ const FAQ = [
 export const Route = createFileRoute("/csv-to-ofx")({
   head: () => ({
     meta: [
-      { title: "Free CSV to OFX Converter — LedgerLocal" },
+      { title: "Free CSV to OFX Converter — BalanceExtract" },
       { name: "description", content: "Free CSV to OFX converter for QuickBooks or Quicken import. Runs entirely in your browser." },
     ],
   }),
@@ -124,7 +124,7 @@ function Page() {
         articles={[
           { href: "/ofx-to-csv", title: "OFX to CSV Converter", blurb: "Convert an OFX or QFX file back to plain CSV." },
           { href: "/csv-to-iif", title: "CSV to IIF Converter", blurb: "For QuickBooks Desktop specifically." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

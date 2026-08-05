@@ -36,7 +36,7 @@ const FAQ: FaqItem[] = [
   },
   {
     q: "Can I convert PDF bank statements too?",
-    a: "Yes, and this is the main functional difference. ProperSoft's converters work on structured financial files. LedgerLocal reads those same formats and also parses PDF statements directly, including scanned ones via OCR.",
+    a: "Yes, and this is the main functional difference. ProperSoft's converters work on structured financial files. BalanceExtract reads those same formats and also parses PDF statements directly, including scanned ones via OCR.",
   },
   {
     q: "Is there a trial limit on the number of transactions?",
@@ -47,7 +47,7 @@ const FAQ: FaqItem[] = [
     a: "No. It runs in a browser tab on any operating system. ProperSoft ships desktop applications for Windows and Mac, so their tools are tied to a machine and need installing and updating.",
   },
   {
-    q: "How much does LedgerLocal cost?",
+    q: "How much does BalanceExtract cost?",
     a: "$19 a month, flat, with no page limit and every export format included in that one price rather than sold per conversion pair.",
   },
   {
@@ -59,13 +59,13 @@ const FAQ: FaqItem[] = [
 export const Route = createFileRoute("/propersoft-alternative")({
   head: () => ({
     meta: [
-      { title: "ProperSoft Alternative — One Converter, No Install | LedgerLocal" },
+      { title: "ProperSoft Alternative — One Converter, No Install | BalanceExtract" },
       {
         name: "description",
         content:
-          "An honest comparison of LedgerLocal and ProperSoft. ProperSoft sells a desktop app per conversion pair; LedgerLocal reads every format — and PDF statements — in one browser-based converter.",
+          "An honest comparison of BalanceExtract and ProperSoft. ProperSoft sells a desktop app per conversion pair; BalanceExtract reads every format — and PDF statements — in one browser-based converter.",
       },
-      { property: "og:title", content: "ProperSoft Alternative — LedgerLocal" },
+      { property: "og:title", content: "ProperSoft Alternative — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -91,7 +91,7 @@ function Page() {
         ProperSoft have made accountant-focused conversion utilities for years and they do the job
         they set out to do. Two structural differences matter: they sell a separate desktop
         application for each conversion pair, and their converters work on structured financial
-        files rather than PDF statements. LedgerLocal handles every direction in one browser-based
+        files rather than PDF statements. BalanceExtract handles every direction in one browser-based
         converter, and reads PDFs as well.
       </QuickSummary>
 
@@ -124,7 +124,7 @@ function Page() {
       </ArticleProse>
 
       <ArticleTable
-        headers={["", "ProperSoft", "LedgerLocal"]}
+        headers={["", "ProperSoft", "BalanceExtract"]}
         rows={[
           ["Product model", "One app per conversion pair", "One converter, all directions"],
           ["PDF bank statements", "Not the focus — structured files", "Yes, including scanned via OCR"],
@@ -158,7 +158,7 @@ function Page() {
         ]}
       />
 
-      <ArticleH2>When LedgerLocal fits better</ArticleH2>
+      <ArticleH2>When BalanceExtract fits better</ArticleH2>
       <LimitsList
         limits={[
           {

@@ -34,7 +34,7 @@ const FAQ = [
 export const Route = createFileRoute("/qif-to-csv")({
   head: () => ({
     meta: [
-      { title: "Free QIF to CSV Converter — LedgerLocal" },
+      { title: "Free QIF to CSV Converter — BalanceExtract" },
       { name: "description", content: "Convert a Quicken QIF file to CSV. Free, unlimited, runs entirely in your browser." },
     ],
   }),
@@ -123,7 +123,7 @@ function Page() {
         articles={[
           { href: "/csv-to-qif", title: "CSV to QIF Converter", blurb: "Convert a plain CSV into a Quicken-ready QIF file." },
           { href: "/qfx-to-csv", title: "QFX to CSV Converter", blurb: "For when your Quicken version is too old to accept QFX anymore." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

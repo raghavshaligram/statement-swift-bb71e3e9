@@ -29,7 +29,7 @@ const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "What if my statement is a scan or a photo, not a proper PDF?",
-    a: "It still works — LedgerLocal falls back to on-device OCR automatically when a page has no real text layer. Signing in is required for scans and photos specifically, since OCR takes real processing time.",
+    a: "It still works — BalanceExtract falls back to on-device OCR automatically when a page has no real text layer. Signing in is required for scans and photos specifically, since OCR takes real processing time.",
   },
   {
     q: "Is my statement data safe?",
@@ -40,12 +40,12 @@ const FAQ: Array<{ q: string; a: string }> = [
 export const Route = createFileRoute("/bank-statement-to-tally")({
   head: () => ({
     meta: [
-      { title: "Free Bank Statement to Tally XML Converter — LedgerLocal" },
+      { title: "Free Bank Statement to Tally XML Converter — BalanceExtract" },
       {
         name: "description",
         content: "Convert any bank's PDF statement to Tally-ready XML. Free to try, on-device — nothing uploaded.",
       },
-      { property: "og:title", content: "Free Bank Statement to Tally XML Converter — LedgerLocal" },
+      { property: "og:title", content: "Free Bank Statement to Tally XML Converter — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -86,7 +86,7 @@ function Page() {
       <NumberedSteps
         steps={[
           { title: "Download the PDF statement from your bank", body: "No account needed for up to 6 pages." },
-          { title: "Upload to LedgerLocal", body: "Named detection recognizes 23+ major banks automatically; any other bank falls back to the generic layout parser." },
+          { title: "Upload to BalanceExtract", body: "Named detection recognizes 23+ major banks automatically; any other bank falls back to the generic layout parser." },
           { title: "Review the extracted transactions", body: "Every row gets a confidence score, so anything worth double-checking is flagged before you export." },
           { title: "Export as Tally XML", body: "Import the resulting file into Tally via Gateway of Tally, Import Data, Vouchers." },
         ]}
@@ -111,7 +111,7 @@ function Page() {
         articles={[
           { href: "/icici-bank-statement-to-excel", title: "ICICI Bank Statement to Excel", blurb: "A major Indian bank many Tally users work with." },
           { href: "/bank-statement-to-ofx", title: "Bank Statement to OFX", blurb: "For QuickBooks, Xero, and other accounting software." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

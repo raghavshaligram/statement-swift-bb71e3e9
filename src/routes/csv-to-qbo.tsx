@@ -45,12 +45,12 @@ const FAQ = [
 export const Route = createFileRoute("/csv-to-qbo")({
   head: () => ({
     meta: [
-      { title: "Free CSV to QBO Converter — LedgerLocal" },
+      { title: "Free CSV to QBO Converter — BalanceExtract" },
       {
         name: "description",
         content: "Convert any CSV to a QuickBooks-ready QBO file. Free, runs entirely in your browser — nothing uploaded.",
       },
-      { property: "og:title", content: "Free CSV to QBO Converter — LedgerLocal" },
+      { property: "og:title", content: "Free CSV to QBO Converter — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -137,7 +137,7 @@ function Page() {
         articles={[
           { href: "/qbo-to-csv", title: "QBO to CSV Converter", blurb: "Convert a QuickBooks QBO export back to plain CSV." },
           { href: "/csv-to-iif", title: "CSV to IIF Converter", blurb: "For QuickBooks Desktop's other native import format." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

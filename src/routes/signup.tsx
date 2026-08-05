@@ -11,9 +11,9 @@ export const Route = createFileRoute("/signup")({
   }),
   head: () => ({
     meta: [
-      { title: "Create your account — LedgerLocal" },
-      { name: "description", content: "Start free with LedgerLocal. Convert bank statements to Excel on-device — no credit card required." },
-      { property: "og:title", content: "Create your account — LedgerLocal" },
+      { title: "Create your account — BalanceExtract" },
+      { name: "description", content: "Start free with BalanceExtract. Convert bank statements to Excel on-device — no credit card required." },
+      { property: "og:title", content: "Create your account — BalanceExtract" },
       { property: "og:description", content: "Start free — no credit card required." },
       { property: "og:url", content: "/signup" },
       { name: "robots", content: "noindex" },
@@ -44,7 +44,7 @@ function SignUpPage() {
   useEffect(() => {
     try {
       if (destination && destination !== "/upload") {
-        sessionStorage.setItem("ledgerlocal.postAuthRedirect", destination);
+        sessionStorage.setItem("balanceextract.postAuthRedirect", destination);
       }
     } catch {
       /* storage blocked -- falls back to the default destination */
@@ -89,7 +89,7 @@ function SignUpPage() {
     // survive the round-trip.
     try {
       if (destination && destination !== "/upload") {
-        sessionStorage.setItem("ledgerlocal.postAuthRedirect", destination);
+        sessionStorage.setItem("balanceextract.postAuthRedirect", destination);
       }
     } catch {
       /* storage can be blocked; falls back to the default destination */

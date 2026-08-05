@@ -7,13 +7,13 @@ import { ComparisonLinks } from "@/components/comparison-links";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — LedgerLocal" },
+      { title: "Pricing — BalanceExtract" },
       {
         name: "description",
         content:
           "One flat Pro price. Genuinely unlimited pages. Convert PDF bank statements to Excel, CSV, Tally, OFX, QIF, and QBO — entirely on your device.",
       },
-      { property: "og:title", content: "Pricing — LedgerLocal" },
+      { property: "og:title", content: "Pricing — BalanceExtract" },
       { property: "og:description", content: "Flat monthly Pro plan. Unlimited pages. No credits, no caps." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -38,7 +38,7 @@ const PRO_ROWS: string[] = [
 ];
 
 const COMPARISON_COLS: Array<{ key: string; label: string; highlight?: boolean }> = [
-  { key: "ll", label: "LedgerLocal", highlight: true },
+  { key: "ll", label: "BalanceExtract", highlight: true },
   { key: "capy", label: "CapyParse" },
   { key: "docu", label: "DocuClipper" },
   { key: "bsc", label: "bankstatementconverter.com" },
@@ -190,7 +190,7 @@ function Pricing() {
             <div className="absolute right-6 top-6 inline-flex items-center gap-1 rounded-full bg-emerald px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
               <Star className="h-3 w-3" /> Best value
             </div>
-            <div className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald">LedgerLocal Pro</div>
+            <div className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald">BalanceExtract Pro</div>
             <p className="mt-1 text-sm text-background/70">For unlimited page counts and every export format</p>
             <div className="mt-4 flex items-baseline gap-2">
               <span className="font-mono text-4xl font-bold">$19</span>
@@ -222,7 +222,7 @@ function Pricing() {
               Every competitor here caps your pages and charges more as you grow. We don't.
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-center text-sm leading-relaxed text-accent-foreground">
-              LedgerLocal's Pro tier is <strong className="font-bold text-ink">one flat price</strong>,{" "}
+              BalanceExtract's Pro tier is <strong className="font-bold text-ink">one flat price</strong>,{" "}
               <strong className="font-bold text-ink">genuinely unlimited pages</strong> — not a bigger number,
               not a higher tier to unlock. It's the one structural thing none of them do.
             </p>
@@ -295,7 +295,7 @@ function Pricing() {
       {/* Why choose */}
       <section className="border-b border-border py-20">
         <div className="mx-auto max-w-5xl px-6">
-          <h2 className="text-center text-3xl font-bold tracking-tight text-ink">Why choose LedgerLocal</h2>
+          <h2 className="text-center text-3xl font-bold tracking-tight text-ink">Why choose BalanceExtract</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {[
               [

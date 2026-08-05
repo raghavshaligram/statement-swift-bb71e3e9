@@ -26,7 +26,7 @@ import { ArticleH2, ArticleProse, ConverterEmbed } from "@/components/article-se
  * Two reasons this page exists at all:
  *
  * 1. "qbo to excel converter" is ~1,000 searches/month at keyword difficulty
- *    0, and LedgerLocal had no page for it. A competitor currently ranks #1
+ *    0, and BalanceExtract had no page for it. A competitor currently ranks #1
  *    from a page that isn't even primarily about Excel.
  *
  * 2. Tool pages cannot rank for question-shaped queries. There is nowhere on a
@@ -85,7 +85,7 @@ export const Route = createFileRoute("/qbo-to-excel")({
         content:
           "Excel can't open .qbo files. Three ways to get QuickBooks Web Connect data into a spreadsheet, including a free browser-based converter that never uploads your file.",
       },
-      { property: "og:title", content: "QBO to Excel — Free Converter & Guide | LedgerLocal" },
+      { property: "og:title", content: "QBO to Excel — Free Converter & Guide | BalanceExtract" },
     ],
   }),
   component: Page,

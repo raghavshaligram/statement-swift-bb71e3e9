@@ -11,11 +11,11 @@ import {
 export const Route = createFileRoute("/account/history")({
   head: () => ({
     meta: [
-      { title: "Conversion history — LedgerLocal" },
+      { title: "Conversion history — BalanceExtract" },
       {
         name: "description",
         content:
-          "Every statement you've converted with LedgerLocal — metadata only, files never leave your device.",
+          "Every statement you've converted with BalanceExtract — metadata only, files never leave your device.",
       },
       { name: "robots", content: "noindex" },
     ],

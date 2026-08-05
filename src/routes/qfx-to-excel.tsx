@@ -4,7 +4,7 @@ import { FormatGuide, type FormatGuideConfig } from "@/components/format-guide";
 /**
  * "qfx to excel converter online" is ~720 searches/month at keyword difficulty
  * 0, and the incumbent only ranks #12 for it -- the largest unclaimed term in
- * this cluster. LedgerLocal had no QFX-to-Excel page at all.
+ * this cluster. BalanceExtract had no QFX-to-Excel page at all.
  *
  * Copy here is deliberately Quicken-specific rather than a find-and-replace of
  * the QBO page. Pages that say the same thing in the same words compete with
@@ -17,7 +17,7 @@ const config: FormatGuideConfig = {
   title: "QFX to Excel: How to Open a QFX File in Excel",
   subtitle:
     "Excel can't read .qfx files natively. Here are three ways to get Quicken Web Connect data into a spreadsheet — one takes about ten seconds.",
-  metaTitle: "QFX to Excel — Free Converter & Guide | LedgerLocal",
+  metaTitle: "QFX to Excel — Free Converter & Guide | BalanceExtract",
   metaDescription:
     "Excel can't open .qfx files. Convert Quicken Web Connect data to an Excel workbook in your browser — free, no signup, nothing uploaded.",
   origin:

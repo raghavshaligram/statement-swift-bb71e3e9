@@ -4,7 +4,7 @@
  * block), an eyebrow pill, a realistic source document, an arrow into one
  * or more destination-format badges, and a small brand mark in the corner
  * -- the same structural language a real product blog uses for its
- * featured images, built from LedgerLocal's own tokens rather than copied
+ * featured images, built from BalanceExtract's own tokens rather than copied
  * colors.
  */
 

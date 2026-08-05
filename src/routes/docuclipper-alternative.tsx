@@ -33,8 +33,8 @@ import {
 
 const FAQ: FaqItem[] = [
   {
-    q: "Is LedgerLocal a drop-in replacement for DocuClipper?",
-    a: "For converting statement PDFs into CSV, Excel, QBO, OFX or QIF, yes. For direct QuickBooks Online and Xero sync, no — DocuClipper pushes data into those systems, LedgerLocal produces a file you import yourself.",
+    q: "Is BalanceExtract a drop-in replacement for DocuClipper?",
+    a: "For converting statement PDFs into CSV, Excel, QBO, OFX or QIF, yes. For direct QuickBooks Online and Xero sync, no — DocuClipper pushes data into those systems, BalanceExtract produces a file you import yourself.",
   },
   {
     q: "Does my statement get uploaded anywhere?",
@@ -46,10 +46,10 @@ const FAQ: FaqItem[] = [
   },
   {
     q: "Which one is more accurate?",
-    a: "Depends on the statement. DocuClipper is a mature product with a large template library and strong results on common US bank formats. LedgerLocal infers layout from the document's own structure rather than matching a template, and flags rows it isn't confident about instead of silently guessing.",
+    a: "Depends on the statement. DocuClipper is a mature product with a large template library and strong results on common US bank formats. BalanceExtract infers layout from the document's own structure rather than matching a template, and flags rows it isn't confident about instead of silently guessing.",
   },
   {
-    q: "How much does LedgerLocal cost?",
+    q: "How much does BalanceExtract cost?",
     a: "$19 a month, flat, with no page limit — the same price whether you convert ten pages or ten thousand, and all seven export formats are included. Before that, 6 pages per conversion with no signup at all, or 10 pages as a lifetime pool once you make an account.",
   },
   {
@@ -61,13 +61,13 @@ const FAQ: FaqItem[] = [
 export const Route = createFileRoute("/docuclipper-alternative")({
   head: () => ({
     meta: [
-      { title: "DocuClipper Alternative — On-Device Bank Statement Converter | LedgerLocal" },
+      { title: "DocuClipper Alternative — On-Device Bank Statement Converter | BalanceExtract" },
       {
         name: "description",
         content:
-          "An honest comparison of LedgerLocal and DocuClipper. The real difference is architecture: DocuClipper processes statements on its servers, LedgerLocal never uploads them.",
+          "An honest comparison of BalanceExtract and DocuClipper. The real difference is architecture: DocuClipper processes statements on its servers, BalanceExtract never uploads them.",
       },
-      { property: "og:title", content: "DocuClipper Alternative — LedgerLocal" },
+      { property: "og:title", content: "DocuClipper Alternative — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -92,7 +92,7 @@ function Page() {
       <QuickSummary>
         DocuClipper is a mature, well-reviewed product and for a lot of accounting firms it is the
         right choice. The difference that matters is not a feature list — it is where your statement
-        gets processed. DocuClipper sends the file to its servers. LedgerLocal parses it in your
+        gets processed. DocuClipper sends the file to its servers. BalanceExtract parses it in your
         browser and never uploads it. If your statements belong to clients rather than to you, that
         distinction is the decision.
       </QuickSummary>
@@ -117,7 +117,7 @@ function Page() {
 
       <ArticleH2>The architectural difference</ArticleH2>
       <ArticleTable
-        headers={["", "DocuClipper", "LedgerLocal"]}
+        headers={["", "DocuClipper", "BalanceExtract"]}
         rows={[
           ["Where parsing runs", "On DocuClipper's servers", "In your browser"],
           ["Statement leaves your device", "Yes", "No"],

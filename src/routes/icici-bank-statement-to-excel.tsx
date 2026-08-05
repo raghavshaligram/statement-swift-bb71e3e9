@@ -28,15 +28,15 @@ const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "My emailed ICICI statement PDF is password protected — why?",
-    a: "ICICI statements sent by email are commonly password protected using a combination of your name and date of birth. LedgerLocal can't remove that password — you'll need to unlock the PDF with the correct password before uploading it.",
+    a: "ICICI statements sent by email are commonly password protected using a combination of your name and date of birth. BalanceExtract can't remove that password — you'll need to unlock the PDF with the correct password before uploading it.",
   },
   {
     q: "Will the dates come out right?",
-    a: "ICICI statements often use both a transaction date and a separate value date, and can show dates in more than one format within the same document. LedgerLocal infers the real date order from the statement itself rather than assuming one, and normalises output dates to ISO (YYYY-MM-DD) by default.",
+    a: "ICICI statements often use both a transaction date and a separate value date, and can show dates in more than one format within the same document. BalanceExtract infers the real date order from the statement itself rather than assuming one, and normalises output dates to ISO (YYYY-MM-DD) by default.",
   },
   {
     q: "What if my statement is a scan or a photo, not a proper PDF?",
-    a: "It still works — LedgerLocal falls back to on-device OCR automatically when a page has no real text layer, and flags it clearly in the results so you know to double-check those specific rows before exporting.",
+    a: "It still works — BalanceExtract falls back to on-device OCR automatically when a page has no real text layer, and flags it clearly in the results so you know to double-check those specific rows before exporting.",
   },
   {
     q: "Is my ICICI statement data safe?",
@@ -47,13 +47,13 @@ const FAQ: Array<{ q: string; a: string }> = [
 export const Route = createFileRoute("/icici-bank-statement-to-excel")({
   head: () => ({
     meta: [
-      { title: "Free ICICI Bank Statement to Excel Converter — LedgerLocal" },
+      { title: "Free ICICI Bank Statement to Excel Converter — BalanceExtract" },
       {
         name: "description",
         content:
           "ICICI's own Excel export works well within a few years of history. Convert older or password-locked ICICI PDF statements to Excel or CSV on-device — free to try, nothing uploaded.",
       },
-      { property: "og:title", content: "Free ICICI Bank Statement to Excel Converter — LedgerLocal" },
+      { property: "og:title", content: "Free ICICI Bank Statement to Excel Converter — BalanceExtract" },
     ],
   }),
   component: Page,
@@ -143,7 +143,7 @@ function Page() {
                 </li>
                 <li className="flex gap-3">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">2</span>
-                  LedgerLocal detects ICICI's layout automatically, with a confidence score for anything worth double-checking.
+                  BalanceExtract detects ICICI's layout automatically, with a confidence score for anything worth double-checking.
                 </li>
                 <li className="flex gap-3">
                   <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-soft font-mono text-xs font-semibold text-emerald">3</span>
@@ -190,7 +190,7 @@ function Page() {
         articles={[
           { href: "/chase-bank-statement-to-excel", title: "Chase Bank Statement to Excel", blurb: "A US bank with a real 90-day export limit." },
           { href: "/csv-to-iif", title: "CSV to IIF Converter", blurb: "For QuickBooks Desktop specifically." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
+          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
         ]}
       />
 

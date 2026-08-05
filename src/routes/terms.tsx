@@ -5,15 +5,15 @@ import { SiteHeader, SiteFooter } from "@/components/site-header";
 export const Route = createFileRoute("/terms")({
   head: () => ({
     meta: [
-      { title: "Terms & Conditions — LedgerLocal" },
+      { title: "Terms & Conditions — BalanceExtract" },
       {
         name: "description",
-        content: "Read the Terms and Conditions for using LedgerLocal bank statement to Excel software.",
+        content: "Read the Terms and Conditions for using BalanceExtract bank statement to Excel software.",
       },
-      { property: "og:title", content: "Terms & Conditions — LedgerLocal" },
+      { property: "og:title", content: "Terms & Conditions — BalanceExtract" },
       {
         property: "og:description",
-        content: "Terms of use for LedgerLocal's on-device bank statement conversion software.",
+        content: "Terms of use for BalanceExtract's on-device bank statement conversion software.",
       },
     ],
   }),
@@ -24,17 +24,17 @@ const sections = [
   {
     icon: CheckCircle,
     title: "Acceptance of terms",
-    body: "By accessing or using LedgerLocal, you agree to be bound by these Terms and Conditions. If you do not agree, do not use the software. These terms apply to all visitors, users, and customers of the application.",
+    body: "By accessing or using BalanceExtract, you agree to be bound by these Terms and Conditions. If you do not agree, do not use the software. These terms apply to all visitors, users, and customers of the application.",
   },
   {
     icon: Scale,
     title: "License to use",
-    body: "LedgerLocal grants you a limited, non-exclusive, non-transferable license to use the software for personal or business purposes, subject to these terms. You may not reverse-engineer, decompile, distribute, or resell the software without written permission.",
+    body: "BalanceExtract grants you a limited, non-exclusive, non-transferable license to use the software for personal or business purposes, subject to these terms. You may not reverse-engineer, decompile, distribute, or resell the software without written permission.",
   },
   {
     icon: FileCheck,
     title: "User responsibilities",
-    body: "You are responsible for the bank statements and financial files you process. You agree to use LedgerLocal only on documents you have the right to access and convert. We do not review your files and are not responsible for the accuracy of your source documents or any output generated from them.",
+    body: "You are responsible for the bank statements and financial files you process. You agree to use BalanceExtract only on documents you have the right to access and convert. We do not review your files and are not responsible for the accuracy of your source documents or any output generated from them.",
   },
   {
     icon: RefreshCcw,
@@ -44,7 +44,7 @@ const sections = [
   {
     icon: AlertCircle,
     title: "Disclaimer and liability",
-    body: "LedgerLocal is provided as-is without warranties of any kind. While we aim to produce accurate exports, you should always verify converted figures against your original statement before using them for accounting, tax, or financial reporting. To the fullest extent permitted by law, LedgerLocal shall not be liable for any indirect, incidental, or consequential damages arising from use of the software.",
+    body: "BalanceExtract is provided as-is without warranties of any kind. While we aim to produce accurate exports, you should always verify converted figures against your original statement before using them for accounting, tax, or financial reporting. To the fullest extent permitted by law, BalanceExtract shall not be liable for any indirect, incidental, or consequential damages arising from use of the software.",
   },
   {
     icon: Gavel,
@@ -63,7 +63,7 @@ function Terms() {
           <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Terms</div>
           <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">Terms & Conditions</h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            These terms govern your use of LedgerLocal software and services. Please read them carefully.
+            These terms govern your use of BalanceExtract software and services. Please read them carefully.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">Last updated: July 30, 2026</p>
         </div>
@@ -88,7 +88,7 @@ function Terms() {
           <div className="mt-16 rounded-2xl border border-border bg-surface-muted/40 p-8">
             <h2 className="text-xl font-semibold text-ink">Changes to these terms</h2>
             <p className="mt-2 text-muted-foreground">
-              We may update these Terms & Conditions from time to time. Continued use of LedgerLocal after
+              We may update these Terms & Conditions from time to time. Continued use of BalanceExtract after
               changes constitutes acceptance of the revised terms. If you have questions, reach out via our{" "}
               <Link to="/contact" className="text-emerald hover:underline">
                 Contact page
