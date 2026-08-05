@@ -166,27 +166,25 @@ function Landing() {
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               {/*
-                Every phrase here is load-bearing for search, not filler.
-                An earlier rewrite of this paragraph tightened the prose and
-                silently dropped three targeted terms: "bank statement to Excel
-                software" (1,600/mo, KD 10 -- the highest-volume term in the
-                statement keyword set), "convert PDF to CSV" (2,400/mo, reduced
-                to the weaker "PDF to CSV"), and the 23+ banks / four-country
-                coverage line. Restored, with the page-cap claim added rather
-                than substituted. Copy edits on this paragraph need a keyword
-                check, not just a readability one.
+                Load-bearing phrases, kept deliberately short. An earlier
+                version restored every dropped keyword into this one paragraph
+                and it grew to ~60 words, pushing the dropzone -- the actual
+                conversion -- below the fold on mobile. Keywords are now spread
+                across the H1, this paragraph and the tag row rather than
+                stacked here. Any edit needs to check both length AND terms.
+
+                Held here: "bank statement to Excel software" (1,600/mo, KD 10),
+                "convert bank statement to Excel" (480/mo, KD 2, $10.22 CPC),
+                "convert PDF to CSV" (2,400/mo). Bank coverage moved to a tag.
               */}
-              Close your books without retyping a single transaction — the{" "}
-              <strong className="font-semibold text-ink">bank statement to Excel software</strong>{" "}
-              that works everywhere. Convert bank statement to Excel, convert PDF to CSV, PDF to
-              Excel and more, entirely on your device, for 23+ banks across the US, UK, Canada and
-              India. <strong className="font-semibold text-ink">No page cap on Pro</strong> at one
-              flat price, and every row is balance-checked before you export.
+              The <strong className="font-semibold text-ink">bank statement to Excel software</strong>{" "}
+              that runs entirely on your device. Convert bank statement to Excel, convert PDF to CSV
+              and more — every row balance-checked before you export.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
               <ClaimTag tone="local">On-device only</ClaimTag>
               <ClaimTag tone="unlimited">No page cap on Pro</ClaimTag>
-              <ClaimTag tone="free">6 pages free, no signup</ClaimTag>
+              <ClaimTag tone="free">23+ banks · US UK CA IN</ClaimTag>
             </div>
           </ScrollReveal>
 

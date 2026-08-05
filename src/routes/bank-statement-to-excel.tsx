@@ -86,7 +86,7 @@ const FAQ: Array<{ q: string; a: string }> = [
 export const Route = createFileRoute("/bank-statement-to-excel")({
   head: () => ({
     meta: [
-      { title: "Convert Bank Statement to Excel — Free, On-Device | BalanceExtract" },
+      { title: "Convert Bank Statement PDF to Excel — Free, No Page Cap | BalanceExtract" },
       {
         name: "description",
         content:
