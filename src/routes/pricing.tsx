@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, X, ShieldCheck, Zap, Landmark, Star, ArrowRight } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { FaqList, type FaqItem } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 
 export const Route = createFileRoute("/pricing")({
@@ -117,24 +118,12 @@ const COMPARISON_ROWS: Array<{ label: string; values: Record<string, string> }> 
   },
 ];
 
-const FAQ: Array<[string, string]> = [
-  [
-    "How do the free pages work?",
-    "6 pages per statement with no signup at all, and no persistent tracking on that anonymous tier — convert as many separate statements as you like. Signing up gives you 10 pages total, but as a lifetime pool shared across every PDF page and photo/scan you convert combined, not a per-statement allowance — once those 10 pages are used, you'll need Pro for anything more.",
-  ],
-  ["What counts as a \"page\"?", "Each page of the PDF you upload, counted before any processing starts."],
-  [
-    "What happens if my statement is longer than the limit?",
-    "You'll see the page count and a clear message before anything processes — no partial or silently-truncated results. Sign up free for the 10-page limit, or upgrade to Pro for no limit at all.",
-  ],
-  [
-    "Which banks and formats are supported?",
-    "Named detection for 23+ banks across the US, UK, Canada, and India, plus a generic parser for any other bank's text-based PDF. Six export formats on Pro; Excel and CSV on Free.",
-  ],
-  [
-    "Does it work with scanned PDFs?",
-    "Yes, via on-device OCR, automatically when a scanned page is detected — slower and less precise than reading real text, so double-check results.",
-  ],
+const FAQ: FaqItem[] = [
+  { q: "How do the free pages work?", a: "6 pages per statement with no signup at all, and no persistent tracking on that anonymous tier — convert as many separate statements as you like. Signing up gives you 10 pages total, but as a lifetime pool shared across every PDF page and photo/scan you convert combined, not a per-statement allowance — once those 10 pages are used, you'll need Pro for anything more." },
+  { q: "What counts as a \"page\"?", a: "Each page of the PDF you upload, counted before any processing starts." },
+  { q: "What happens if my statement is longer than the limit?", a: "You'll see the page count and a clear message before anything processes — no partial or silently-truncated results. Sign up free for the 10-page limit, or upgrade to Pro for no limit at all." },
+  { q: "Which banks and formats are supported?", a: "Named detection for 23+ banks across the US, UK, Canada, and India, plus a generic parser for any other bank's text-based PDF. Six export formats on Pro; Excel and CSV on Free." },
+  { q: "Does it work with scanned PDFs?", a: "Yes, via on-device OCR, automatically when a scanned page is detected — slower and less precise than reading real text, so double-check results." },
 ];
 
 function Pricing() {
@@ -335,14 +324,7 @@ function Pricing() {
       <section className="border-b border-border py-20">
         <div className="mx-auto max-w-3xl px-6">
           <h2 className="text-center text-3xl font-bold tracking-tight text-ink">Frequently asked questions</h2>
-          <dl className="mt-10 space-y-4">
-            {FAQ.map(([q, a]) => (
-              <div key={q} className="rounded-lg border border-border bg-card p-5">
-                <dt className="font-semibold text-ink">{q}</dt>
-                <dd className="mt-2 text-sm leading-relaxed text-muted-foreground">{a}</dd>
-              </div>
-            ))}
-          </dl>
+          <FaqList items={FAQ} />
         </div>
       </section>
 

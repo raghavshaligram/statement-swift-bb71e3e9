@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { FaqList } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import { ToolHero, ToolCrossLinks } from "@/components/tool-hero";
 import { converterPageJsonLd, converterSteps } from "@/components/converter-schema";
@@ -141,16 +142,7 @@ function Page() {
       />
 
       <ArticleH2>Frequently Asked Questions</ArticleH2>
-      <div className="mx-auto max-w-3xl px-6 pb-4">
-        <div className="space-y-4">
-          {FAQ.map(({ q, a }) => (
-            <div key={q} className="rounded-lg border border-border bg-card p-5">
-              <div className="font-semibold text-ink">{q}</div>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{a}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <FaqList items={FAQ} />
 
       <RelatedArticles
         articles={[

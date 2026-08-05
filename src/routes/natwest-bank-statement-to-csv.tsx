@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { EmbeddedConverter } from "@/components/embedded-converter";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
+import { FaqList, faqJsonLd } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
 import {
   ArticleBackLink,
@@ -67,15 +68,7 @@ export const Route = createFileRoute("/natwest-bank-statement-to-csv")({
 });
 
 function Page() {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQ.map(({ q, a }) => ({
-      "@type": "Question",
-      name: q,
-      acceptedAnswer: { "@type": "Answer", text: a },
-    })),
-  };
+  const jsonLd = faqJsonLd(FAQ);
 
   return (
     <div className="min-h-screen bg-background">
@@ -209,16 +202,7 @@ function Page() {
       </ArticleProse>
 
       <ArticleH2 id="faq">Frequently Asked Questions</ArticleH2>
-      <div className="mx-auto max-w-3xl px-6 pb-4">
-        <div className="space-y-4">
-          {FAQ.map(({ q, a }) => (
-            <div key={q} className="rounded-lg border border-border bg-card p-5">
-              <div className="font-semibold text-ink">{q}</div>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{a}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <FaqList items={FAQ} />
 
       <ArticleCta
         heading="Ready to Get Your NatWest Data Into a Spreadsheet?"
