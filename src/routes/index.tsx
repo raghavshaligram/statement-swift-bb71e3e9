@@ -59,6 +59,11 @@ const FEATURES = [
     body: "Your statement never leaves your device. No server upload, no logs, no retention.",
   },
   {
+    icon: InfinityIcon,
+    title: "No Page Cap on Pro",
+    body: "Every competitor meters — by page or by transaction row — so a busy month costs more. Pro is one flat price whether you convert one statement or a full year of them.",
+  },
+  {
     icon: ScanLine,
     title: "Scans & Photos",
     body: "Built-in OCR reads scanned PDF statements and phone-photo PDFs so you can digitize paper too.",
@@ -159,9 +164,10 @@ function Landing() {
               Free Bank Statement Converter <span className="text-emerald">to Excel & CSV</span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Close your books without retyping a single transaction — the bank statement to Excel
-              software that works everywhere. Convert bank statement to Excel, convert PDF to CSV, PDF to
-              Excel, and more, entirely on your device, for 23+ banks across the US, UK, Canada, and India.
+              Close your books without retyping a single transaction. Convert bank statement to Excel,
+              PDF to CSV, PDF to Excel and more — <strong className="font-semibold text-ink">entirely on
+              your device</strong>, with <strong className="font-semibold text-ink">no page cap on Pro</strong>{" "}
+              at one flat price. Every row is balance-checked before you export.
             </p>
           </ScrollReveal>
 
@@ -172,7 +178,7 @@ function Landing() {
           <ScrollReveal className="mx-auto mt-8 max-w-3xl" delay={0.2}>
             <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground">
               <TrustPill icon={Check} label="No signup required" />
-              <TrustPill icon={Lock} label="Bank-grade encryption on-device" />
+              <TrustPill icon={Lock} label="Nothing uploaded — runs in your browser" />
               <TrustPill icon={InfinityIcon} label="No page cap on Pro — do a full year at once" />
             </div>
           </ScrollReveal>

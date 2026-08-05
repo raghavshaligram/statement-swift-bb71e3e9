@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { Shield, Zap, FileSpreadsheet, UserX, ArrowRight } from "lucide-react";
+// Infinity is a JS global, so the icon is aliased -- importing it bare
+// silently shadows Number.Infinity inside this module.
+import { Shield, Infinity as InfinityIcon, FileSpreadsheet, UserX, ArrowRight } from "lucide-react";
 
 /**
  * Tool-page header, replacing the article framing on converter routes.
@@ -23,7 +25,7 @@ import { Shield, Zap, FileSpreadsheet, UserX, ArrowRight } from "lucide-react";
  */
 const CHIPS = [
   { icon: Shield, label: "100% private", sub: "Never uploaded", tint: "text-emerald bg-emerald/10" },
-  { icon: Zap, label: "Instant", sub: "Runs in your browser", tint: "text-amber-600 bg-amber-500/10" },
+  { icon: InfinityIcon, label: "No page cap", sub: "Unlimited on Pro", tint: "text-amber-600 bg-amber-500/10" },
   { icon: FileSpreadsheet, label: "CSV & Excel", sub: "Real spreadsheet output", tint: "text-sky-600 bg-sky-500/10" },
   { icon: UserX, label: "No signup", sub: "No account, no card", tint: "text-violet-600 bg-violet-500/10" },
 ];
