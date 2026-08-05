@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Scale } from "lucide-react";
-import { FileSpreadsheet } from "lucide-react";
+import { Scale, FileSpreadsheet } from "lucide-react";
 import { AuthActions } from "@/components/user-menu";
 
 /**

@@ -26,7 +26,7 @@ export function AuthActions({ variant = "dark" }: { variant?: Variant }) {
   if (!user) {
     const textCls = variant === "dark" ? "text-background/85 hover:text-background" : "text-ink/80 hover:text-ink";
     return (
-      <div className="flex items-center gap-4">
+      <div className="flex shrink-0 items-center gap-3 sm:gap-4">
         <Link to="/signin" className={`whitespace-nowrap text-sm font-semibold transition-colors ${textCls}`}>
           Log In
         </Link>

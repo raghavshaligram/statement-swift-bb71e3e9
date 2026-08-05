@@ -3,7 +3,7 @@
  * Nav is centered; brand sits left; auth actions sit right.
  */
 import { Link, useLocation } from "@tanstack/react-router";
-import { FileSpreadsheet, Lock } from "lucide-react";
+import { Scale, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AuthActions } from "@/components/user-menu";
 
@@ -17,14 +17,21 @@ export function TopNav() {
   const loc = useLocation();
 
   return (
-    <header className="sticky top-0 z-40 grid h-16 w-full grid-cols-[1fr_auto_1fr] items-center gap-4 border-b border-white/10 bg-ink px-4 sm:px-6">
+    <header className="sticky top-0 z-40 grid h-16 w-full grid-cols-[1fr_auto_auto] items-center gap-2 border-b border-white/10 bg-ink px-4 sm:grid-cols-[1fr_auto_1fr] sm:gap-4 sm:px-6">
       {/* Left: brand */}
       <div className="flex min-w-0 items-center gap-3">
-        <Link to="/" className="flex shrink-0 items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-emerald text-primary-foreground">
-            <FileSpreadsheet className="h-4 w-4" />
+        {/* min-w-0 rather than shrink-0: the brand was unshrinkable, so when
+            the wordmark grew from "LedgerLocal" (11 chars) to "BalanceExtract"
+            (14) in the rebrand it overflowed its grid track and ran underneath
+            the Log In / Sign up buttons on narrow screens. The icon stays
+            fixed; only the wordmark gives. */}
+        <Link to="/" className="flex min-w-0 items-center gap-2">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-emerald text-primary-foreground">
+            <Scale className="h-4 w-4" />
           </div>
-          <span className="text-[15px] font-bold tracking-tight text-white">BalanceExtract</span>
+          <span className="truncate text-[15px] font-bold tracking-tight text-white">
+            Balance<span className="text-emerald">Extract</span>
+          </span>
         </Link>
         <span className="hidden h-4 w-px shrink-0 bg-white/15 sm:block" aria-hidden />
         <span className="hidden shrink-0 items-center gap-1 rounded-full bg-white/10 px-2.5 py-1 font-mono text-[10px] font-medium text-white/60 sm:inline-flex">
@@ -52,7 +59,7 @@ export function TopNav() {
       </nav>
 
       {/* Right: local indicator + auth */}
-      <div className="flex shrink-0 items-center justify-end gap-4">
+      <div className="flex shrink-0 items-center justify-end gap-2 sm:gap-4">
         <div className="hidden items-center gap-1.5 font-mono text-xs text-white/70 sm:flex">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald" aria-hidden />
           local
