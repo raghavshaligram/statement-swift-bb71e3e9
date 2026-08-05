@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { LayoutGrid } from "lucide-react";
+import { Scale } from "lucide-react";
 import { FileSpreadsheet } from "lucide-react";
 import { AuthActions } from "@/components/user-menu";
 
@@ -15,10 +15,10 @@ export function SiteHeader() {
         <div className="flex items-center">
           <Link to="/" className="flex items-center gap-2.5 text-background">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald text-primary-foreground">
-              <LayoutGrid className="h-4 w-4" />
+              <Scale className="h-4 w-4" />
             </div>
             <span className="text-[17px] font-bold tracking-tight">
-              Ledger<span className="text-emerald">Local</span>
+              Balance<span className="text-emerald">Extract</span>
             </span>
           </Link>
         </div>

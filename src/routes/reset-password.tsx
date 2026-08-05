@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight, LayoutGrid, Eye, EyeOff } from "lucide-react";
+import { ArrowRight, Scale, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -54,10 +54,10 @@ function ResetPage() {
     <div className="flex min-h-screen flex-col bg-background px-6 py-8 lg:px-16">
       <Link to="/" className="flex items-center gap-2.5 text-ink">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald text-primary-foreground">
-          <LayoutGrid className="h-4 w-4" />
+          <Scale className="h-4 w-4" />
         </div>
         <span className="text-[17px] font-bold tracking-tight">
-          Ledger<span className="text-emerald">Local</span>
+          Balance<span className="text-emerald">Extract</span>
         </span>
       </Link>
 

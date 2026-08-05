@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ArrowLeft, ArrowRight, LayoutGrid, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Scale, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -39,10 +39,10 @@ function ForgotPage() {
       <div className="flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5 text-ink">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald text-primary-foreground">
-            <LayoutGrid className="h-4 w-4" />
+            <Scale className="h-4 w-4" />
           </div>
           <span className="text-[17px] font-bold tracking-tight">
-            Ledger<span className="text-emerald">Local</span>
+            Balance<span className="text-emerald">Extract</span>
           </span>
         </Link>
         <Link to="/signin" className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-ink">

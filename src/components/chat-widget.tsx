@@ -187,7 +187,7 @@ export function ChatWidget() {
                 <Bot className="h-4 w-4 text-emerald" />
               </div>
               <div>
-                <div className="text-sm font-bold text-ink">Ledger Assistant</div>
+                <div className="text-sm font-bold text-ink">BalanceExtract Assistant</div>
                 <div className="text-[11px] text-muted-foreground">Matched from our help articles — not AI</div>
               </div>
             </div>
