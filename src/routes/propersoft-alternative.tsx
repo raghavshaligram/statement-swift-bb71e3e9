@@ -62,7 +62,7 @@ export const Route = createFileRoute("/propersoft-alternative")({
   head: () => ({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/propersoft-alternative` }],
     meta: [
-      { title: "ProperSoft Alternative — One Converter, No Install | BalanceExtract" },
+      { title: "ProperSoft Alternative — One Converter, No Install" },
       {
         name: "description",
         content:

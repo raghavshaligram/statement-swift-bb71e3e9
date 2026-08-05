@@ -46,7 +46,7 @@ export const Route = createFileRoute("/bank-statement-to-tally")({
       { title: "Free Bank Statement to Tally XML Converter — BalanceExtract" },
       {
         name: "description",
-        content: "Convert any bank's PDF statement to Tally-ready XML. Free to try, on-device — nothing uploaded.",
+        content: "Convert any bank's PDF statement to Tally-ready XML. Free to try, runs on your device — nothing uploaded, and every row is balance-checked.",
       },
       { property: "og:title", content: "Free Bank Statement to Tally XML Converter — BalanceExtract" },
     ],

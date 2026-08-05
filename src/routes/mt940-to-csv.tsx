@@ -38,7 +38,7 @@ export const Route = createFileRoute("/mt940-to-csv")({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/mt940-to-csv` }],
     meta: [
       { title: "Free MT940 to CSV Converter — BalanceExtract" },
-      { name: "description", content: "Convert an MT940 SWIFT bank statement file to CSV. Free, runs entirely in your browser." },
+      { name: "description", content: "Convert an MT940 SWIFT bank statement file to CSV or Excel. Free, runs entirely in your browser, and no account is needed to try it." },
     ],
   }),
   component: Page,

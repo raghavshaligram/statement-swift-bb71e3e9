@@ -38,7 +38,7 @@ export const Route = createFileRoute("/qif-to-csv")({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/qif-to-csv` }],
     meta: [
       { title: "Free QIF to CSV Converter — BalanceExtract" },
-      { name: "description", content: "Convert a Quicken QIF file to CSV. Free, unlimited, runs entirely in your browser." },
+      { name: "description", content: "Convert a Quicken QIF file to CSV or Excel. Free, no page limit, and the conversion runs entirely in your browser — nothing is uploaded." },
     ],
   }),
   component: Page,

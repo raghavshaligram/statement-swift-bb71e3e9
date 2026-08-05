@@ -109,6 +109,25 @@ export const Route = createFileRoute("/blog")({
   component: () => (
     <div className="min-h-screen bg-background">
       <SiteHeader />
+      {/* ItemList so this reads as an index of the guides below rather than a
+          thin page. Built from the same two arrays the page renders, so
+          the markup and the structured data cannot disagree. */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            name: "Guides & Converters",
+            itemListElement: [...BANK_GUIDES, ...FORMAT_CONVERTERS].map((a, i) => ({
+              "@type": "ListItem",
+              position: i + 1,
+              name: a.title,
+              url: `${SITE_ORIGIN}${a.href}`,
+            })),
+          }),
+        }}
+      />
 
       <section className="border-b border-border py-16 text-center">
         <div className="mx-auto max-w-2xl px-6">

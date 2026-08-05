@@ -39,7 +39,7 @@ export const Route = createFileRoute("/iif-to-csv")({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/iif-to-csv` }],
     meta: [
       { title: "Free IIF to CSV Converter — BalanceExtract" },
-      { name: "description", content: "Convert a QuickBooks Desktop IIF file to CSV. Free, unlimited, runs entirely in your browser." },
+      { name: "description", content: "Convert a QuickBooks Desktop IIF file to CSV. Free, no page limit, and it runs entirely in your browser so the file never leaves your device." },
     ],
   }),
   component: Page,

@@ -62,7 +62,7 @@ export const Route = createFileRoute("/moneythumb-alternative")({
   head: () => ({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/moneythumb-alternative` }],
     meta: [
-      { title: "MoneyThumb Alternative — One Converter, Every Format | BalanceExtract" },
+      { title: "MoneyThumb Alternative — One Converter, Every Format" },
       {
         name: "description",
         content:

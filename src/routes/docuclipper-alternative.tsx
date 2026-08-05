@@ -64,7 +64,7 @@ export const Route = createFileRoute("/docuclipper-alternative")({
   head: () => ({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/docuclipper-alternative` }],
     meta: [
-      { title: "DocuClipper Alternative — On-Device Bank Statement Converter | BalanceExtract" },
+      { title: "DocuClipper Alternative — On-Device, No Page Metering" },
       {
         name: "description",
         content:

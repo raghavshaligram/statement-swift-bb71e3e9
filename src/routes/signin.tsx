@@ -18,7 +18,6 @@ export const Route = createFileRoute("/signin")({
       { property: "og:url", content: "/signin" },
       { name: "robots", content: "noindex" },
     ],
-    links: [{ rel: "canonical", href: "/signin" }],
   }),
   component: SignInPage,
 });

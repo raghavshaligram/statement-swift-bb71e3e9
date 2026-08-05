@@ -83,7 +83,7 @@ export const Route = createFileRoute("/bank-statement-to-qbo")({
   head: () => ({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/bank-statement-to-qbo` }],
     meta: [
-      { title: "Convert Bank Statement to QBO — Import into QuickBooks | BalanceExtract" },
+      { title: "Convert Bank Statement to QBO — QuickBooks Import" },
       {
         name: "description",
         content:

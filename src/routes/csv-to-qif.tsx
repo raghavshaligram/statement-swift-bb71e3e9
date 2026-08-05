@@ -37,7 +37,7 @@ export const Route = createFileRoute("/csv-to-qif")({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/csv-to-qif` }],
     meta: [
       { title: "Free CSV to QIF Converter for Quicken — BalanceExtract" },
-      { name: "description", content: "Free CSV to QIF converter for Quicken import. Auto-detects your CSV's columns, runs entirely in your browser." },
+      { name: "description", content: "Free CSV to QIF converter for Quicken import. Auto-detects your CSV's columns and runs entirely in your browser — nothing is uploaded." },
     ],
   }),
   component: Page,

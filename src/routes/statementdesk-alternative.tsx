@@ -70,7 +70,7 @@ export const Route = createFileRoute("/statementdesk-alternative")({
   head: () => ({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/statementdesk-alternative` }],
     meta: [
-      { title: "StatementDesk Alternative — No Row Limits, On-Device | BalanceExtract" },
+      { title: "StatementDesk Alternative — No Row Limits, On-Device" },
       {
         name: "description",
         content:

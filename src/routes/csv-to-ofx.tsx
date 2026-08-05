@@ -37,7 +37,7 @@ export const Route = createFileRoute("/csv-to-ofx")({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/csv-to-ofx` }],
     meta: [
       { title: "Free CSV to OFX Converter — BalanceExtract" },
-      { name: "description", content: "Free CSV to OFX converter for QuickBooks or Quicken import. Runs entirely in your browser." },
+      { name: "description", content: "Free CSV to OFX converter for QuickBooks, Xero or Quicken import. Runs entirely in your browser — your file is never uploaded to a server." },
     ],
   }),
   component: Page,

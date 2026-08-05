@@ -89,7 +89,7 @@ export const Route = createFileRoute("/bank-statement-to-excel")({
   head: () => ({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/bank-statement-to-excel` }],
     meta: [
-      { title: "Convert Bank Statement PDF to Excel — Free, No Page Cap | BalanceExtract" },
+      { title: "Convert Bank Statement PDF to Excel — Free, No Page Cap" },
       {
         name: "description",
         content:

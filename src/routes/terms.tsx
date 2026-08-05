@@ -10,7 +10,7 @@ export const Route = createFileRoute("/terms")({
       { title: "Terms & Conditions — BalanceExtract" },
       {
         name: "description",
-        content: "Read the Terms and Conditions for using BalanceExtract bank statement to Excel software.",
+        content: "Read the Terms and Conditions for using BalanceExtract, the on-device bank statement to Excel and CSV converter. Plain-language, no surprises.",
       },
       { property: "og:title", content: "Terms & Conditions — BalanceExtract" },
       {

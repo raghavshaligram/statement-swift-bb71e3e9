@@ -51,7 +51,7 @@ export const Route = createFileRoute("/csv-to-qbo")({
       { title: "Free CSV to QBO Converter — BalanceExtract" },
       {
         name: "description",
-        content: "Convert any CSV to a QuickBooks-ready QBO file. Free, runs entirely in your browser — nothing uploaded.",
+        content: "Convert any CSV to a QuickBooks-ready QBO file. Free, runs entirely in your browser, and transaction IDs are preserved so imports don't duplicate.",
       },
       { property: "og:title", content: "Free CSV to QBO Converter — BalanceExtract" },
     ],

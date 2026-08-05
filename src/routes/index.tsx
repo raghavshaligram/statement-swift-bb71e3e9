@@ -37,7 +37,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/` }],
     meta: [
-      { title: "BalanceExtract — Free Bank Statement Converter (PDF to CSV & Excel)" },
+      { title: "Free Bank Statement Converter — PDF to Excel & CSV" },
       {
         name: "description",
         content:

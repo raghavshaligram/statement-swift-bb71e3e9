@@ -44,7 +44,7 @@ export const Route = createFileRoute("/bank-statement-to-qif")({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/bank-statement-to-qif` }],
     meta: [
       { title: "Free Bank Statement to QIF Converter — BalanceExtract" },
-      { name: "description", content: "Convert any bank's PDF statement to QIF for Quicken. Free to try, on-device — nothing uploaded." },
+      { name: "description", content: "Convert any bank's PDF statement to QIF for Quicken. Free to try, runs on your device — nothing uploaded, and no page cap on Pro." },
       { property: "og:title", content: "Free Bank Statement to QIF Converter — BalanceExtract" },
     ],
   }),

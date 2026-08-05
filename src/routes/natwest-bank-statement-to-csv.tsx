@@ -58,7 +58,7 @@ export const Route = createFileRoute("/natwest-bank-statement-to-csv")({
   head: () => ({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/natwest-bank-statement-to-csv` }],
     meta: [
-      { title: "NatWest Bank Statement to CSV: Formats and Limits — BalanceExtract" },
+      { title: "NatWest Bank Statement to CSV — Formats and Limits" },
       {
         name: "description",
         content:
