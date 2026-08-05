@@ -26,6 +26,7 @@ const entries = [
   { path: "/bank-statement-to-ofx", changefreq: "monthly", priority: "0.6" },
   { path: "/bank-statement-to-qif", changefreq: "monthly", priority: "0.6" },
   { path: "/bank-statement-to-csv", changefreq: "monthly", priority: "0.7" },
+  { path: "/bank-statement-to-excel", changefreq: "monthly", priority: "0.9" },
   { path: "/docuclipper-alternative", changefreq: "monthly", priority: "0.7" },
   { path: "/moneythumb-alternative", changefreq: "monthly", priority: "0.7" },
   { path: "/propersoft-alternative", changefreq: "monthly", priority: "0.7" },

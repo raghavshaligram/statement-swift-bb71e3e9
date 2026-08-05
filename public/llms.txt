@@ -64,6 +64,7 @@ These pages describe competitors structurally (how they charge, where processing
 
 ## Other pages
 
+- [Bank statement to Excel](https://ledgerlocal.com/bank-statement-to-excel): Converts a statement PDF to an .xlsx workbook with typed dates and numbers, currency formatting and one sheet per account. Covers why copy-paste from a PDF fails, Excel vs CSV, and troubleshooting for text-typed amounts, date sort order, split descriptions and totals that do not match.
 - [Bank statement to CSV](https://ledgerlocal.com/bank-statement-to-csv): The general PDF-to-CSV guide and converter.
 - [Lloyds bank statement to CSV](https://ledgerlocal.com/lloyds-bank-statement-to-csv)
 - [Image to Excel](https://ledgerlocal.com/image-to-excel): Photos and scans of statements, via on-device OCR.

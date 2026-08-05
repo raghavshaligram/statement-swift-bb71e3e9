@@ -111,6 +111,7 @@ function Page() {
       <RelatedArticles
         articles={[
           { href: "/lloyds-bank-statement-to-csv", title: "Lloyds Bank Statement to CSV", blurb: "A bank that already offers a native CSV export." },
+          { href: "/bank-statement-to-excel", title: "Bank Statement to Excel", blurb: "The same conversion as a real .xlsx workbook." },
           { href: "/bank-statement-to-ofx", title: "Bank Statement to OFX", blurb: "For QuickBooks, Quicken, or Xero as a real transaction feed." },
           { href: "/image-to-excel", title: "Image to Excel", blurb: "For a photo or scan instead of a real PDF." },
           { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter LedgerLocal offers." },
