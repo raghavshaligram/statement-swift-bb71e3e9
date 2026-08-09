@@ -51,6 +51,22 @@ function flow(...tokens: string[]): LineSpec {
 }
 
 /**
+ * Places description words starting at a fixed x, for fixture rows that
+ * also have fixed-position columns after the description (date/amount/
+ * balance etc.) -- unlike flow(), a longer description here doesn't shift
+ * where the later columns land, matching how a real PDF table renders (each
+ * column at a consistent x regardless of description length).
+ */
+function descWords(words: string[], xStart: number): LineSpec {
+  let x = xStart;
+  return words.map((w) => {
+    const spec = { str: w, x };
+    x += w.length * 4.5 + 6;
+    return spec;
+  });
+}
+
+/**
  * Page builder with EXPLICIT per-line y positions.
  *
  * The uniform-spacing `page()` helper below cannot represent layouts where
@@ -561,7 +577,11 @@ run(
   (t) => {
     check("2 transactions", t.length === 2, `got ${t.length}`);
     check("zero-decimal amount parsed", approx(t[0]?.amount, -1500), String(t[0]?.amount));
-    check("zero-decimal balance parsed", approx(t[0]?.balance ?? NaN, 125000), String(t[0]?.balance));
+    check(
+      "zero-decimal balance parsed",
+      approx(t[0]?.balance ?? NaN, 125000),
+      String(t[0]?.balance),
+    );
   },
 );
 
@@ -753,7 +773,11 @@ run(
     check("2 transactions", t.length === 2, `got ${t.length}`);
     check("Soll column read as a debit", approx(t[0]?.amount, -87.2), String(t[0]?.amount));
     check("Haben column read as a credit", approx(t[1]?.amount, 2500), String(t[1]?.amount));
-    check("drCr follows the amount", t[0]?.drCr === "Dr" && t[1]?.drCr === "Cr", `${t[0]?.drCr}/${t[1]?.drCr}`);
+    check(
+      "drCr follows the amount",
+      t[0]?.drCr === "Dr" && t[1]?.drCr === "Cr",
+      `${t[0]?.drCr}/${t[1]?.drCr}`,
+    );
   },
 );
 
@@ -775,6 +799,168 @@ run(
     check("accented Debit read as a debit", approx(t[0]?.amount, -87.2), String(t[0]?.amount));
     check("accented Credit read as a credit", approx(t[1]?.amount, 2500), String(t[1]?.amount));
     check("Date de valeur mapped to value date", t[0]?.valueDate !== null, String(t[0]?.valueDate));
+  },
+);
+
+// =============================================================================
+// 15. US bank year-less dates — Chase, Wells Fargo, and Capital One all
+//     print bare MM/DD on every transaction row with no year at all (the
+//     year appears once in a "Statement Period" line, not repeated per
+//     row). Found via exploratory testing against synthetic layouts
+//     modeled on real US bank statements: this returned ZERO transactions
+//     before the fix, since every date pattern required a 4-digit year
+//     unconditionally. Also covers inferDateOrder's blind spot for
+//     documents where every date is year-less (it previously found no
+//     year-bearing evidence at all and fell back to a hardcoded DMY
+//     default, misreading "01/03" as 1 March instead of 3 January on a
+//     "/"-separated US statement), a year rollover mid-statement
+//     (Dec -> Jan), and a parenthesized negative amount ("(88.40)" =
+//     -88.40, Capital One style).
+// =============================================================================
+run(
+  "us-bank-yearless-dates-with-rollover",
+  [
+    page([
+      [
+        { str: "Date", x: 10 },
+        { str: "Description", x: 60 },
+        { str: "Amount", x: 300 },
+        { str: "Balance", x: 380 },
+      ],
+      [
+        { str: "12/28", x: 10 },
+        ...descWords(["LATE", "DECEMBER", "PURCHASE"], 60),
+        { str: "-40.00", x: 300 },
+        { str: "1,960.00", x: 380 },
+      ],
+      [
+        { str: "01/03", x: 10 },
+        ...descWords(["EARLY", "JANUARY", "REFUND"], 60),
+        { str: "(15.00)", x: 300 },
+        { str: "1,945.00", x: 380 },
+      ],
+      [{ str: "Statement Period: 12/01/2024 to 01/31/2025", x: 10 }],
+    ]),
+  ],
+  (t) => {
+    check("2 transactions", t.length === 2, `got ${t.length}`);
+    check("year inferred from statement period text", t[0]?.date === "2024-12-28", t[0]?.date);
+    check(
+      "MM/DD (year-less, slash-separated) read as month-first, not day-first",
+      t[0]?.date === "2024-12-28",
+      t[0]?.date,
+    );
+    check(
+      "year rolled over Dec -> Jan for the second transaction",
+      t[1]?.date === "2025-01-03",
+      t[1]?.date,
+    );
+    check(
+      "parenthesized amount parsed as negative",
+      approx(t[1]?.amount, -15),
+      String(t[1]?.amount),
+    );
+    check("first amount correct", approx(t[0]?.amount, -40), String(t[0]?.amount));
+  },
+);
+
+// =============================================================================
+// 16. UK bank DD/MM inference + dated closing-summary filtering — Barclays
+//     uses day-first dates that are only resolvable correctly once an
+//     unambiguous date (day > 12) appears somewhere in the document; Bank
+//     of America prints an "Ending balance on 1/31/2025 2,787.81" summary
+//     line that carries a real date, so the pre-block no-date filter
+//     deliberately lets it through (to protect real transactions that
+//     merely mention "closing balance" in their own description) --
+//     without a post-hoc filter using the fully-assembled description,
+//     this became a phantom zero-amount transaction. Also covers a
+//     2-digit-year month-name date ("02 Jan 25", HSBC style), which the
+//     month-name pattern previously required a full 4-digit year for.
+//     All found via exploratory testing against synthetic layouts modeled
+//     on real UK/US bank statements.
+// =============================================================================
+run(
+  "uk-dmy-inference-and-dated-summary-row",
+  [
+    page([
+      [
+        { str: "Date", x: 10 },
+        { str: "Description", x: 90 },
+        { str: "Money out", x: 300 },
+        { str: "Money in", x: 380 },
+        { str: "Balance", x: 460 },
+      ],
+      [
+        { str: "03/01/2025", x: 10 },
+        ...descWords(["TESCO", "STORES"], 90),
+        { str: "22.50", x: 300 },
+        { str: "1,477.50", x: 460 },
+      ],
+      // Unambiguous date (day 25 > 12) is the only thing that can correctly
+      // force DMY inference here -- every other date in this fixture has a
+      // day <= 12 and is genuinely ambiguous on its own.
+      [
+        { str: "25/01/2025", x: 10 },
+        ...descWords(["ATM", "WITHDRAWAL"], 90),
+        { str: "50.00", x: 300 },
+        { str: "1,427.50", x: 460 },
+      ],
+      [
+        { str: "Ending", x: 10 },
+        { str: "balance", x: 60 },
+        { str: "on", x: 110 },
+        { str: "31/01/2025", x: 140 },
+        { str: "1,427.50", x: 460 },
+      ],
+    ]),
+  ],
+  (t) => {
+    check(
+      "2 real transactions (dated 'Ending balance' summary row excluded)",
+      t.length === 2,
+      `got ${t.length}: ${t.map((x) => x.description).join(" | ")}`,
+    );
+    check("03/01/2025 read as 3 Jan, not 1 Mar (DMY)", t[0]?.date === "2025-01-03", t[0]?.date);
+    check(
+      "25/01/2025 read as 25 Jan (the disambiguating date itself)",
+      t[1]?.date === "2025-01-25",
+      t[1]?.date,
+    );
+  },
+);
+
+run(
+  "hsbc-two-digit-year-month-name-date",
+  [
+    page([
+      [
+        { str: "Date", x: 10 },
+        { str: "Type", x: 90 },
+        { str: "Description", x: 130 },
+        { str: "Paid out", x: 300 },
+        { str: "Paid in", x: 380 },
+        { str: "Balance", x: 460 },
+      ],
+      [
+        { str: "02 Jan 25", x: 10 },
+        { str: "DEB", x: 90 },
+        ...descWords(["SAINSBURYS"], 130),
+        { str: "34.12", x: 300 },
+        { str: "965.88", x: 460 },
+      ],
+      [
+        { str: "04 Jan 25", x: 10 },
+        { str: "BAC", x: 90 },
+        ...descWords(["WAGES", "LTD"], 130),
+        { str: "2,100.00", x: 380 },
+        { str: "3,065.88", x: 460 },
+      ],
+    ]),
+  ],
+  (t) => {
+    check("2 transactions", t.length === 2, `got ${t.length}`);
+    check("2-digit year resolved to 2025", t[0]?.date === "2025-01-02", t[0]?.date);
+    check("second date correct too", t[1]?.date === "2025-01-04", t[1]?.date);
   },
 );
 

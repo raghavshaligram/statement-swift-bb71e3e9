@@ -5,7 +5,13 @@ import {
   normalizeAmountToken,
   type NumberFormat,
 } from "./number-format";
-import { inferDateOrder, resolveAmbiguousDate, type DateOrder } from "./date-inference";
+import {
+  inferDateOrder,
+  resolveAmbiguousDate,
+  inferStatementYear,
+  resolveYearlessDate,
+  type DateOrder,
+} from "./date-inference";
 import { findHeaderRow, classifyByColumn, type DetectedColumn } from "./detect-columns";
 
 export type RawTransaction = {
@@ -48,12 +54,18 @@ export type RawTransaction = {
 // is an expected, honest limitation, not something worth chasing indefinitely.
 const DATE_PATTERNS: Array<{
   re: RegExp;
-  kind: "iso" | "monthName" | "ambiguous";
+  kind: "iso" | "monthName" | "ambiguous" | "noYear";
 }> = [
   { re: /\b(\d{4})-(\d{2})-(\d{2})\b/, kind: "iso" }, // YYYY-MM-DD
   { re: /\b(\d{4})\/(\d{1,2})\/(\d{1,2})\b/, kind: "iso" }, // 2025/04/03 -- year-first slash (JP, CN, KR, TW)
-  { re: /\b([\dOo]{1,2})[-\s]?([A-Za-z]{3})[-\s]?(\d{4})\b/, kind: "monthName" }, // 15-Jan-2025, tolerant of missing separator and O/0 confusion
-  { re: /\b([A-Za-z]{3,9})\s+([\dOo]{1,2}),?\s+(\d{4})\b/, kind: "monthName" }, // Jan 15, 2025 (month first)
+  {
+    re: /\b([\dOo]{1,2})[-\s]?([A-Za-z]{3})[-\s]?(\d{2,4})(?:,?\s*\d{1,2}:\d{2})?\b/,
+    kind: "monthName",
+  }, // 15-Jan-2025 or 15-Jan-25, tolerant of missing separator, O/0 confusion, and a trailing ", HH:MM" time
+  {
+    re: /\b([A-Za-z]{3,9})\s+([\dOo]{1,2}),?\s+(\d{2,4})(?:,?\s*\d{1,2}:\d{2})?\b/,
+    kind: "monthName",
+  }, // Jan 15, 2025 or Jan 15, 25 (month first), same trailing-time tolerance
   { re: /\b(\d{1,2})\/(\d{1,2})\/(\d{2,4})\b/, kind: "ambiguous" }, // MM/DD/YYYY or DD/MM/YYYY
   { re: /\b(\d{1,2})-(\d{1,2})-(\d{4})\b/, kind: "ambiguous" }, // MM-DD-YYYY or DD-MM-YYYY
   // Dot-separated: 03.04.2025. Standard across DE/AT/CH, the Nordics, Poland,
@@ -62,17 +74,37 @@ const DATE_PATTERNS: Array<{
   // match) -- which matters because on comma-decimal statements the dot is
   // also the thousands separator.
   { re: /\b(\d{1,2})\.(\d{1,2})\.(\d{4})\b/, kind: "ambiguous" },
+  // No year at all -- confirmed via real-world US bank layouts (Chase,
+  // Wells Fargo, Capital One): the year appears once in a "Statement
+  // Period" line, not repeated on every transaction row. Deliberately last
+  // in this list so a real year-bearing date is always preferred over this
+  // fallback when both could technically match a substring.
+  { re: /\b(\d{1,2})\/(\d{1,2})\b(?!\/\d)/, kind: "noYear" },
 ];
 
 const MONTHS: Record<string, string> = {
-  jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06",
-  jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12",
+  jan: "01",
+  feb: "02",
+  mar: "03",
+  apr: "04",
+  may: "05",
+  jun: "06",
+  jul: "07",
+  aug: "08",
+  sep: "09",
+  oct: "10",
+  nov: "11",
+  dec: "12",
 };
 
 /** Finds the first date-like match in text and resolves it to ISO, using the document's inferred date order for ambiguous numeric formats. */
 function findDate(
   text: string,
-  dateOrder: DateOrder
+  dateOrder: DateOrder,
+  yearCursor: { year: number; lastMonth: number | null } = {
+    year: new Date().getFullYear(),
+    lastMonth: null,
+  },
 ): { iso: string; matchedText: string; unambiguous: boolean } | null {
   for (const { re, kind } of DATE_PATTERNS) {
     const m = text.match(re);
@@ -96,7 +128,13 @@ function findDate(
       const dayStr = (isMonthFirst ? m[2] : m[1]).replace(/[Oo]/g, "0");
       const month = MONTHS[monthStr.toLowerCase().slice(0, 3)];
       if (!month) continue;
-      return { iso: `${m[3]}-${month}-${dayStr.padStart(2, "0")}`, matchedText: m[0], unambiguous: true };
+      let year = m[3];
+      if (year.length === 2) year = `20${year}`;
+      return {
+        iso: `${year}-${month}-${dayStr.padStart(2, "0")}`,
+        matchedText: m[0],
+        unambiguous: true,
+      };
     }
 
     // ambiguous numeric -- resolve using the document-wide inferred order,
@@ -106,9 +144,20 @@ function findDate(
     // this "not unambiguous" for scoring purposes, since that nuance isn't
     // tracked back here -- treating the whole "ambiguous" pattern kind as the
     // slightly-less-certain case is a reasonable simplification.
-    let year = m[3];
-    if (year.length === 2) year = `20${year}`;
-    const iso = resolveAmbiguousDate(m[1], m[2], year, dateOrder);
+    if (kind === "ambiguous") {
+      let year = m[3];
+      if (year.length === 2) year = `20${year}`;
+      const iso = resolveAmbiguousDate(m[1], m[2], year, dateOrder);
+      if (iso) return { iso, matchedText: m[0], unambiguous: false };
+      continue;
+    }
+
+    // noYear -- e.g. Chase/Wells Fargo/Capital One's "01/03" with the year
+    // implied by the statement period rather than repeated per row. Less
+    // certain than a real year-bearing date (both because the day/month
+    // order is still ambiguous AND the year itself is inferred), so always
+    // marked not-unambiguous.
+    const iso = resolveYearlessDate(m[1], m[2], dateOrder, yearCursor);
     if (iso) return { iso, matchedText: m[0], unambiguous: false };
   }
   return null;
@@ -141,7 +190,7 @@ function isDateOnlyRow(text: string, dateOrder: DateOrder): boolean {
 // site), so this can't accidentally exclude a real dated transaction whose
 // own description happens to contain one of these words.
 const SUMMARY_ROW_RE =
-  /\b(previous balance|opening balance|beginning balance|balance forward|closing balance|new balance|statement balance|total amount due|minimum amount due|minimum payment due|grand total|total withdrawals?|total deposits?|total debits?|total credits?)\b/i;
+  /\b(previous balance|opening balance|beginning balance|ending balance|balance forward|closing balance|new balance|statement balance|total amount due|minimum amount due|minimum payment due|grand total|total withdrawals?|total deposits?|total debits?|total credits?)\b/i;
 
 function isStatementSummaryRow(text: string): boolean {
   return SUMMARY_ROW_RE.test(text);
@@ -186,6 +235,23 @@ function isBroughtForwardRow(description: string): boolean {
     .replace(/^[\s./-]+|[\s./-]+$/g, "");
   if (cleaned.length > 30) return false;
   return BROUGHT_FORWARD_RE.test(cleaned);
+}
+
+// A closing/opening-balance summary line that happens to carry a date (e.g.
+// "Ending balance on 1/31/2025 2,787.81", "Beginning balance on 1/1/2025")
+// -- confirmed via a real-world US bank layout (Bank of America). The
+// pre-block filter above deliberately keeps ANY dated row, specifically so a
+// real transaction whose description happens to mention "closing balance"
+// isn't discarded -- but that means these genuinely date-bearing summary
+// lines sail through as phantom transactions instead. Caught here instead,
+// once the description is fully assembled, using the same safety margin as
+// isBroughtForwardRow: only a SHORT description matching the summary phrase
+// is excluded, so a real, longer transaction that merely mentions one of
+// these phrases in passing is never at risk.
+function isClosingSummaryRow(description: string): boolean {
+  const cleaned = description.trim();
+  if (cleaned.length > 40) return false;
+  return SUMMARY_ROW_RE.test(cleaned);
 }
 
 // --- amount parsing -----------------------------------------------------------
@@ -260,7 +326,11 @@ export function groupIntoRows(items: TextItem[], yTolerance = 3): Row[] {
 
   for (const row of rows) {
     row.items.sort((a, b) => a.x - b.x);
-    row.text = row.items.map((i) => i.str).join(" ").replace(/\s+/g, " ").trim();
+    row.text = row.items
+      .map((i) => i.str)
+      .join(" ")
+      .replace(/\s+/g, " ")
+      .trim();
   }
 
   return rows;
@@ -313,7 +383,9 @@ function groupRowsIntoBlocks(rows: Row[], dateOrder: DateOrder): Block[] {
   // scrambled across transactions ("FY025" from one row appearing on the
   // next), not merely truncated. Reading order is unambiguous here: nothing
   // between two dates can belong to anything but the earlier one.
-  const dateOnlyAnchors = new Set(anchorIndices.filter((idx) => isDateOnlyRow(rows[idx].text, dateOrder)));
+  const dateOnlyAnchors = new Set(
+    anchorIndices.filter((idx) => isDateOnlyRow(rows[idx].text, dateOrder)),
+  );
 
   for (let i = 0; i < rows.length; i++) {
     if (dateOnlyAnchors.size > 0) {
@@ -429,14 +501,18 @@ const MOSTLY_DIGITS_RE = /^\d{6,}$/; // long pure-digit account/reference number
  * counterparty record or queried with the bank, so an accountant needs it.
  * They're returned separately and exported in their own column.
  */
-export function extractReferenceTokens(block: Block, dateMatchedText: string, consumedAmounts: string[]): string {
+export function extractReferenceTokens(
+  block: Block,
+  dateMatchedText: string,
+  consumedAmounts: string[],
+): string {
   const rawTexts = block.rows.map((r) => r.text);
   let combined = rawTexts.join(" / ");
   combined = combined.replace(dateMatchedText, "");
   for (const tok of consumedAmounts) combined = combined.replace(tok, "");
 
   const refs = combined
-    .split(/[\/\s]+/)
+    .split(/[/\s]+/)
     .map((s) => s.trim())
     .filter(Boolean)
     .filter((s) => LOOKS_LIKE_REFERENCE_RE.test(s) || MOSTLY_DIGITS_RE.test(s))
@@ -474,7 +550,11 @@ function removeToken(text: string, token: string): string {
   return before + (needsSpace ? " " : "") + after;
 }
 
-function buildDescription(block: Block, dateMatchedText: string, consumedAmounts: string[]): string {
+function buildDescription(
+  block: Block,
+  dateMatchedText: string,
+  consumedAmounts: string[],
+): string {
   // Preserve the statement's own text.
   //
   // This used to split the description into tokens, drop the ones judged to
@@ -549,10 +629,11 @@ function buildTransactionFromBlock(
   columns: DetectedColumn[] | null,
   dateOrder: DateOrder,
   numberFormat: NumberFormat,
-  pageNumber: number
+  pageNumber: number,
+  yearCursor: { year: number; lastMonth: number | null },
 ): RawTransaction | null {
   const anchorRow = block.anchorRow;
-  const dateResult = findDate(anchorRow.text, dateOrder);
+  const dateResult = findDate(anchorRow.text, dateOrder, yearCursor);
   if (!dateResult) return null;
 
   // Gather every number across every row in the block, keeping x-position.
@@ -656,7 +737,10 @@ function buildTransactionFromBlock(
     }
   }
 
-  const description = buildDescription(block, dateResult.matchedText, [...consumedRaw, ...consumedColumnText]);
+  const description = buildDescription(block, dateResult.matchedText, [
+    ...consumedRaw,
+    ...consumedColumnText,
+  ]);
 
   // Reference numbers stripped out of the description are kept rather than
   // discarded -- exported via the existing Tran ID column, which already
@@ -664,7 +748,10 @@ function buildTransactionFromBlock(
   // its own Tran ID column, so a bank-provided ID always wins over one
   // recovered from the description text.
   if (tranId === null) {
-    const refs = extractReferenceTokens(block, dateResult.matchedText, [...consumedRaw, ...consumedColumnText]);
+    const refs = extractReferenceTokens(block, dateResult.matchedText, [
+      ...consumedRaw,
+      ...consumedColumnText,
+    ]);
     if (refs) tranId = refs;
   }
 
@@ -789,6 +876,11 @@ export function parseTransactionsFromPages(pages: PageText[], fullText: string):
   // like "1.234" cannot resolve its own decimal separator, but a full
   // statement almost always can.
   const numberFormat = inferNumberFormat(fullText);
+  // For statements that print MM/DD with no year on each row (Chase, Wells
+  // Fargo, Capital One confirmed) -- shared across the whole document, not
+  // reset per page, since a year rollover mid-statement runs continuously
+  // across page breaks.
+  const yearCursor = { year: inferStatementYear(fullText), lastMonth: null as number | null };
   const transactions: RawTransaction[] = [];
   let carriedColumns: DetectedColumn[] | null = null;
 
@@ -796,7 +888,7 @@ export function parseTransactionsFromPages(pages: PageText[], fullText: string):
     if (page.items.length === 0) continue;
 
     const rows = groupIntoRows(page.items).filter(
-      (r) => !furniture.has(r.text.replace(/\s+/g, " ").trim())
+      (r) => !furniture.has(r.text.replace(/\s+/g, " ").trim()),
     );
     const pageWidth = Math.max(...page.items.map((i) => i.x + i.width), 1);
 
@@ -815,12 +907,19 @@ export function parseTransactionsFromPages(pages: PageText[], fullText: string):
     // date on the row -- a real dated transaction is never excluded just
     // because its own description happens to contain one of these words.
     const candidateRows = (header ? rows.slice(header.headerRowIndex + 1) : rows).filter(
-      (row) => hasDate(row.text) || !isStatementSummaryRow(row.text)
+      (row) => hasDate(row.text) || !isStatementSummaryRow(row.text),
     );
     const blocks = groupRowsIntoBlocks(candidateRows, dateOrder);
 
     for (const block of blocks) {
-      const txn = buildTransactionFromBlock(block, columns, dateOrder, numberFormat, page.pageNumber);
+      const txn = buildTransactionFromBlock(
+        block,
+        columns,
+        dateOrder,
+        numberFormat,
+        page.pageNumber,
+        yearCursor,
+      );
       if (txn) transactions.push(txn);
     }
   }
@@ -830,7 +929,10 @@ export function parseTransactionsFromPages(pages: PageText[], fullText: string):
   // these rows carry a real date and a real amount, so they only become
   // identifiable once the description has been assembled.
   const withoutOpeningBalance = transactions.filter(
-    (t) => !isBroughtForwardRow(t.description) && !isAppendixRow(t.description)
+    (t) =>
+      !isBroughtForwardRow(t.description) &&
+      !isAppendixRow(t.description) &&
+      !isClosingSummaryRow(t.description),
   );
 
   // Continuity is scored after the filter so the removed row can't be
@@ -875,7 +977,12 @@ function applyBalanceContinuityAdjustment(transactions: RawTransaction[]): void 
     const magnitudeAgrees = Math.abs(Math.abs(delta) - Math.abs(curr.amount)) < 0.02;
     const signIsWrong = Math.sign(delta) !== Math.sign(curr.amount);
     if (magnitudeAgrees && signIsWrong && Math.abs(delta) > 0) {
-      curr.amount = delta;
+      // Flip the sign of the original, cleanly-extracted amount rather than
+      // substituting `delta` itself -- delta is a floating-point
+      // subtraction of two independently-rounded balance figures, so it can
+      // drift by a fraction of a cent (e.g. 64.19999999999982 instead of
+      // 64.20) even when magnitudeAgrees confirms it's the same number.
+      curr.amount = -curr.amount;
     }
 
     // Re-derive drCr AFTER the sign correction. Deriving it at construction
