@@ -155,10 +155,13 @@ export async function validateUploadBatch(
 
   // Real server-side check: atomically verifies remaining lifetime quota
   // and reserves it in the same call, rather than trusting a client-side
-  // count that could just be skipped by calling Supabase directly.
+  // count that could just be skipped by calling Supabase directly. The
+  // limit itself is hardcoded inside increment_page_usage now, not passed
+  // as an argument here -- a caller-supplied limit was a real bypass
+  // (anyone could call the RPC directly with an arbitrary p_limit), fixed
+  // in the 20260810_security_findings_fix migration.
   const { data: allowed, error } = await supabase.rpc("increment_page_usage", {
     p_count: totalCost,
-    p_limit: SIGNED_IN_MAX_PAGES,
   });
 
   if (error) {
