@@ -47,12 +47,7 @@ async function getUserFromToken(token: string): Promise<{ id: string } | null> {
 // file's comment for why this can't just import the frontend constant
 // (this function must never trust anything that crossed the network, and
 // duplicating one number here is a much smaller risk than that).
-//
-// TEMPORARY: set to 5.00 for a live test purchase (2026-08-10). Change
-// back to 79.00 once the test purchase is confirmed working -- this is
-// the value that actually gets charged, so it matters more than the
-// frontend constant if the two ever drift out of sync.
-const LIFETIME_PRICE_USD = "5.00";
+const LIFETIME_PRICE_USD = "79.00";
 
 function paypalApiBase(): string {
   const env = Deno.env.get("PAYPAL_ENV") ?? "sandbox";

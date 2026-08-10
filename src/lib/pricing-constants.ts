@@ -29,9 +29,5 @@ export const FREE_TIER_MAX_PAGES = ANONYMOUS_MAX_PAGES;
  * supabase/functions/paypal-create-order, independently, since a client
  * could otherwise tamper with whatever number this constant holds. Keep
  * both in sync by hand when the price changes; there are only two places.
- *
- * TEMPORARY: set to 5 for a live test purchase (2026-08-10) -- this is a
- * REAL price shown to every visitor on the live site, not a hidden test
- * mode. Change back to 79 once the test purchase is confirmed working.
  */
-export const LIFETIME_PRICE_USD = 5;
+export const LIFETIME_PRICE_USD = 79;
