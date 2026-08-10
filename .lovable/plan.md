@@ -1,45 +1,39 @@
-# Align preview page layout with the reference
+# Fix "Checkout isn't live yet" on the billing page
 
-## What's actually different (that I missed before)
+## What's actually wrong
 
-Comparing the two screenshots side by side:
+PayPal is configured correctly. Calling the config function directly returns:
 
-| Element | Current | Desired |
-|---|---|---|
-| Page heading "Preview & edit transactions" | Present, large, above everything | **Removed** — page starts directly at the dark stat strip |
-| Yellow "Bank not recognized…" warning banner | Sits above the stat strip | **Removed** from top; parser warnings should not push the strip down |
-| Row vertical padding | Loose (`py-2` + line-height blows rows up when description wraps) | Compact, single-line rows |
-| Description column | Wraps / shows merged multi-line text | Truncated to a single line with ellipsis |
-| Confidence legend footer | Exists in code but off-screen in current view | Visible below the table |
-| Flagged row treatment | Currently shows amber left border only when tier=low | Same, keep as-is — already matches |
+```text
+{ "configured": true, "clientId": "Afpg…", "env": "sandbox" }
+```
 
-## Changes
+So the credentials are in place. The problem is that the browser can never read that response: none of the four PayPal backend functions send CORS headers or answer the browser's pre-flight `OPTIONS` request. The browser blocks the call, the checkout component treats any failed call as "not configured", and shows the fallback message.
 
-### 1. `src/routes/preview.tsx` — drop the AppShell page title
+## The fix
 
-Right now the page is wrapped in `<AppShell title="Preview & edit transactions">`, which renders the big heading. Switch to `<AppShell>` with no title so the dark stat strip becomes the top element in the content area, matching the reference.
+Add standard CORS handling to all four PayPal functions:
 
-### 2. Move parser warnings out of the top slot
+1. `paypal-config`
+2. `paypal-create-order`
+3. `paypal-capture-order`
+4. `paypal-webhook` (headers only — it is server-to-server, but harmless and consistent)
 
-The `warnings.length > 0` block that renders the yellow "Bank not recognized" banner currently sits above the stat strip. Move it **below** the toolbar (or collapse it into a small inline chip near the "flagged" stat) so it doesn't push the stat strip down and doesn't appear in the top viewport.
+For each function:
+- Answer `OPTIONS` with a `204` and the CORS headers instead of the current `405 Method not allowed`.
+- Attach `Access-Control-Allow-Origin`, `Access-Control-Allow-Headers` (`authorization, x-client-info, apikey, content-type`) and `Access-Control-Allow-Methods` to every response, including the error responses.
 
-Recommended: render warnings as a compact inline note directly under the toolbar row, using the existing amber styling but smaller — a single line, not a full banner.
+Then redeploy all four functions and confirm the PayPal buttons render on `/account/billing` in sandbox mode.
 
-### 3. Tighten table row density
+## Technical notes
 
-- Table cell padding: `px-3 py-2` → `px-3 py-2.5` stays, but constrain description cell to one line: add `whitespace-nowrap overflow-hidden text-ellipsis max-w-[520px]` on the description `<td>` inner wrapper.
-- Ensure amounts stay right-aligned single-line (already are).
+- A shared `corsHeaders` constant per function (Edge functions don't share modules unless placed in `supabase/functions/_shared/`; a small `_shared/cors.ts` is the cleaner option and will be used).
+- No frontend changes needed — `PayPalCheckoutButton` already handles `configured: true` and renders the SDK buttons once the call succeeds.
+- Environment stays `sandbox` (per `PAYPAL_ENV`); flipping to live is just a secret change later.
 
-### 4. Verify legend footer is reachable
+## Unrelated pre-existing build errors
 
-The `CONFIDENCE ≥90% high / 75-89% medium / <75% low` legend is already coded at the bottom of the page. With the heading + banner removed, it should now be visible without scrolling on a typical viewport. No code change beyond the removals above.
+The project currently fails typecheck for reasons unrelated to PayPal, and these will be fixed in the same pass:
 
-## Files touched
-
-- `src/routes/preview.tsx` — remove AppShell `title` prop, relocate warnings block, add truncation classes on description cell.
-
-## Out of scope
-
-- No changes to stat strip labels, toolbar, sort arrows, currency formatting, or footer legend — those already match the reference from the previous pass.
-- No changes to `AppShell` component itself (title prop stays optional as it already is).
-- No changes to parsing logic or the actual description string content — cleaning up merged multi-line descriptions is a parser-level fix, tracked separately.
+- Eight converter/landing routes pass a hero without the now-required `publishedDate` field.
+- `src/lib/enrich/categorize.ts:396` compares a `-1 | 1` value against `0`, which can never match.
