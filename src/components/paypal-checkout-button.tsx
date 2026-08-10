@@ -72,7 +72,13 @@ export function PayPalCheckoutButton() {
       if (!document.getElementById(scriptId)) {
         const script = document.createElement("script");
         script.id = scriptId;
-        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&intent=capture&components=buttons`;
+        // enable-funding=venmo: PayPal's existing Buttons component renders
+        // a second, Venmo-branded button automatically when the buyer is
+        // eligible (US-based, USD, has the Venmo app) -- no separate
+        // integration beyond this one query param, since createOrder/
+        // onApprove below already handle whichever funding source the
+        // buyer picks identically.
+        script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&intent=capture&components=buttons&enable-funding=venmo`;
         script.onload = () => !cancelled && renderButton();
         script.onerror = () => !cancelled && setStatus("error");
         document.body.appendChild(script);
