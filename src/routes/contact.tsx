@@ -63,18 +63,28 @@ function Page() {
       let attachmentPath: string | null = null;
 
       if (file) {
+        // Attachments are stored per-user under a folder named after the
+        // user's id -- storage policies only allow a signed-in user to write
+        // to (and read) their own folder, so an anonymous visitor cannot
+        // upload arbitrary files to the bucket at all.
+        if (!user) {
+          throw new Error(
+            "Please sign in to attach a file, or send the message without an attachment.",
+          );
+        }
         if (file.size > MAX_ATTACHMENT_BYTES) {
           throw new Error(
             "That file is larger than 15 MB — please attach a smaller file or split it up.",
           );
         }
-        const path = `${crypto.randomUUID()}-${file.name}`;
+        const path = `${user.id}/${crypto.randomUUID()}-${file.name}`;
         const { error: uploadError } = await supabase.storage
           .from("support-attachments")
           .upload(path, file);
         if (uploadError) throw uploadError;
         attachmentPath = path;
       }
+
 
       const { error: insertError } = await supabase.from("contact_submissions").insert({
         name: name.trim() || null,
@@ -201,12 +211,20 @@ function Page() {
                   Attach a statement{" "}
                   <span className="font-normal text-muted-foreground">(optional)</span>
                 </label>
+                {!user && (
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    Sign in to attach a file — messages without attachments can be sent without an
+                    account.
+                  </p>
+                )}
                 <input
                   type="file"
+                  disabled={!user}
                   accept=".pdf,.jpg,.jpeg,.png,.webp,.csv"
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  className="mt-1.5 block w-full text-sm text-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-surface-muted file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-ink"
+                  className="mt-1.5 block w-full text-sm text-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-surface-muted file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-ink disabled:opacity-50"
                 />
+
 
                 {file && (
                   <div className="mt-3 flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-900">

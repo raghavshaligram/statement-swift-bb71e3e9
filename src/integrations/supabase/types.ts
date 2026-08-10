@@ -159,10 +159,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      increment_page_usage: {
-        Args: { p_count: number }
-        Returns: boolean
-      }
+      increment_page_usage: { Args: { p_count: number }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
