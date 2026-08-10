@@ -22,3 +22,12 @@ export const SIGNED_IN_MAX_PAGES = 10;
 
 /** @deprecated use ANONYMOUS_MAX_PAGES or SIGNED_IN_MAX_PAGES explicitly -- kept temporarily so nothing importing the old name breaks mid-refactor. */
 export const FREE_TIER_MAX_PAGES = ANONYMOUS_MAX_PAGES;
+
+/**
+ * Lifetime Pro price, USD. Single source of truth for display -- the
+ * amount PayPal actually charges is hardcoded server-side in
+ * supabase/functions/paypal-create-order, independently, since a client
+ * could otherwise tamper with whatever number this constant holds. Keep
+ * both in sync by hand when the price changes; there are only two places.
+ */
+export const LIFETIME_PRICE_USD = 79;

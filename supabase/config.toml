@@ -1,13 +1,22 @@
 project_id = "nszosplsazwdxqxkztfo"
 
-# No edge functions are currently deployed.
-#
-# The four PayPal functions (paypal-webhook, paypal-create-plan,
-# paypal-config, paypal-record-subscription) were removed along with the rest
-# of the PayPal integration.
-#
-# Worth carrying forward when a processor is next wired up: a webhook called by
-# the processor's servers CANNOT supply a Supabase JWT, so it needs
-# `verify_jwt = false` plus its own signature verification against the
-# processor's API. Functions invoked from the browser via
-# supabase.functions.invoke should stay on the default `verify_jwt = true`.
+# PayPal one-time lifetime checkout (Orders API, not the old removed
+# Subscriptions API -- see the 20260805 migration and each function's own
+# comment for why). Two functions are invoked from the browser via
+# supabase.functions.invoke, carrying the user's own Supabase JWT, and stay
+# on the platform default (verify_jwt = true). The webhook is called by
+# PayPal's own servers, which cannot supply a Supabase JWT at all -- it
+# must be verify_jwt = false, with its own signature verification against
+# PayPal's API standing in as the real auth check (see that function).
+
+[functions.paypal-config]
+verify_jwt = false
+
+[functions.paypal-create-order]
+verify_jwt = true
+
+[functions.paypal-capture-order]
+verify_jwt = true
+
+[functions.paypal-webhook]
+verify_jwt = false

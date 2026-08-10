@@ -2,14 +2,19 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Check, Minus, CreditCard } from "lucide-react";
 import { AccountShell } from "@/components/account-shell";
 import { usePageUsage } from "@/hooks/use-page-usage";
-import { SIGNED_IN_MAX_PAGES } from "@/lib/pricing-constants";
+import { SIGNED_IN_MAX_PAGES, LIFETIME_PRICE_USD } from "@/lib/pricing-constants";
 import { useSubscription } from "@/hooks/use-subscription";
+import { PayPalCheckoutButton } from "@/components/paypal-checkout-button";
 
 export const Route = createFileRoute("/account/billing")({
   head: () => ({
     meta: [
       { title: "Billing & subscription — BalanceExtract" },
-      { name: "description", content: "Manage your BalanceExtract subscription, page usage, and upgrade to Pro for unlimited pages." },
+      {
+        name: "description",
+        content:
+          "Manage your BalanceExtract subscription, page usage, and upgrade to Pro for unlimited pages.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -17,7 +22,11 @@ export const Route = createFileRoute("/account/billing")({
 });
 
 const FEATURES = [
-  { label: "Pages, lifetime (PDFs + photos/scans combined)", free: `${SIGNED_IN_MAX_PAGES} pages`, pro: "Unlimited" },
+  {
+    label: "Pages, lifetime (PDFs + photos/scans combined)",
+    free: `${SIGNED_IN_MAX_PAGES} pages`,
+    pro: "Unlimited",
+  },
   { label: "Excel (.xlsx) export", free: true, pro: true },
   { label: "CSV export", free: true, pro: true },
   { label: "OFX / QIF / QBO / IIF", free: false, pro: true },
@@ -38,6 +47,9 @@ function Cell({ v }: { v: string | boolean }) {
 
 const STATUS_LABEL: Record<string, string> = {
   active: "Active",
+  denied: "Payment declined",
+  refunded: "Refunded",
+  // Kept for any historical rows from the earlier subscription-based model.
   pending: "Pending activation",
   past_due: "Payment failed",
   suspended: "Suspended",
@@ -51,7 +63,9 @@ function BillingPage() {
   const used = pageUsage.used ?? 0;
   const cap = pageUsage.limit;
   const pct = Math.min(100, (used / cap) * 100);
-  const statusLabel = subscription ? (STATUS_LABEL[subscription.status] ?? subscription.status) : "Free tier";
+  const statusLabel = subscription
+    ? (STATUS_LABEL[subscription.status] ?? subscription.status)
+    : "Free tier";
   return (
     <AccountShell
       eyebrow="Account"
@@ -78,12 +92,11 @@ function BillingPage() {
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
             {isPro
-              ? "Unlimited pages and every export format are unlocked. Contact us to change or cancel this subscription."
+              ? "Unlimited pages and every export format are unlocked, for life. Contact us if anything looks wrong."
               : subscription
-                ? "We've recorded your subscription and are waiting on the payment processor to confirm it. This usually takes under a minute."
-                : "No payment method on file. Upgrade to Pro for unlimited pages and all export formats."}
+                ? "Your last payment wasn't completed (declined or refunded) -- you're on the free tier. Contact us if this looks wrong, or try upgrading again below."
+                : "No payment on file. Upgrade to Pro once for unlimited pages and all export formats, forever."}
           </p>
-
         </div>
 
         <div className="rounded-2xl border border-border bg-background p-6 shadow-sm">
@@ -97,7 +110,10 @@ function BillingPage() {
             </span>
           </div>
           <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-surface-muted">
-            <div className="h-full rounded-full bg-emerald" style={{ width: `${isPro ? 100 : pct}%` }} />
+            <div
+              className="h-full rounded-full bg-emerald"
+              style={{ width: `${isPro ? 100 : pct}%` }}
+            />
           </div>
           <div className="mt-2 text-xs text-muted-foreground">
             {isPro
@@ -114,34 +130,24 @@ function BillingPage() {
             <div>
               <div className="text-xl font-bold tracking-tight text-ink">Upgrade to Pro</div>
               <p className="mt-1 text-sm text-muted-foreground">
-                Unlimited pages, all export formats, priority support.
+                Unlimited pages, all export formats, priority support. One payment, yours forever.
               </p>
             </div>
           </div>
 
           <div className="mt-5 flex items-baseline gap-1.5">
-            <span className="font-mono text-4xl font-bold tracking-tight text-ink">$19</span>
-            <span className="font-mono text-sm text-muted-foreground">/ month · flat</span>
+            <span className="font-mono text-4xl font-bold tracking-tight text-ink">
+              ${LIFETIME_PRICE_USD}
+            </span>
+            <span className="font-mono text-sm text-muted-foreground">one-time · lifetime</span>
           </div>
           {/*
-            No payment processor is connected. Showing a dead "Subscribe"
-            button that errors is worse than saying so plainly -- someone who
-            clicks it and hits a failure assumes the product is broken, not
-            that checkout is pending.
+            PayPalCheckoutButton handles its own "checkout isn't configured
+            yet" state (see that component) by asking paypal-config, so this
+            renders correctly whether or not PayPal credentials are set for
+            the current environment -- no separate placeholder needed here.
           */}
-          <div className="mt-5 rounded-xl border border-border bg-surface-muted/50 p-4">
-            <div className="text-sm font-semibold text-ink">Checkout isn't open yet</div>
-            <p className="mt-1 text-sm text-muted-foreground">
-              We're finishing our payment setup. Everything on the free tier keeps working in the
-              meantime, and nothing you've converted is affected.
-            </p>
-            <a
-              href="/contact"
-              className="mt-3 inline-block text-sm font-semibold text-emerald hover:underline"
-            >
-              Tell us you want Pro →
-            </a>
-          </div>
+          <PayPalCheckoutButton />
         </div>
       )}
 
@@ -164,7 +170,6 @@ function BillingPage() {
         </div>
       </div>
 
-
       {/* Comparison table */}
       <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-background shadow-sm">
         <table className="w-full text-sm">
@@ -181,8 +186,12 @@ function BillingPage() {
             {FEATURES.map((f) => (
               <tr key={f.label}>
                 <td className="px-6 py-3 text-ink">{f.label}</td>
-                <td className="px-6 py-3 text-center"><Cell v={f.free} /></td>
-                <td className="px-6 py-3 text-center"><Cell v={f.pro} /></td>
+                <td className="px-6 py-3 text-center">
+                  <Cell v={f.free} />
+                </td>
+                <td className="px-6 py-3 text-center">
+                  <Cell v={f.pro} />
+                </td>
               </tr>
             ))}
           </tbody>
