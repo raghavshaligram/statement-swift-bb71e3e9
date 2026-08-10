@@ -211,12 +211,20 @@ function Page() {
                   Attach a statement{" "}
                   <span className="font-normal text-muted-foreground">(optional)</span>
                 </label>
+                {!user && (
+                  <p className="mt-1.5 text-xs text-muted-foreground">
+                    Sign in to attach a file — messages without attachments can be sent without an
+                    account.
+                  </p>
+                )}
                 <input
                   type="file"
+                  disabled={!user}
                   accept=".pdf,.jpg,.jpeg,.png,.webp,.csv"
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  className="mt-1.5 block w-full text-sm text-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-surface-muted file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-ink"
+                  className="mt-1.5 block w-full text-sm text-muted-foreground file:mr-3 file:rounded-md file:border-0 file:bg-surface-muted file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-ink disabled:opacity-50"
                 />
+
 
                 {file && (
                   <div className="mt-3 flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 p-3.5 text-sm text-amber-900">
