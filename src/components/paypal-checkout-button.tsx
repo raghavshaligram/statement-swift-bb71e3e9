@@ -96,6 +96,16 @@ export function PayPalCheckoutButton() {
               headers,
             });
             if (error || !data?.orderId) {
+              let serverMessage: string | null = null;
+              const context = (error as { context?: Response } | null)?.context;
+              if (context && typeof context.text === "function") {
+                try {
+                  serverMessage = await context.text();
+                } catch {
+                  // best-effort only
+                }
+              }
+              console.error("paypal-create-order failed:", { error, serverMessage, data });
               setErrorMessage("Something went wrong starting checkout. Please try again.");
               setStatus("error");
               throw error ?? new Error("No orderId returned");
@@ -114,6 +124,26 @@ export function PayPalCheckoutButton() {
             );
 
             if (error || captureData?.status !== "COMPLETED") {
+              // supabase-js puts the actual HTTP response on error.context for
+              // a non-2xx invoke -- read its body so the real server-side
+              // reason (auth failure, custom_id mismatch, PayPal decline, DB
+              // write failure -- paypal-capture-order returns a different
+              // message for each) shows up here instead of just "it errored".
+              let serverMessage: string | null = null;
+              const context = (error as { context?: Response } | null)?.context;
+              if (context && typeof context.text === "function") {
+                try {
+                  serverMessage = await context.text();
+                } catch {
+                  // best-effort only
+                }
+              }
+              console.error("paypal-capture-order failed:", {
+                error,
+                serverMessage,
+                captureData,
+                orderId: data.orderID,
+              });
               setErrorMessage(
                 captureData?.status && captureData.status !== "COMPLETED"
                   ? "PayPal didn't complete this payment (it may have been declined). No charge was made -- please try again or use a different payment method."
