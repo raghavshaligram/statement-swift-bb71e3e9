@@ -17,7 +17,7 @@
 //   PAYPAL_ENV                       "sandbox" or "live" (defaults to sandbox)
 //   PAYPAL_CLIENT_ID_SANDBOX / _LIVE
 //   PAYPAL_CLIENT_SECRET_SANDBOX / _LIVE
-//   PAYPAL_WEBHOOK_ID
+//   PAYPAL_WEBHOOK_ID_SANDBOX / _LIVE
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -58,8 +58,19 @@ async function verifyWebhookSignature(
   rawBody: string,
   accessToken: string,
 ): Promise<boolean> {
-  const webhookId = Deno.env.get("PAYPAL_WEBHOOK_ID");
-  if (!webhookId) throw new Error("Missing PAYPAL_WEBHOOK_ID secret");
+  // Sandbox and live are registered as separate webhooks in PayPal's
+  // dashboard, each with their own webhook ID -- same reason
+  // PAYPAL_CLIENT_ID/_SECRET are already split by environment. Using the
+  // sandbox webhook ID against a live event (or vice versa) makes every
+  // verification fail, which would silently break this function's whole
+  // purpose (the safety net for a payment that completed but never made
+  // it back to the browser) without affecting the primary purchase flow
+  // at all -- exactly the kind of failure that's invisible until someone
+  // needs it.
+  const env = Deno.env.get("PAYPAL_ENV") ?? "sandbox";
+  const suffix = env === "live" ? "LIVE" : "SANDBOX";
+  const webhookId = Deno.env.get(`PAYPAL_WEBHOOK_ID_${suffix}`);
+  if (!webhookId) throw new Error(`Missing PAYPAL_WEBHOOK_ID_${suffix} secret`);
 
   const verifyRes = await fetch(`${paypalApiBase()}/v1/notifications/verify-webhook-signature`, {
     method: "POST",
