@@ -107,6 +107,7 @@ function Page() {
       <ArticleHero
         eyebrow="Converter"
         title="Convert Bank Statement to QBO"
+        publishedDate="July 2026"
       />
 
 

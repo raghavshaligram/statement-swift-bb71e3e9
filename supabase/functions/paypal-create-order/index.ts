@@ -65,9 +65,22 @@ async function getAccessToken(): Promise<string> {
   return data.access_token as string;
 }
 
+// See paypal-config for why these are required: the browser pre-flights
+// every functions.invoke() call, and a missing CORS header blocks it.
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Max-Age": "86400",
+};
+const jsonHeaders = { ...corsHeaders, "Content-Type": "application/json" };
+
 Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
   if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+    return new Response("Method not allowed", { status: 405, headers: corsHeaders });
   }
 
   try {
@@ -75,7 +88,7 @@ Deno.serve(async (req: Request) => {
     // gets embedded as custom_id below, never anything the request body
     // claims about itself (the body isn't even read for identity here).
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return new Response("Unauthorized", { status: 401 });
+    if (!authHeader) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -85,7 +98,8 @@ Deno.serve(async (req: Request) => {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (userError || !user) return new Response("Unauthorized", { status: 401 });
+    if (userError || !user)
+      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
     const accessToken = await getAccessToken();
     const orderRes = await fetch(`${paypalApiBase()}/v2/checkout/orders`, {
@@ -109,16 +123,16 @@ Deno.serve(async (req: Request) => {
     if (!orderRes.ok) {
       const body = await orderRes.text();
       console.error("PayPal create-order failed:", orderRes.status, body);
-      return new Response("Failed to create PayPal order", { status: 502 });
+      return new Response("Failed to create PayPal order", { status: 502, headers: corsHeaders });
     }
 
     const order = await orderRes.json();
     return new Response(JSON.stringify({ orderId: order.id }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: jsonHeaders,
     });
   } catch (err) {
     console.error("paypal-create-order error:", err);
-    return new Response("Internal error", { status: 500 });
+    return new Response("Internal error", { status: 500, headers: corsHeaders });
   }
 });

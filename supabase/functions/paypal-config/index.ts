@@ -12,9 +12,24 @@
 //   PAYPAL_ENV                       "sandbox" or "live" (defaults to sandbox)
 //   PAYPAL_CLIENT_ID_SANDBOX / _LIVE
 
+// Supabase Edge Functions add no CORS headers of their own. Because
+// supabase.functions.invoke() sends authorization/apikey/x-client-info, the
+// browser always pre-flights with OPTIONS -- without these headers the call
+// is blocked and the checkout UI can't tell "unconfigured" from "blocked".
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Max-Age": "86400",
+};
+const jsonHeaders = { ...corsHeaders, "Content-Type": "application/json" };
+
 Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
   if (req.method !== "GET") {
-    return new Response("Method not allowed", { status: 405 });
+    return new Response("Method not allowed", { status: 405, headers: corsHeaders });
   }
 
   const env = Deno.env.get("PAYPAL_ENV") ?? "sandbox";
@@ -28,12 +43,12 @@ Deno.serve(async (req: Request) => {
   if (!clientId) {
     return new Response(JSON.stringify({ configured: false }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: jsonHeaders,
     });
   }
 
   return new Response(JSON.stringify({ configured: true, clientId, env }), {
     status: 200,
-    headers: { "Content-Type": "application/json" },
+    headers: jsonHeaders,
   });
 });

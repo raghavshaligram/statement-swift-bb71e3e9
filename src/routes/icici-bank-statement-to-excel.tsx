@@ -74,6 +74,7 @@ function Page() {
       <ArticleHero
         eyebrow="Bank guide"
         title="ICICI Bank Statement to Excel: Formats and Limits"
+        publishedDate="July 2026"
       />
 
       <div className="mx-auto max-w-3xl px-6 pb-4">

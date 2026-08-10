@@ -113,6 +113,7 @@ function Page() {
       <ArticleHero
         eyebrow="Converter"
         title="Convert Bank Statement to Excel"
+        publishedDate="July 2026"
       />
 
 
