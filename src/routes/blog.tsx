@@ -5,7 +5,14 @@ import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { FeaturedArt } from "@/components/featured-art";
 
 type Destination = { label: string; color: string };
-type Post = { href: string; title: string; blurb: string; eyebrow: string; sourceLabel: string; destinations: Destination[] };
+type Post = {
+  href: string;
+  title: string;
+  blurb: string;
+  eyebrow: string;
+  sourceLabel: string;
+  destinations: Destination[];
+};
 
 const EMERALD = "#0e5a40";
 const BLUE = "#2563eb";
@@ -17,7 +24,10 @@ const BANK_GUIDES: Post[] = [
     blurb: "NatWest's own export, plus a converter for when you only have a PDF.",
     eyebrow: "Bank guide",
     sourceLabel: "PDF",
-    destinations: [{ label: "CSV", color: EMERALD }, { label: "OFX", color: BLUE }],
+    destinations: [
+      { label: "CSV", color: EMERALD },
+      { label: "OFX", color: BLUE },
+    ],
   },
   {
     href: "/lloyds-bank-statement-to-csv",
@@ -25,7 +35,10 @@ const BANK_GUIDES: Post[] = [
     blurb: "Lloyds' CSV export is capped at 12 months and 150 transactions — here's the rest.",
     eyebrow: "Bank guide",
     sourceLabel: "PDF",
-    destinations: [{ label: "CSV", color: EMERALD }, { label: "XLSX", color: BLUE }],
+    destinations: [
+      { label: "CSV", color: EMERALD },
+      { label: "XLSX", color: BLUE },
+    ],
   },
   {
     href: "/chase-bank-statement-to-excel",
@@ -33,7 +46,10 @@ const BANK_GUIDES: Post[] = [
     blurb: "Chase's own export covers ~90 days — here's the rest, back to 7 years.",
     eyebrow: "Bank guide",
     sourceLabel: "PDF",
-    destinations: [{ label: "XLSX", color: EMERALD }, { label: "CSV", color: BLUE }],
+    destinations: [
+      { label: "XLSX", color: EMERALD },
+      { label: "CSV", color: BLUE },
+    ],
   },
   {
     href: "/icici-bank-statement-to-excel",
@@ -41,34 +57,222 @@ const BANK_GUIDES: Post[] = [
     blurb: "ICICI's own export works well — but older statements can incur a charge.",
     eyebrow: "Bank guide",
     sourceLabel: "PDF",
-    destinations: [{ label: "XLSX", color: EMERALD }, { label: "CSV", color: BLUE }],
+    destinations: [
+      { label: "XLSX", color: EMERALD },
+      { label: "CSV", color: BLUE },
+    ],
+  },
+  {
+    href: "/bank-of-america-statement-to-excel",
+    title: "Bank of America statement to Excel",
+    blurb: "BofA's CSV covers ~18 months with no running balance — here's the rest.",
+    eyebrow: "Bank guide",
+    sourceLabel: "PDF",
+    destinations: [
+      { label: "XLSX", color: EMERALD },
+      { label: "CSV", color: BLUE },
+    ],
+  },
+  {
+    href: "/wells-fargo-statement-to-excel",
+    title: "Wells Fargo statement to Excel",
+    blurb: "Wells Fargo's export covers 90 days by default — here's the rest, back to 7 years.",
+    eyebrow: "Bank guide",
+    sourceLabel: "PDF",
+    destinations: [
+      { label: "XLSX", color: EMERALD },
+      { label: "CSV", color: BLUE },
+    ],
   },
 ];
 
 const FORMAT_CONVERTERS: Post[] = [
-  { href: "/csv-to-iif", title: "CSV to IIF Converter for QuickBooks Desktop", blurb: "Any CSV, auto-detected columns, straight to IIF.", eyebrow: "Format converter", sourceLabel: "CSV", destinations: [{ label: "IIF", color: EMERALD }] },
-  { href: "/iif-to-csv", title: "IIF to CSV Converter", blurb: "A QuickBooks Desktop export, back to plain CSV.", eyebrow: "Format converter", sourceLabel: "IIF", destinations: [{ label: "CSV", color: EMERALD }] },
-  { href: "/csv-to-qif", title: "CSV to QIF Converter", blurb: "Any CSV to QIF for Quicken import.", eyebrow: "Format converter", sourceLabel: "CSV", destinations: [{ label: "QIF", color: EMERALD }] },
-  { href: "/qif-to-csv", title: "QIF to CSV Converter", blurb: "A Quicken export, back to plain CSV.", eyebrow: "Format converter", sourceLabel: "QIF", destinations: [{ label: "CSV", color: EMERALD }] },
-  { href: "/csv-to-ofx", title: "CSV to OFX Converter", blurb: "Any CSV to the bank-neutral OFX format.", eyebrow: "Format converter", sourceLabel: "CSV", destinations: [{ label: "OFX", color: EMERALD }] },
-  { href: "/ofx-to-csv", title: "OFX to CSV Converter", blurb: "An OFX or QFX file, back to plain CSV.", eyebrow: "Format converter", sourceLabel: "OFX", destinations: [{ label: "CSV", color: EMERALD }] },
-  { href: "/qfx-to-csv", title: "QFX to CSV Converter", blurb: "A Quicken QFX export, back to plain CSV.", eyebrow: "Format converter", sourceLabel: "QFX", destinations: [{ label: "CSV", color: EMERALD }] },
-  { href: "/mt940-to-csv", title: "MT940 to CSV Converter", blurb: "SWIFT's international statement format, to CSV.", eyebrow: "Format converter", sourceLabel: "MT940", destinations: [{ label: "CSV", color: EMERALD }] },
-  { href: "/qbo-to-excel", title: "QBO to Excel: How to Open a QBO File in Excel", blurb: "Why Excel rejects .qbo, what is inside the file, and three ways to get the data out.", eyebrow: "Format guide", sourceLabel: "QBO", destinations: [{ label: "Excel", color: EMERALD }] },
-  { href: "/qfx-to-excel", title: "QFX to Excel: How to Open a QFX File in Excel", blurb: "Quicken Web Connect data into a spreadsheet, three ways.", eyebrow: "Format guide", sourceLabel: "QFX", destinations: [{ label: "Excel", color: EMERALD }] },
-  { href: "/ofx-to-excel", title: "OFX to Excel: How to Open an OFX File in Excel", blurb: "The bank-neutral format, into a real workbook.", eyebrow: "Format guide", sourceLabel: "OFX", destinations: [{ label: "Excel", color: EMERALD }] },
-  { href: "/qbo-to-csv", title: "QBO to CSV Converter", blurb: "A QuickBooks Web Connect export, to a real spreadsheet.", eyebrow: "Format converter", sourceLabel: "QBO", destinations: [{ label: "CSV", color: EMERALD }] },
-  { href: "/csv-to-qbo", title: "CSV to QBO Converter", blurb: "Any CSV, ready to import as a real QuickBooks bank feed.", eyebrow: "Format converter", sourceLabel: "CSV", destinations: [{ label: "QBO", color: EMERALD }] },
-  { href: "/qfx-to-qbo", title: "QFX to QBO Converter", blurb: "Move a Quicken export into QuickBooks.", eyebrow: "Format converter", sourceLabel: "QFX", destinations: [{ label: "QBO", color: EMERALD }] },
-  { href: "/qif-to-qbo", title: "QIF to QBO Converter", blurb: "An older Quicken export, ready for QuickBooks.", eyebrow: "Format converter", sourceLabel: "QIF", destinations: [{ label: "QBO", color: EMERALD }] },
-  { href: "/ofx-to-qbo", title: "OFX to QBO Converter", blurb: "The bank-neutral format, converted for a clean QuickBooks import.", eyebrow: "Format converter", sourceLabel: "OFX", destinations: [{ label: "QBO", color: EMERALD }] },
-  { href: "/image-to-excel", title: "Image to Excel Converter", blurb: "A photo or scan of a statement, converted with on-device OCR.", eyebrow: "Converter guide", sourceLabel: "Photo", destinations: [{ label: "XLSX", color: EMERALD }] },
-  { href: "/bank-statement-to-tally", title: "Bank Statement to Tally XML", blurb: "No bank exports Tally XML natively — convert any PDF statement directly.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "XML", color: EMERALD }] },
-  { href: "/bank-statement-to-ofx", title: "Bank Statement to OFX", blurb: "For QuickBooks, Xero, and other accounting software, from any bank's PDF.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "OFX", color: EMERALD }] },
-  { href: "/bank-statement-to-qif", title: "Bank Statement to QIF", blurb: "For Quicken import, from any bank's PDF statement.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "QIF", color: EMERALD }] },
-  { href: "/bank-statement-to-qbo", title: "Convert Bank Statement to QBO", blurb: "Import statements into QuickBooks as a bank feed, not a spreadsheet — no column mapping, no duplicates.", eyebrow: "Converter", sourceLabel: "PDF", destinations: [{ label: "QBO", color: EMERALD }] },
-  { href: "/bank-statement-to-excel", title: "Convert Bank Statement to Excel", blurb: "PDF statements into a real workbook — typed numbers, one sheet per account, every row balance-checked.", eyebrow: "Converter", sourceLabel: "PDF", destinations: [{ label: "Excel", color: EMERALD }] },
-  { href: "/bank-statement-to-csv", title: "Bank Statement to CSV", blurb: "Any bank's PDF statement, converted to a clean CSV.", eyebrow: "Bank guide", sourceLabel: "PDF", destinations: [{ label: "CSV", color: EMERALD }] },
+  {
+    href: "/csv-to-iif",
+    title: "CSV to IIF Converter for QuickBooks Desktop",
+    blurb: "Any CSV, auto-detected columns, straight to IIF.",
+    eyebrow: "Format converter",
+    sourceLabel: "CSV",
+    destinations: [{ label: "IIF", color: EMERALD }],
+  },
+  {
+    href: "/iif-to-csv",
+    title: "IIF to CSV Converter",
+    blurb: "A QuickBooks Desktop export, back to plain CSV.",
+    eyebrow: "Format converter",
+    sourceLabel: "IIF",
+    destinations: [{ label: "CSV", color: EMERALD }],
+  },
+  {
+    href: "/csv-to-qif",
+    title: "CSV to QIF Converter",
+    blurb: "Any CSV to QIF for Quicken import.",
+    eyebrow: "Format converter",
+    sourceLabel: "CSV",
+    destinations: [{ label: "QIF", color: EMERALD }],
+  },
+  {
+    href: "/qif-to-csv",
+    title: "QIF to CSV Converter",
+    blurb: "A Quicken export, back to plain CSV.",
+    eyebrow: "Format converter",
+    sourceLabel: "QIF",
+    destinations: [{ label: "CSV", color: EMERALD }],
+  },
+  {
+    href: "/csv-to-ofx",
+    title: "CSV to OFX Converter",
+    blurb: "Any CSV to the bank-neutral OFX format.",
+    eyebrow: "Format converter",
+    sourceLabel: "CSV",
+    destinations: [{ label: "OFX", color: EMERALD }],
+  },
+  {
+    href: "/ofx-to-csv",
+    title: "OFX to CSV Converter",
+    blurb: "An OFX or QFX file, back to plain CSV.",
+    eyebrow: "Format converter",
+    sourceLabel: "OFX",
+    destinations: [{ label: "CSV", color: EMERALD }],
+  },
+  {
+    href: "/qfx-to-csv",
+    title: "QFX to CSV Converter",
+    blurb: "A Quicken QFX export, back to plain CSV.",
+    eyebrow: "Format converter",
+    sourceLabel: "QFX",
+    destinations: [{ label: "CSV", color: EMERALD }],
+  },
+  {
+    href: "/mt940-to-csv",
+    title: "MT940 to CSV Converter",
+    blurb: "SWIFT's international statement format, to CSV.",
+    eyebrow: "Format converter",
+    sourceLabel: "MT940",
+    destinations: [{ label: "CSV", color: EMERALD }],
+  },
+  {
+    href: "/qbo-to-excel",
+    title: "QBO to Excel: How to Open a QBO File in Excel",
+    blurb: "Why Excel rejects .qbo, what is inside the file, and three ways to get the data out.",
+    eyebrow: "Format guide",
+    sourceLabel: "QBO",
+    destinations: [{ label: "Excel", color: EMERALD }],
+  },
+  {
+    href: "/qfx-to-excel",
+    title: "QFX to Excel: How to Open a QFX File in Excel",
+    blurb: "Quicken Web Connect data into a spreadsheet, three ways.",
+    eyebrow: "Format guide",
+    sourceLabel: "QFX",
+    destinations: [{ label: "Excel", color: EMERALD }],
+  },
+  {
+    href: "/ofx-to-excel",
+    title: "OFX to Excel: How to Open an OFX File in Excel",
+    blurb: "The bank-neutral format, into a real workbook.",
+    eyebrow: "Format guide",
+    sourceLabel: "OFX",
+    destinations: [{ label: "Excel", color: EMERALD }],
+  },
+  {
+    href: "/qbo-to-csv",
+    title: "QBO to CSV Converter",
+    blurb: "A QuickBooks Web Connect export, to a real spreadsheet.",
+    eyebrow: "Format converter",
+    sourceLabel: "QBO",
+    destinations: [{ label: "CSV", color: EMERALD }],
+  },
+  {
+    href: "/csv-to-qbo",
+    title: "CSV to QBO Converter",
+    blurb: "Any CSV, ready to import as a real QuickBooks bank feed.",
+    eyebrow: "Format converter",
+    sourceLabel: "CSV",
+    destinations: [{ label: "QBO", color: EMERALD }],
+  },
+  {
+    href: "/qfx-to-qbo",
+    title: "QFX to QBO Converter",
+    blurb: "Move a Quicken export into QuickBooks.",
+    eyebrow: "Format converter",
+    sourceLabel: "QFX",
+    destinations: [{ label: "QBO", color: EMERALD }],
+  },
+  {
+    href: "/qif-to-qbo",
+    title: "QIF to QBO Converter",
+    blurb: "An older Quicken export, ready for QuickBooks.",
+    eyebrow: "Format converter",
+    sourceLabel: "QIF",
+    destinations: [{ label: "QBO", color: EMERALD }],
+  },
+  {
+    href: "/ofx-to-qbo",
+    title: "OFX to QBO Converter",
+    blurb: "The bank-neutral format, converted for a clean QuickBooks import.",
+    eyebrow: "Format converter",
+    sourceLabel: "OFX",
+    destinations: [{ label: "QBO", color: EMERALD }],
+  },
+  {
+    href: "/image-to-excel",
+    title: "Image to Excel Converter",
+    blurb: "A photo or scan of a statement, converted with on-device OCR.",
+    eyebrow: "Converter guide",
+    sourceLabel: "Photo",
+    destinations: [{ label: "XLSX", color: EMERALD }],
+  },
+  {
+    href: "/bank-statement-to-tally",
+    title: "Bank Statement to Tally XML",
+    blurb: "No bank exports Tally XML natively — convert any PDF statement directly.",
+    eyebrow: "Bank guide",
+    sourceLabel: "PDF",
+    destinations: [{ label: "XML", color: EMERALD }],
+  },
+  {
+    href: "/bank-statement-to-ofx",
+    title: "Bank Statement to OFX",
+    blurb: "For QuickBooks, Xero, and other accounting software, from any bank's PDF.",
+    eyebrow: "Bank guide",
+    sourceLabel: "PDF",
+    destinations: [{ label: "OFX", color: EMERALD }],
+  },
+  {
+    href: "/bank-statement-to-qif",
+    title: "Bank Statement to QIF",
+    blurb: "For Quicken import, from any bank's PDF statement.",
+    eyebrow: "Bank guide",
+    sourceLabel: "PDF",
+    destinations: [{ label: "QIF", color: EMERALD }],
+  },
+  {
+    href: "/bank-statement-to-qbo",
+    title: "Convert Bank Statement to QBO",
+    blurb:
+      "Import statements into QuickBooks as a bank feed, not a spreadsheet — no column mapping, no duplicates.",
+    eyebrow: "Converter",
+    sourceLabel: "PDF",
+    destinations: [{ label: "QBO", color: EMERALD }],
+  },
+  {
+    href: "/bank-statement-to-excel",
+    title: "Convert Bank Statement to Excel",
+    blurb:
+      "PDF statements into a real workbook — typed numbers, one sheet per account, every row balance-checked.",
+    eyebrow: "Converter",
+    sourceLabel: "PDF",
+    destinations: [{ label: "Excel", color: EMERALD }],
+  },
+  {
+    href: "/bank-statement-to-csv",
+    title: "Bank Statement to CSV",
+    blurb: "Any bank's PDF statement, converted to a clean CSV.",
+    eyebrow: "Bank guide",
+    sourceLabel: "PDF",
+    destinations: [{ label: "CSV", color: EMERALD }],
+  },
 ];
 
 function PostCard({ post }: { post: Post }) {
@@ -102,7 +306,8 @@ export const Route = createFileRoute("/blog")({
       { title: "Guides & Converters — BalanceExtract" },
       {
         name: "description",
-        content: "Bank-specific statement guides and free format converters (IIF, QIF, OFX, QFX, MT940, CSV) — all on-device, nothing uploaded.",
+        content:
+          "Bank-specific statement guides and free format converters (IIF, QIF, OFX, QFX, MT940, CSV) — all on-device, nothing uploaded.",
       },
     ],
   }),
@@ -131,16 +336,21 @@ export const Route = createFileRoute("/blog")({
 
       <section className="border-b border-border py-16 text-center">
         <div className="mx-auto max-w-2xl px-6">
-          <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Guides &amp; converters</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">
+            Guides &amp; converters
+          </h1>
           <p className="mt-4 text-muted-foreground">
-            Bank-specific statement guides and free format converters — all on-device, nothing ever uploaded.
+            Bank-specific statement guides and free format converters — all on-device, nothing ever
+            uploaded.
           </p>
         </div>
       </section>
 
       <section className="border-b border-border py-14">
         <div className="mx-auto max-w-5xl px-6">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Bank guides</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Bank guides
+          </h2>
           <div className="mt-5 grid gap-6 sm:grid-cols-2">
             {BANK_GUIDES.map((post) => (
               <PostCard key={post.href} post={post} />
@@ -151,7 +361,9 @@ export const Route = createFileRoute("/blog")({
 
       <section className="py-14">
         <div className="mx-auto max-w-5xl px-6">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Format converters</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Format converters
+          </h2>
           <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {FORMAT_CONVERTERS.map((post) => (
               <PostCard key={post.href} post={post} />

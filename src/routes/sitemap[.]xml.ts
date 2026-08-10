@@ -37,6 +37,8 @@ const entries = [
   { path: "/icici-bank-statement-to-excel", changefreq: "monthly", priority: "0.6" },
   { path: "/natwest-bank-statement-to-csv", changefreq: "monthly", priority: "0.6" },
   { path: "/lloyds-bank-statement-to-csv", changefreq: "monthly", priority: "0.6" },
+  { path: "/bank-of-america-statement-to-excel", changefreq: "monthly", priority: "0.6" },
+  { path: "/wells-fargo-statement-to-excel", changefreq: "monthly", priority: "0.6" },
   { path: "/csv-to-iif", changefreq: "monthly", priority: "0.6" },
   { path: "/iif-to-csv", changefreq: "monthly", priority: "0.6" },
   { path: "/csv-to-qif", changefreq: "monthly", priority: "0.6" },
@@ -61,7 +63,7 @@ export const Route = createFileRoute("/sitemap.xml")({
       GET: async () => {
         const urls = entries.map(
           (e) =>
-            `  <url>\n    <loc>${BASE_URL}${e.path}</loc>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`
+            `  <url>\n    <loc>${BASE_URL}${e.path}</loc>\n    <changefreq>${e.changefreq}</changefreq>\n    <priority>${e.priority}</priority>\n  </url>`,
         );
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,
