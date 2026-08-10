@@ -27,6 +27,23 @@
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
+// Verifies a caller's access token against the Auth API directly and
+// returns their user record, or null if the token isn't a valid session.
+async function getUserFromToken(token: string): Promise<{ id: string } | null> {
+  const res = await fetch(`${Deno.env.get("SUPABASE_URL")}/auth/v1/user`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      apikey: Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    },
+  });
+  if (!res.ok) {
+    console.error("auth: token rejected by auth API:", res.status, await res.text());
+    return null;
+  }
+  const user = await res.json();
+  return user?.id ? { id: user.id as string } : null;
+}
+
 function paypalApiBase(): string {
   const env = Deno.env.get("PAYPAL_ENV") ?? "sandbox";
   return env === "live" ? "https://api-m.paypal.com" : "https://api-m.sandbox.paypal.com";
@@ -82,19 +99,23 @@ Deno.serve(async (req: Request) => {
       return new Response("Missing orderId", { status: 400, headers: corsHeaders });
     }
 
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    // Verified against the Auth API directly rather than with
+    // supabase.auth.getUser(token): with this project's opaque (non-JWT)
+    // service key the SDK path rejected valid user tokens with "Auth
+    // session missing!", since it looks for a stored session instead of
+    // checking the token it was given.
+    const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
+    if (!token) {
+      console.error("auth: no bearer token on request");
+      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    }
+    const user = await getUserFromToken(token);
+    if (!user) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (userError || !user)
-      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
     const accessToken = await getAccessToken();
     const captureRes = await fetch(`${paypalApiBase()}/v2/checkout/orders/${orderId}/capture`, {

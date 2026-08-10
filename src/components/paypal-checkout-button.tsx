@@ -30,11 +30,24 @@ export function PayPalCheckoutButton() {
   useEffect(() => {
     let cancelled = false;
 
+    // getUser() (not just getSession()) because a stored session can be
+    // stale -- revoked or expired server-side while still sitting in
+    // localStorage. That case is exactly what produced a 401 from
+    // paypal-create-order ("Session from session_id claim in JWT does not
+    // exist") while the app still believed the user was signed in, so it
+    // has to be caught here and turned into "sign in again" instead of a
+    // generic checkout failure.
     async function authHeader(): Promise<Record<string, string> | undefined> {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      return session ? { Authorization: `Bearer ${session.access_token}` } : undefined;
+      if (!session) return undefined;
+      const { error } = await supabase.auth.getUser();
+      if (error) {
+        await supabase.auth.signOut();
+        return undefined;
+      }
+      return { Authorization: `Bearer ${session.access_token}` };
     }
 
     async function init() {
@@ -98,6 +111,11 @@ export function PayPalCheckoutButton() {
           style: { layout: "vertical", color: "gold", shape: "rect", label: "pay" },
           async createOrder() {
             const headers = await authHeader();
+            if (!headers) {
+              setErrorMessage("Your session has expired. Please sign in again to continue.");
+              setStatus("error");
+              throw new Error("No valid session");
+            }
             const { data, error } = await supabase.functions.invoke("paypal-create-order", {
               headers,
             });
@@ -112,7 +130,11 @@ export function PayPalCheckoutButton() {
                 }
               }
               console.error("paypal-create-order failed:", { error, serverMessage, data });
-              setErrorMessage("Something went wrong starting checkout. Please try again.");
+              setErrorMessage(
+                serverMessage === "Unauthorized"
+                  ? "Your session has expired. Please sign in again to continue."
+                  : "Something went wrong starting checkout. Please try again.",
+              );
               setStatus("error");
               throw error ?? new Error("No orderId returned");
             }

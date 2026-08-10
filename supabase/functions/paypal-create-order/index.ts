@@ -26,7 +26,23 @@
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY  (already present by default
 //     in every Supabase Edge Function's environment)
 
-import { createClient } from "jsr:@supabase/supabase-js@2";
+// Verifies a caller's access token against the Auth API directly and
+// returns their user record, or null if the token isn't a valid session.
+async function getUserFromToken(token: string): Promise<{ id: string } | null> {
+  const res = await fetch(`${Deno.env.get("SUPABASE_URL")}/auth/v1/user`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      apikey: Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    },
+  });
+  if (!res.ok) {
+    console.error("auth: token rejected by auth API:", res.status, await res.text());
+    return null;
+  }
+  const user = await res.json();
+  return user?.id ? { id: user.id as string } : null;
+}
+
 
 // Kept in sync by hand with src/lib/pricing-constants.ts -- see that
 // file's comment for why this can't just import the frontend constant
@@ -87,19 +103,22 @@ Deno.serve(async (req: Request) => {
     // Identify the calling user from their own auth token -- this is what
     // gets embedded as custom_id below, never anything the request body
     // claims about itself (the body isn't even read for identity here).
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
-
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (userError || !user)
+    //
+    // Done with a direct call to the Auth API rather than
+    // supabase.auth.getUser(token): with this project's opaque
+    // (non-JWT) service key, the SDK path rejected perfectly valid user
+    // tokens with "Auth session missing!", because it looks for a stored
+    // session instead of verifying the token it was handed.
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+    if (!token) {
+      console.error("auth: no bearer token on request");
       return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    }
+
+    const user = await getUserFromToken(token);
+    if (!user) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+
 
     const accessToken = await getAccessToken();
     const orderRes = await fetch(`${paypalApiBase()}/v2/checkout/orders`, {
