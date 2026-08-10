@@ -43,7 +43,6 @@ async function getUserFromToken(token: string): Promise<{ id: string } | null> {
   return user?.id ? { id: user.id as string } : null;
 }
 
-
 // Kept in sync by hand with src/lib/pricing-constants.ts -- see that
 // file's comment for why this can't just import the frontend constant
 // (this function must never trust anything that crossed the network, and
@@ -119,7 +118,6 @@ Deno.serve(async (req: Request) => {
     const user = await getUserFromToken(token);
     if (!user) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
-
     const accessToken = await getAccessToken();
     const orderRes = await fetch(`${paypalApiBase()}/v2/checkout/orders`, {
       method: "POST",
@@ -136,6 +134,22 @@ Deno.serve(async (req: Request) => {
             amount: { currency_code: "USD", value: LIFETIME_PRICE_USD },
           },
         ],
+        // Digital product, nothing to ship -- without this, PayPal's
+        // default is to prompt for a shipping address AND a phone number
+        // on the review/card page, neither of which this checkout has any
+        // use for. shipping_preference: NO_SHIPPING removes the address
+        // prompt entirely; contact_preference: NO_CONTACT_INFO removes the
+        // phone number prompt. Both live under payment_source.paypal in
+        // the current Orders v2 API (the older, deprecated field for this
+        // was a top-level application_context).
+        payment_source: {
+          paypal: {
+            experience_context: {
+              shipping_preference: "NO_SHIPPING",
+              contact_preference: "NO_CONTACT_INFO",
+            },
+          },
+        },
       }),
     });
 
