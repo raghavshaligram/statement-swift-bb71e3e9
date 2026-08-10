@@ -27,6 +27,23 @@
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
+// Verifies a caller's access token against the Auth API directly and
+// returns their user record, or null if the token isn't a valid session.
+async function getUserFromToken(token: string): Promise<{ id: string } | null> {
+  const res = await fetch(`${Deno.env.get("SUPABASE_URL")}/auth/v1/user`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      apikey: Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    },
+  });
+  if (!res.ok) {
+    console.error("auth: token rejected by auth API:", res.status, await res.text());
+    return null;
+  }
+  const user = await res.json();
+  return user?.id ? { id: user.id as string } : null;
+}
+
 function paypalApiBase(): string {
   const env = Deno.env.get("PAYPAL_ENV") ?? "sandbox";
   return env === "live" ? "https://api-m.paypal.com" : "https://api-m.sandbox.paypal.com";
