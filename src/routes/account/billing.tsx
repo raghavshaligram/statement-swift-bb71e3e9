@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Minus, CreditCard } from "lucide-react";
 import { AccountShell } from "@/components/account-shell";
 import { usePageUsage } from "@/hooks/use-page-usage";
@@ -151,24 +151,37 @@ function BillingPage() {
         </div>
       )}
 
-      {/* Payment method */}
-      <div className="mt-6 rounded-2xl border border-border bg-background p-6 shadow-sm">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-muted text-muted-foreground">
-              <CreditCard className="h-4 w-4" />
-            </div>
-            <div>
-              <div className="text-sm font-semibold text-ink">Payment method</div>
-              <div className="text-xs text-muted-foreground">
-                {isPro
-                  ? "Contact us to update or cancel your billing."
-                  : "No card on file. You'll be asked when you upgrade."}
+      {/* Refund request -- there's no "payment method on file" to manage
+          here (PayPal handles the one-time charge; we never store card
+          details), and no billing to "cancel" on a lifetime purchase. The
+          one real thing a Pro customer might need after paying is a refund,
+          so that's the only thing this card offers, and only once there's
+          something to refund. */}
+      {isPro && (
+        <div className="mt-6 rounded-2xl border border-border bg-background p-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-surface-muted text-muted-foreground">
+                <CreditCard className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-ink">Need a refund?</div>
+                <div className="text-xs text-muted-foreground">
+                  This was a one-time payment, so there's no subscription to cancel — just let us
+                  know and we'll take care of it.
+                </div>
               </div>
             </div>
+            <Link
+              to="/contact"
+              search={{ issue: "Refund request" }}
+              className="shrink-0 text-sm font-semibold text-emerald hover:underline"
+            >
+              Request a refund →
+            </Link>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Comparison table */}
       <div className="mt-6 overflow-hidden rounded-2xl border border-border bg-background shadow-sm">

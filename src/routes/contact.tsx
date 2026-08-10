@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const ISSUE_TYPES = [
   "A statement isn't converting correctly",
+  "Refund request",
   "Billing or account question",
   "Sign-in or account access",
   "Feature request",
@@ -17,13 +18,17 @@ const ISSUE_TYPES = [
 const MAX_ATTACHMENT_BYTES = 15 * 1024 * 1024; // 15 MB
 
 export const Route = createFileRoute("/contact")({
+  validateSearch: (search: Record<string, unknown>): { issue?: string } => ({
+    issue: typeof search.issue === "string" ? search.issue : undefined,
+  }),
   head: () => ({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/contact` }],
     meta: [
       { title: "Contact Us — BalanceExtract" },
       {
         name: "description",
-        content: "Get help with a statement that isn't converting correctly, a billing question, or anything else — search our help articles or reach the team directly.",
+        content:
+          "Get help with a statement that isn't converting correctly, a billing question, or anything else — search our help articles or reach the team directly.",
       },
     ],
   }),
@@ -32,9 +37,12 @@ export const Route = createFileRoute("/contact")({
 
 function Page() {
   const { user } = useAuth();
+  const { issue } = Route.useSearch();
   const [name, setName] = useState("");
   const [email, setEmail] = useState(user?.email ?? "");
-  const [issueType, setIssueType] = useState(ISSUE_TYPES[0]);
+  const [issueType, setIssueType] = useState(
+    issue && ISSUE_TYPES.includes(issue) ? issue : ISSUE_TYPES[0],
+  );
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [consentToUpload, setConsentToUpload] = useState(false);
@@ -42,7 +50,8 @@ function Page() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const needsConsent = file !== null;
-  const canSubmit = email.trim() !== "" && message.trim() !== "" && (!needsConsent || consentToUpload);
+  const canSubmit =
+    email.trim() !== "" && message.trim() !== "" && (!needsConsent || consentToUpload);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,10 +64,14 @@ function Page() {
 
       if (file) {
         if (file.size > MAX_ATTACHMENT_BYTES) {
-          throw new Error("That file is larger than 15 MB — please attach a smaller file or split it up.");
+          throw new Error(
+            "That file is larger than 15 MB — please attach a smaller file or split it up.",
+          );
         }
         const path = `${crypto.randomUUID()}-${file.name}`;
-        const { error: uploadError } = await supabase.storage.from("support-attachments").upload(path, file);
+        const { error: uploadError } = await supabase.storage
+          .from("support-attachments")
+          .upload(path, file);
         if (uploadError) throw uploadError;
         attachmentPath = path;
       }
@@ -76,7 +89,11 @@ function Page() {
       setStatus("done");
     } catch (err) {
       setStatus("error");
-      setErrorMessage(err instanceof Error ? err.message : "Something went wrong sending your message. Please try again.");
+      setErrorMessage(
+        err instanceof Error
+          ? err.message
+          : "Something went wrong sending your message. Please try again.",
+      );
     }
   }
 
@@ -88,15 +105,18 @@ function Page() {
         <div className="mx-auto max-w-2xl px-6">
           <h1 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">Contact us</h1>
           <p className="mt-4 text-muted-foreground">
-            Try the chat bubble in the corner for quick questions, or send us a message directly below —
-            including a statement that isn't converting correctly, if that's what's going on.
+            Try the chat bubble in the corner for quick questions, or send us a message directly
+            below — including a statement that isn't converting correctly, if that's what's going
+            on.
           </p>
         </div>
       </section>
 
       <section className="py-16">
         <div className="mx-auto max-w-2xl px-6">
-          <h2 className="text-xl font-bold tracking-tight text-ink">Still need help? Send us a message</h2>
+          <h2 className="text-xl font-bold tracking-tight text-ink">
+            Still need help? Send us a message
+          </h2>
 
           {status === "done" ? (
             <div className="mt-6 flex items-start gap-3 rounded-xl border border-emerald/30 bg-emerald-soft/40 p-5">
@@ -178,7 +198,8 @@ function Page() {
               <div>
                 <label className="flex items-center gap-2 text-sm font-semibold text-ink">
                   <Paperclip className="h-4 w-4 text-muted-foreground" />
-                  Attach a statement <span className="font-normal text-muted-foreground">(optional)</span>
+                  Attach a statement{" "}
+                  <span className="font-normal text-muted-foreground">(optional)</span>
                 </label>
                 <input
                   type="file"
@@ -198,9 +219,9 @@ function Page() {
                         className="mt-0.5 h-4 w-4 shrink-0"
                       />
                       <span>
-                        Unlike converting a statement, which never leaves your device, this file <strong>will</strong>{" "}
-                        be uploaded to our support team specifically to help diagnose the issue. I understand and
-                        want to attach it anyway.
+                        Unlike converting a statement, which never leaves your device, this file{" "}
+                        <strong>will</strong> be uploaded to our support team specifically to help
+                        diagnose the issue. I understand and want to attach it anyway.
                       </span>
                     </label>
                   </div>
