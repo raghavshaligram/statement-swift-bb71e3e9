@@ -16,6 +16,7 @@ import {
   Gauge,
   CalendarCheck,
   KeyRound,
+  type LucideIcon,
 } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { ScrollReveal, ScrollRevealGroup, ScrollRevealItem } from "@/components/scroll-reveal";
@@ -625,7 +626,7 @@ function Landing() {
   );
 }
 
-function TrustPill({ icon: Icon, label }: { icon: any; label: string }) {
+function TrustPill({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
     <span className="inline-flex items-center gap-1.5">
       <Icon className="h-3.5 w-3.5 text-emerald" />
