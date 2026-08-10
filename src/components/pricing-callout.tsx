@@ -35,7 +35,7 @@ export function PricingCallout({ competitorModel }: { competitorModel: string })
             <p className="mt-1.5 text-sm font-semibold text-ink">Unlimited pages, forever</p>
             <p className="mt-1 text-sm text-muted-foreground">
               One payment, no subscription, no renewal. Convert ten pages this year or ten thousand
-              -- same ${LIFETIME_PRICE_USD}, paid once. All seven export formats included.
+              — same ${LIFETIME_PRICE_USD}, paid once. All seven export formats included.
             </p>
           </div>
 
@@ -54,7 +54,7 @@ export function PricingCallout({ competitorModel }: { competitorModel: string })
 
         <p className="mt-5 border-t border-emerald/20 pt-4 text-sm text-ink/80">
           {competitorModel} That means their bill grows for as long as you use it. Ours is one
-          payment, ever -- which is the whole reason we price this way.
+          payment, ever — which is the whole reason we price this way.
         </p>
 
         <Link

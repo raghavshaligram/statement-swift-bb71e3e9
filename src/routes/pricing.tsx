@@ -260,7 +260,7 @@ function Pricing() {
         <div className="mx-auto max-w-5xl px-6">
           <div className="rounded-2xl border-2 border-emerald/40 bg-emerald-soft/40 p-8">
             <h2 className="text-center text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              Every competitor here bills you again next month. We don't -- ever.
+              Every competitor here bills you again next month. We don't — ever.
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-center text-sm leading-relaxed text-accent-foreground">
               BalanceExtract's Pro tier is a{" "}

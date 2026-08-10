@@ -94,7 +94,7 @@ function BillingPage() {
             {isPro
               ? "Unlimited pages and every export format are unlocked, for life. Contact us if anything looks wrong."
               : subscription
-                ? "Your last payment wasn't completed (declined or refunded) -- you're on the free tier. Contact us if this looks wrong, or try upgrading again below."
+                ? "Your last payment wasn't completed (declined or refunded) — you're on the free tier. Contact us if this looks wrong, or try upgrading again below."
                 : "No payment on file. Upgrade to Pro once for unlimited pages and all export formats, forever."}
           </p>
         </div>
