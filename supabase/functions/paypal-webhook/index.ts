@@ -69,8 +69,12 @@ async function verifyWebhookSignature(
   // needs it.
   const env = Deno.env.get("PAYPAL_ENV") ?? "sandbox";
   const suffix = env === "live" ? "LIVE" : "SANDBOX";
-  const webhookId = Deno.env.get(`PAYPAL_WEBHOOK_ID_${suffix}`);
-  if (!webhookId) throw new Error(`Missing PAYPAL_WEBHOOK_ID_${suffix} secret`);
+  // Accept the unsuffixed PAYPAL_WEBHOOK_ID as a fallback: projects that
+  // only ever register one webhook (live) set that name, and requiring the
+  // suffixed one made every live event fail verification.
+  const webhookId =
+    Deno.env.get(`PAYPAL_WEBHOOK_ID_${suffix}`) ?? Deno.env.get("PAYPAL_WEBHOOK_ID");
+  if (!webhookId) throw new Error(`Missing PAYPAL_WEBHOOK_ID_${suffix} (or PAYPAL_WEBHOOK_ID)`);
 
   const verifyRes = await fetch(`${paypalApiBase()}/v1/notifications/verify-webhook-signature`, {
     method: "POST",
