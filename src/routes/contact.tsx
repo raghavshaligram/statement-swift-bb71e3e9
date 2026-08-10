@@ -63,18 +63,28 @@ function Page() {
       let attachmentPath: string | null = null;
 
       if (file) {
+        // Attachments are stored per-user under a folder named after the
+        // user's id -- storage policies only allow a signed-in user to write
+        // to (and read) their own folder, so an anonymous visitor cannot
+        // upload arbitrary files to the bucket at all.
+        if (!user) {
+          throw new Error(
+            "Please sign in to attach a file, or send the message without an attachment.",
+          );
+        }
         if (file.size > MAX_ATTACHMENT_BYTES) {
           throw new Error(
             "That file is larger than 15 MB — please attach a smaller file or split it up.",
           );
         }
-        const path = `${crypto.randomUUID()}-${file.name}`;
+        const path = `${user.id}/${crypto.randomUUID()}-${file.name}`;
         const { error: uploadError } = await supabase.storage
           .from("support-attachments")
           .upload(path, file);
         if (uploadError) throw uploadError;
         attachmentPath = path;
       }
+
 
       const { error: insertError } = await supabase.from("contact_submissions").insert({
         name: name.trim() || null,
