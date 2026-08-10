@@ -68,7 +68,7 @@ export function StatementFunnel({
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <span className="text-xs text-ink/60">
-                6 pages free, no signup · Pro has no page cap at all
+                6 pages free, no signup · Lifetime access has no page cap at all
               </span>
             </div>
           </div>

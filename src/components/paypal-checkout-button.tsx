@@ -187,7 +187,7 @@ export function PayPalCheckoutButton() {
   if (status === "success") {
     return (
       <p className="mt-5 text-sm font-medium text-emerald">
-        You're on Pro — unlimited pages and every export format are unlocked now.
+        You're on Lifetime — unlimited pages and every export format are unlocked now.
       </p>
     );
   }

@@ -44,7 +44,11 @@ export const Route = createFileRoute("/bank-statement-to-qif")({
     links: [{ rel: "canonical", href: `${SITE_ORIGIN}/bank-statement-to-qif` }],
     meta: [
       { title: "Free Bank Statement to QIF Converter — BalanceExtract" },
-      { name: "description", content: "Convert any bank's PDF statement to QIF for Quicken. Free to try, runs on your device — nothing uploaded, and no page cap on Pro." },
+      {
+        name: "description",
+        content:
+          "Convert any bank's PDF statement to QIF for Quicken. Free to try, runs on your device — nothing uploaded, and no page cap with Lifetime access.",
+      },
       { property: "og:title", content: "Free Bank Statement to QIF Converter — BalanceExtract" },
     ],
   }),
@@ -57,10 +61,22 @@ function Page() {
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
-      <Breadcrumbs trail={[{ label: "Bank statement converters", href: "/blog" }, { label: "Free Bank Statement to QIF Converter" }]} />
-      <ArticleHero eyebrow="Bank guide" title="Free Bank Statement to QIF Converter" publishedDate="July 2026" />
+      <Breadcrumbs
+        trail={[
+          { label: "Bank statement converters", href: "/blog" },
+          { label: "Free Bank Statement to QIF Converter" },
+        ]}
+      />
+      <ArticleHero
+        eyebrow="Bank guide"
+        title="Free Bank Statement to QIF Converter"
+        publishedDate="July 2026"
+      />
 
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
@@ -69,27 +85,35 @@ function Page() {
       <ToolChips />
 
       <QuickSummary>
-        If Quicken is where your bookkeeping actually happens, getting a bank statement into it without
-        retyping every transaction means converting to QIF first. Converts any bank's PDF statement — named
-        detection for 23+ major banks, plus a generic parser for any other text-based PDF — into a standard
-        QIF file, ready to import into Quicken.
+        If Quicken is where your bookkeeping actually happens, getting a bank statement into it
+        without retyping every transaction means converting to QIF first. Converts any bank's PDF
+        statement — named detection for 23+ major banks, plus a generic parser for any other
+        text-based PDF — into a standard QIF file, ready to import into Quicken.
       </QuickSummary>
 
       <ArticleProse>
         <p>
-          QIF is one of the oldest personal-finance file formats still in active use, but very few banks export
-          it natively anymore — most favor CSV, Excel, or OFX instead. This guide covers converting a PDF
-          statement from any bank directly into QIF for Quicken.
+          QIF is one of the oldest personal-finance file formats still in active use, but very few
+          banks export it natively anymore — most favor CSV, Excel, or OFX instead. This guide
+          covers converting a PDF statement from any bank directly into QIF for Quicken.
         </p>
       </ArticleProse>
-
 
       <ArticleH2>How It Works</ArticleH2>
       <NumberedSteps
         steps={[
-          { title: "Download the PDF statement from your bank", body: "No account needed for up to 6 pages." },
-          { title: "Upload to BalanceExtract", body: "Named detection recognizes 23+ major banks automatically; any other bank falls back to the generic layout parser." },
-          { title: "Review, then export as QIF", body: "Every row gets a confidence score before you export." },
+          {
+            title: "Download the PDF statement from your bank",
+            body: "No account needed for up to 6 pages.",
+          },
+          {
+            title: "Upload to BalanceExtract",
+            body: "Named detection recognizes 23+ major banks automatically; any other bank falls back to the generic layout parser.",
+          },
+          {
+            title: "Review, then export as QIF",
+            body: "Every row gets a confidence score before you export.",
+          },
         ]}
       />
 
@@ -111,9 +135,21 @@ function Page() {
 
       <RelatedArticles
         articles={[
-          { href: "/lloyds-bank-statement-to-csv", title: "Lloyds Bank Statement to CSV", blurb: "A bank whose business accounts still offer QIF export." },
-          { href: "/bank-statement-to-ofx", title: "Bank Statement to OFX", blurb: "For QuickBooks, Xero, and other accounting software." },
-          { href: "/blog", title: "All Guides & Converters", blurb: "Every bank guide and format converter BalanceExtract offers." },
+          {
+            href: "/lloyds-bank-statement-to-csv",
+            title: "Lloyds Bank Statement to CSV",
+            blurb: "A bank whose business accounts still offer QIF export.",
+          },
+          {
+            href: "/bank-statement-to-ofx",
+            title: "Bank Statement to OFX",
+            blurb: "For QuickBooks, Xero, and other accounting software.",
+          },
+          {
+            href: "/blog",
+            title: "All Guides & Converters",
+            blurb: "Every bank guide and format converter BalanceExtract offers.",
+          },
         ]}
       />
 

@@ -45,7 +45,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Close your books without retyping transactions — the bank statement to Excel software that works everywhere. Convert PDF bank statements to CSV and Excel on your device, free to try, unlimited pages on Pro. Works with Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more.",
+          "Close your books without retyping transactions — the bank statement to Excel software that works everywhere. Convert PDF bank statements to CSV and Excel on your device, free to try, unlimited pages with Lifetime access. Works with Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more.",
       },
       {
         property: "og:title",
@@ -53,7 +53,8 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:description",
-        content: "100% on-device. Unlimited pages on Pro. Real software for real accountants.",
+        content:
+          "100% on-device. Unlimited pages with Lifetime access. Real software for real accountants.",
       },
     ],
   }),
@@ -70,8 +71,8 @@ const FEATURES = [
   },
   {
     icon: InfinityIcon,
-    title: "No Page Cap on Pro",
-    body: "Competitors meter by page or row. Pro is one flat price, any volume.",
+    title: "No Page Cap on Lifetime",
+    body: "Competitors meter by page or row. Lifetime access is one payment, any volume.",
   },
   {
     icon: ScanLine,
@@ -196,7 +197,7 @@ function Landing() {
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
               <ClaimTag tone="local">On-device only</ClaimTag>
-              <ClaimTag tone="unlimited">No page cap on Pro</ClaimTag>
+              <ClaimTag tone="unlimited">No page cap on Lifetime</ClaimTag>
               <ClaimTag tone="free">23+ banks · US UK CA IN</ClaimTag>
             </div>
           </ScrollReveal>
@@ -209,7 +210,10 @@ function Landing() {
             <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground">
               <TrustPill icon={Check} label="No signup required" />
               <TrustPill icon={Lock} label="Nothing uploaded — runs in your browser" />
-              <TrustPill icon={InfinityIcon} label="No page cap on Pro — do a full year at once" />
+              <TrustPill
+                icon={InfinityIcon}
+                label="No page cap on Lifetime — do a full year at once"
+              />
             </div>
           </ScrollReveal>
 
@@ -382,7 +386,7 @@ function Landing() {
               ["6", "Export formats"],
               ["0", "Bytes uploaded to any server, ever"],
               ["6+", "Countries with bank support"],
-              ["∞", "Pages per conversion, no caps on Pro"],
+              ["∞", "Pages per conversion, no caps with Lifetime"],
             ].map(([stat, label]) => (
               <ScrollRevealItem key={label}>
                 <div className="text-center">
@@ -421,7 +425,7 @@ function Landing() {
                 "Zero server-side processing of your statement — no logs, no retention",
                 "Your file is parsed entirely on your device, not uploaded anywhere",
                 "Open, auditable client-side pipeline",
-                "No account required for Free — only needed to subscribe to Pro",
+                "No account required for Free — only needed to upgrade to Lifetime",
               ].map((t) => (
                 <li key={t} className="flex items-start gap-3">
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald" />
@@ -596,8 +600,8 @@ function Landing() {
             Try it now. No signup, no credit card.
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Convert your first statements free. Upgrade to Pro for unlimited pages — one flat price,
-            no credits, no per-page fees.
+            Convert your first statements free. Upgrade to Lifetime for unlimited pages — one
+            payment, no credits, no per-page fees, ever again.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link

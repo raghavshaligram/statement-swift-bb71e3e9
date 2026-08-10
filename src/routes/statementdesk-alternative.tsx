@@ -45,7 +45,7 @@ import {
 const FAQ: FaqItem[] = [
   {
     q: "How is BalanceExtract's pricing different from StatementDesk's?",
-    a: "StatementDesk is $19/month, billed every month, for as long as you use it. BalanceExtract's Pro plan is a one-time $79 payment — no renewal, ever. Their plans are also measured in transaction rows, so a long statement consumes more of the monthly allowance than a short one; ours has no page or row limit at all, whether you convert one statement or two hundred.",
+    a: "StatementDesk is $19/month, billed every month, for as long as you use it. BalanceExtract's Lifetime plan is a one-time $79 payment — no renewal, ever. Their plans are also measured in transaction rows, so a long statement consumes more of the monthly allowance than a short one; ours has no page or row limit at all, whether you convert one statement or two hundred.",
   },
   {
     q: "Do both tools categorise transactions?",

@@ -24,10 +24,30 @@ import { Shield, Infinity as InfinityIcon, FileSpreadsheet, UserX, ArrowRight } 
  * comparison cards. Distinct colours make it four separate claims.
  */
 const CHIPS = [
-  { icon: Shield, label: "100% private", sub: "Never uploaded", tint: "text-emerald bg-emerald/10" },
-  { icon: InfinityIcon, label: "No page cap", sub: "Unlimited on Pro", tint: "text-amber-600 bg-amber-500/10" },
-  { icon: FileSpreadsheet, label: "CSV & Excel", sub: "Real spreadsheet output", tint: "text-sky-600 bg-sky-500/10" },
-  { icon: UserX, label: "No signup", sub: "No account, no card", tint: "text-violet-600 bg-violet-500/10" },
+  {
+    icon: Shield,
+    label: "100% private",
+    sub: "Never uploaded",
+    tint: "text-emerald bg-emerald/10",
+  },
+  {
+    icon: InfinityIcon,
+    label: "No page cap",
+    sub: "Unlimited with Lifetime",
+    tint: "text-amber-600 bg-amber-500/10",
+  },
+  {
+    icon: FileSpreadsheet,
+    label: "CSV & Excel",
+    sub: "Real spreadsheet output",
+    tint: "text-sky-600 bg-sky-500/10",
+  },
+  {
+    icon: UserX,
+    label: "No signup",
+    sub: "No account, no card",
+    tint: "text-violet-600 bg-violet-500/10",
+  },
 ];
 
 /**
@@ -91,11 +111,7 @@ export function ToolChips() {
  * internal cluster -- it's how CapyParse's seven converter pages reinforce each
  * other -- but the cards take too much room on a page whose job is the tool.
  */
-export function ToolCrossLinks({
-  links,
-}: {
-  links: Array<{ href: string; label: string }>;
-}) {
+export function ToolCrossLinks({ links }: { links: Array<{ href: string; label: string }> }) {
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
       <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">

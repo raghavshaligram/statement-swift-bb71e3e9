@@ -24,7 +24,7 @@ const ENTRIES: Entry[] = [
   },
   {
     q: "How much does BalanceExtract cost? What is the price, and what are the pricing plans?",
-    a: "Free to try — 6 pages per conversion with no signup, or a 10-page lifetime allowance total once you sign up (that's a cumulative pool across every statement, not 10 pages each time). Pro is a one-time $79 payment: unlimited conversions, no page cap, all seven export formats, no subscription and no renewal, ever.",
+    a: "Free to try — 6 pages per conversion with no signup, or a 10-page lifetime allowance total once you sign up (that's a cumulative pool across every statement, not 10 pages each time). Lifetime access is a one-time $79 payment: unlimited conversions, no page cap, all seven export formats, no subscription and no renewal, ever.",
   },
   {
     q: "What file formats can I export to?",
@@ -51,8 +51,8 @@ const ENTRIES: Entry[] = [
     a: "Yes. Drop PDFs from multiple banks into the same batch — BalanceExtract detects each one and processes them together into a single export.",
   },
   {
-    q: "How do I cancel or change my Pro subscription?",
-    a: "From your account's Billing page. If you can't find that option or something looks wrong, send us a message via Contact and we'll sort it out directly.",
+    q: "How do I get a refund on my Lifetime purchase?",
+    a: "From your account's Billing page — there's a \"Request a refund\" link once you're on Lifetime. Or send us a message via Contact and we'll sort it out directly. It's a one-time payment, so there's nothing to cancel or downgrade.",
     href: "/contact",
     hrefLabel: "Contact us",
   },

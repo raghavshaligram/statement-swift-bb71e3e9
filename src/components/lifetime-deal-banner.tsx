@@ -36,7 +36,7 @@ export function LifetimeDealBanner() {
       >
         <Sparkles className="h-3.5 w-3.5 shrink-0" aria-hidden />
         <span>
-          Lifetime Pro: <span className="font-mono">${LIFETIME_PRICE_USD}</span> once, unlimited
+          Lifetime access: <span className="font-mono">${LIFETIME_PRICE_USD}</span> once, unlimited
           pages forever &mdash; no subscription
         </span>
         <span className="hidden underline underline-offset-2 sm:inline">See pricing &rarr;</span>

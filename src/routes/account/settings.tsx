@@ -153,7 +153,7 @@ function SettingsPage() {
                       to="/account/billing"
                       className="text-sm font-semibold text-emerald hover:underline"
                     >
-                      Upgrade to Pro →
+                      Upgrade to Lifetime →
                     </Link>
                   )}
                 </div>

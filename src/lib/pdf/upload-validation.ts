@@ -41,7 +41,6 @@ import { EncryptedPdfError, isPdfEncrypted } from "@/lib/pdf/pdf-open";
 import { ANONYMOUS_MAX_PAGES, SIGNED_IN_MAX_PAGES } from "../pricing-constants";
 import { supabase } from "@/integrations/supabase/client";
 
-
 /**
  * Page counting opens the PDF, so an encrypted file raises EncryptedPdfError
  * here -- before parsing ever runs. That's not a validation failure: the user
@@ -86,8 +85,7 @@ export async function findEncryptedPdfs(files: File[]): Promise<File[]> {
 }
 
 export type UploadValidation =
-  | { ok: true }
-  | { ok: false; message: string; requiresSignIn: boolean };
+  { ok: true } | { ok: false; message: string; requiresSignIn: boolean };
 
 export async function validateUploadBatch(
   files: File[],
@@ -125,7 +123,7 @@ export async function validateUploadBatch(
         return {
           ok: false,
           requiresSignIn: false,
-          message: `${pdf.name} is too large for the free demo (${pages} pages, limit ${ANONYMOUS_MAX_PAGES}). Sign up free for a higher limit, or upgrade to Pro for no limit at all.`,
+          message: `${pdf.name} is too large for the free demo (${pages} pages, limit ${ANONYMOUS_MAX_PAGES}). Sign up free for a higher limit, or upgrade to Lifetime for no limit at all.`,
         };
       }
     }
@@ -148,7 +146,7 @@ export async function validateUploadBatch(
     return {
       ok: false,
       requiresSignIn: false,
-      message: `${tooLargeAlone.file.name} has ${tooLargeAlone.pages} pages -- more than your entire ${SIGNED_IN_MAX_PAGES}-page lifetime free allowance on its own. Upgrade to Pro for unlimited pages.`,
+      message: `${tooLargeAlone.file.name} has ${tooLargeAlone.pages} pages -- more than your entire ${SIGNED_IN_MAX_PAGES}-page lifetime free allowance on its own. Upgrade to Lifetime for unlimited pages.`,
     };
   }
 
@@ -178,7 +176,7 @@ export async function validateUploadBatch(
     return {
       ok: false,
       requiresSignIn: false,
-      message: `You've used your free lifetime allowance (${SIGNED_IN_MAX_PAGES} pages, PDFs and images combined). Upgrade to Pro for unlimited pages and conversions.`,
+      message: `You've used your free lifetime allowance (${SIGNED_IN_MAX_PAGES} pages, PDFs and images combined). Upgrade to Lifetime for unlimited pages and conversions.`,
     };
   }
 

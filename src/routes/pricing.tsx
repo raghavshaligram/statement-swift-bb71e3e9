@@ -130,7 +130,7 @@ const COMPARISON_ROWS: Array<{ label: string; values: Record<string, string> }> 
 const FAQ: FaqItem[] = [
   {
     q: "How do the free pages work?",
-    a: "6 pages per statement with no signup at all, and no persistent tracking on that anonymous tier — convert as many separate statements as you like. Signing up gives you 10 pages total, but as a lifetime pool shared across every PDF page and photo/scan you convert combined, not a per-statement allowance — once those 10 pages are used, you'll need Pro for anything more.",
+    a: "6 pages per statement with no signup at all, and no persistent tracking on that anonymous tier — convert as many separate statements as you like. Signing up gives you 10 pages total, but as a lifetime pool shared across every PDF page and photo/scan you convert combined, not a per-statement allowance — once those 10 pages are used, you'll need Lifetime access for anything more.",
   },
   {
     q: 'What counts as a "page"?',
@@ -138,11 +138,11 @@ const FAQ: FaqItem[] = [
   },
   {
     q: "What happens if my statement is longer than the limit?",
-    a: "You'll see the page count and a clear message before anything processes — no partial or silently-truncated results. Sign up free for the 10-page limit, or upgrade to Pro for no limit at all.",
+    a: "You'll see the page count and a clear message before anything processes — no partial or silently-truncated results. Sign up free for the 10-page limit, or upgrade to Lifetime for no limit at all.",
   },
   {
     q: "Which banks and formats are supported?",
-    a: "Named detection for 23+ banks across the US, UK, Canada, and India, plus a generic parser for any other bank's text-based PDF. Six export formats on Pro; Excel and CSV on Free.",
+    a: "Named detection for 23+ banks across the US, UK, Canada, and India, plus a generic parser for any other bank's text-based PDF. Six export formats on Lifetime; Excel and CSV on Free.",
   },
   {
     q: "Does it work with scanned PDFs?",

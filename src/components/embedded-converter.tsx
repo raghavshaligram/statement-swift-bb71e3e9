@@ -45,7 +45,10 @@ export function EmbeddedConverter({
   const existingStatements = useStatementStore((s) => s.statements);
   const failProcessing = useStatementStore((s) => s.failProcessing);
   const [, setLiveFileName] = useState("");
-  const [pageLimitError, setPageLimitError] = useState<{ message: string; requiresSignIn: boolean } | null>(null);
+  const [pageLimitError, setPageLimitError] = useState<{
+    message: string;
+    requiresSignIn: boolean;
+  } | null>(null);
   // Files that are encrypted and still awaiting a password. Parsing is held
   // until every one is unlocked -- continuing without the password can only
   // fail, and doing so previously read as a broken workflow.
@@ -102,7 +105,6 @@ export function EmbeddedConverter({
   }
 
   async function prepareAndRun(files: File[]) {
-
     // Ask for passwords BEFORE validating or parsing -- an encrypted file
     // can't be page-counted or read until it's unlocked.
     const locked = await findEncryptedPdfs(files);
@@ -157,7 +159,7 @@ export function EmbeddedConverter({
           files[i],
           (page, total) => setProgress(i, page, total),
           [ocrLanguage],
-          pwds[files[i].name]
+          pwds[files[i].name],
         );
         parsed.push(statement);
       }
@@ -172,7 +174,9 @@ export function EmbeddedConverter({
   const showPreparing = preparing && !showQueue && lockedFiles.length === 0;
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl border border-border bg-card p-2 shadow-lg shadow-slate-900/5 ${className ?? ""}`}>
+    <div
+      className={`relative overflow-hidden rounded-2xl border border-border bg-card p-2 shadow-lg shadow-slate-900/5 ${className ?? ""}`}
+    >
       {!showQueue && (
         <div className="absolute right-4 top-4 hidden text-emerald/20 sm:block" aria-hidden>
           <Upload className="h-16 w-16 animate-bounce-slow" />
@@ -203,7 +207,10 @@ export function EmbeddedConverter({
 
       {showQueue ? (
         <>
-          <ParseQueue onReview={() => navigate({ to: "/preview" })} onRemove={(i) => removePendingFile(i)} />
+          <ParseQueue
+            onReview={() => navigate({ to: "/preview" })}
+            onRemove={(i) => removePendingFile(i)}
+          />
           {(phase === "done" || phase === "error") && (
             <div className="space-y-2 px-3 pb-3 pt-1">
               {phase === "done" && (
@@ -217,12 +224,16 @@ export function EmbeddedConverter({
                     className="border border-dashed border-border/70 bg-surface/40"
                   />
                   <p className="text-center text-[11px] text-muted-foreground">
-                    Drop more statements to add them to this batch — they'll be combined into one export.
+                    Drop more statements to add them to this batch — they'll be combined into one
+                    export.
                   </p>
                 </>
               )}
               <div className="text-center">
-                <button onClick={() => reset()} className="text-xs font-medium text-muted-foreground hover:text-ink">
+                <button
+                  onClick={() => reset()}
+                  className="text-xs font-medium text-muted-foreground hover:text-ink"
+                >
                   Start over
                 </button>
               </div>
@@ -231,7 +242,11 @@ export function EmbeddedConverter({
         </>
       ) : (
         <>
-          <StatementDropzone variant="full" onFiles={handleFiles} className="border-2 border-dashed border-border/80 bg-surface/50" />
+          <StatementDropzone
+            variant="full"
+            onFiles={handleFiles}
+            className="border-2 border-dashed border-border/80 bg-surface/50"
+          />
 
           {showOcrLanguage && (
             <div className="mt-3 flex items-center gap-2 px-1 text-xs text-muted-foreground">
@@ -257,10 +272,13 @@ export function EmbeddedConverter({
                 <Lock className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                 <div className="w-full">
                   <div className="text-sm font-semibold text-amber-900">
-                    {lockedFiles.length === 1 ? "This statement is password-protected" : "These statements are password-protected"}
+                    {lockedFiles.length === 1
+                      ? "This statement is password-protected"
+                      : "These statements are password-protected"}
                   </div>
                   <p className="mt-1 text-xs text-amber-800">
-                    Enter the password to unlock. It's used entirely on your device and never sent anywhere.
+                    Enter the password to unlock. It's used entirely on your device and never sent
+                    anywhere.
                   </p>
                   <div className="mt-3 space-y-2">
                     {lockedFiles.map((f) => (
@@ -270,15 +288,21 @@ export function EmbeddedConverter({
                           type="password"
                           autoComplete="off"
                           value={passwords[f.name] ?? ""}
-                          onChange={(e) => setPasswords((prev) => ({ ...prev, [f.name]: e.target.value }))}
-                          onKeyDown={(e) => { if (e.key === "Enter") submitPasswords(); }}
+                          onChange={(e) =>
+                            setPasswords((prev) => ({ ...prev, [f.name]: e.target.value }))
+                          }
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") submitPasswords();
+                          }}
                           placeholder="PDF password"
                           className="mt-1 w-full rounded-md border border-amber-300 bg-background px-3 py-2 text-sm text-ink outline-none focus:border-amber-500"
                         />
                       </div>
                     ))}
                   </div>
-                  {unlockError && <div className="mt-2 text-xs font-medium text-rose-700">{unlockError}</div>}
+                  {unlockError && (
+                    <div className="mt-2 text-xs font-medium text-rose-700">{unlockError}</div>
+                  )}
                   <div className="mt-3 flex gap-2">
                     <button
                       onClick={submitPasswords}
@@ -287,7 +311,12 @@ export function EmbeddedConverter({
                       Unlock and convert
                     </button>
                     <button
-                      onClick={() => { setLockedFiles([]); setPendingBatch([]); setPasswords({}); setUnlockError(null); }}
+                      onClick={() => {
+                        setLockedFiles([]);
+                        setPendingBatch([]);
+                        setPasswords({});
+                        setUnlockError(null);
+                      }}
                       className="rounded-lg border border-amber-300 px-4 py-2 text-xs font-semibold text-amber-900 transition hover:bg-amber-100"
                     >
                       Cancel
@@ -304,24 +333,33 @@ export function EmbeddedConverter({
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
                 <div>
                   <div className="text-sm font-semibold text-amber-900">
-                    {pageLimitError.requiresSignIn ? "Sign in required for photos and scans" : `Your current plan supports up to ${maxPages} pages`}
+                    {pageLimitError.requiresSignIn
+                      ? "Sign in required for photos and scans"
+                      : `Your current plan supports up to ${maxPages} pages`}
                   </div>
                   <div className="text-xs text-amber-800">{pageLimitError.message}</div>
                 </div>
               </div>
-              <Link to={user ? "/account/billing" : "/signup"} className="shrink-0 rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-600">
-                {user ? "Upgrade to Pro" : "Sign up free"}
+              <Link
+                to={user ? "/account/billing" : "/signup"}
+                className="shrink-0 rounded-lg bg-amber-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-600"
+              >
+                {user ? "Upgrade to Lifetime" : "Sign up free"}
               </Link>
             </div>
           ) : null}
           {!subLoading && !isPro && pageUsage.isSignedIn && pageUsage.used !== null && (
             <p className="mt-2 px-2 text-center text-xs text-muted-foreground">
-              {pageUsage.used} of {pageUsage.limit} free lifetime pages used (PDFs and photos/scans combined)
+              {pageUsage.used} of {pageUsage.limit} free lifetime pages used (PDFs and photos/scans
+              combined)
               {pageUsage.used >= pageUsage.limit && (
                 <>
                   {" — "}
-                  <Link to="/account/billing" className="font-semibold text-emerald underline hover:no-underline">
-                    upgrade to Pro
+                  <Link
+                    to="/account/billing"
+                    className="font-semibold text-emerald underline hover:no-underline"
+                  >
+                    upgrade to Lifetime
                   </Link>
                 </>
               )}

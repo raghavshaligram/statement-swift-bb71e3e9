@@ -13,7 +13,7 @@ export const Route = createFileRoute("/account/billing")({
       {
         name: "description",
         content:
-          "Manage your BalanceExtract subscription, page usage, and upgrade to Pro for unlimited pages.",
+          "Manage your BalanceExtract account, page usage, and upgrade to Lifetime for unlimited pages.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -95,7 +95,7 @@ function BillingPage() {
               ? "Unlimited pages and every export format are unlocked, for life. Contact us if anything looks wrong."
               : subscription
                 ? "Your last payment wasn't completed (declined or refunded) — you're on the free tier. Contact us if this looks wrong, or try upgrading again below."
-                : "No payment on file. Upgrade to Pro once for unlimited pages and all export formats, forever."}
+                : "No payment on file. Upgrade to Lifetime once for unlimited pages and all export formats, forever."}
           </p>
         </div>
 
@@ -117,7 +117,7 @@ function BillingPage() {
           </div>
           <div className="mt-2 text-xs text-muted-foreground">
             {isPro
-              ? "No page cap on Pro — PDF pages and photo/scan conversions are both unlimited."
+              ? "No page cap on Lifetime — PDF pages and photo/scan conversions are both unlimited."
               : `${Math.max(0, cap - used)} pages remaining · doesn't reset, ever, on Free — PDF pages and photo/scan conversions draw from this same pool`}
           </div>
         </div>
@@ -128,7 +128,7 @@ function BillingPage() {
         <div className="mt-6 rounded-2xl border-2 border-emerald/40 bg-emerald/[0.03] p-6 shadow-sm">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <div className="text-xl font-bold tracking-tight text-ink">Upgrade to Pro</div>
+              <div className="text-xl font-bold tracking-tight text-ink">Upgrade to Lifetime</div>
               <p className="mt-1 text-sm text-muted-foreground">
                 Unlimited pages, all export formats, priority support. One payment, yours forever.
               </p>
@@ -191,8 +191,10 @@ function BillingPage() {
               <th className="px-6 py-3 text-left font-mono text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Feature
               </th>
-              <th className="w-28 px-6 py-3 text-center text-sm font-semibold text-ink">Free</th>
-              <th className="w-28 px-6 py-3 text-center text-sm font-semibold text-emerald">Pro</th>
+              <th className="w-32 px-6 py-3 text-center text-sm font-semibold text-ink">Free</th>
+              <th className="w-32 px-6 py-3 text-center text-sm font-semibold text-emerald">
+                Lifetime
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">

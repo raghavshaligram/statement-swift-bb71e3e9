@@ -10,7 +10,8 @@ export const Route = createFileRoute("/terms")({
       { title: "Terms & Conditions — BalanceExtract" },
       {
         name: "description",
-        content: "Read the Terms and Conditions for using BalanceExtract, the on-device bank statement to Excel and CSV converter. Plain-language, no surprises.",
+        content:
+          "Read the Terms and Conditions for using BalanceExtract, the on-device bank statement to Excel and CSV converter. Plain-language, no surprises.",
       },
       { property: "og:title", content: "Terms & Conditions — BalanceExtract" },
       {
@@ -40,8 +41,8 @@ const sections = [
   },
   {
     icon: RefreshCcw,
-    title: "Free tier and Pro billing",
-    body: "The free tier — 6 pages per conversion with no account, or a 10-page lifetime allowance once you sign up — is available now at no cost. Pro subscription billing is not live yet; pricing shown for Pro reflects our intended launch price, not an active charge. Once billing launches, this section will be updated with the specific terms for subscribing, cancelling, and any refund policy that applies.",
+    title: "Free tier and Lifetime purchases",
+    body: "The free tier — 6 pages per conversion with no account, or a 10-page lifetime allowance once you sign up — is available now at no cost. Lifetime access is a one-time payment, processed through PayPal, that unlocks unlimited pages and every export format for as long as BalanceExtract exists — there is no recurring charge, and nothing to cancel. If something goes wrong with a payment or you'd like a refund, contact us and we'll take care of it directly.",
   },
   {
     icon: AlertCircle,
@@ -63,9 +64,12 @@ function Terms() {
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-3xl px-6">
           <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Terms</div>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">Terms & Conditions</h1>
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+            Terms & Conditions
+          </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            These terms govern your use of BalanceExtract software and services. Please read them carefully.
+            These terms govern your use of BalanceExtract software and services. Please read them
+            carefully.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">Last updated: July 30, 2026</p>
         </div>
@@ -90,8 +94,9 @@ function Terms() {
           <div className="mt-16 rounded-2xl border border-border bg-surface-muted/40 p-8">
             <h2 className="text-xl font-semibold text-ink">Changes to these terms</h2>
             <p className="mt-2 text-muted-foreground">
-              We may update these Terms & Conditions from time to time. Continued use of BalanceExtract after
-              changes constitutes acceptance of the revised terms. If you have questions, reach out via our{" "}
+              We may update these Terms & Conditions from time to time. Continued use of
+              BalanceExtract after changes constitutes acceptance of the revised terms. If you have
+              questions, reach out via our{" "}
               <Link to="/contact" className="text-emerald hover:underline">
                 Contact page
               </Link>

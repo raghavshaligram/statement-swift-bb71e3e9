@@ -16,7 +16,8 @@ export const Route = createFileRoute("/privacy")({
       { property: "og:title", content: "Privacy Policy — BalanceExtract" },
       {
         property: "og:description",
-        content: "Your bank statements never leave your device. Read BalanceExtract's privacy practices.",
+        content:
+          "Your bank statements never leave your device. Read BalanceExtract's privacy practices.",
       },
     ],
   }),
@@ -36,8 +37,8 @@ const sections = [
   },
   {
     icon: Lock,
-    title: "Pro billing",
-    body: "Pro subscription billing is not live yet. When it launches, payment will be handled by a third-party payment processor (such as Stripe) who collects and stores your card details directly under their own security standards — BalanceExtract itself never sees or stores your full card number. This section will be updated with the specific processor's name once billing is active.",
+    title: "Lifetime purchases",
+    body: "Lifetime access is a one-time payment, processed through PayPal. PayPal collects and stores your payment details directly under their own security standards — BalanceExtract itself never sees or stores your card number. We do receive confirmation that a payment completed, and record it against your account so Lifetime features unlock, but nothing more.",
   },
   {
     icon: FileText,
@@ -69,10 +70,12 @@ function Privacy() {
       <section className="border-b border-border py-16">
         <div className="mx-auto max-w-3xl px-6">
           <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Privacy</div>
-          <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">Privacy Policy</h1>
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+            Privacy Policy
+          </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Your bank statements are processed on your device, not on our servers. This page explains exactly
-            what we do and do not collect, with no exception left unstated.
+            Your bank statements are processed on your device, not on our servers. This page
+            explains exactly what we do and do not collect, with no exception left unstated.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">Last updated: July 30, 2026</p>
         </div>

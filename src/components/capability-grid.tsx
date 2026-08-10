@@ -41,7 +41,7 @@ const CAPABILITIES: Array<{ visual: ReactNode; title: string; body: string }> = 
   {
     visual: <NoAccountVisual />,
     title: "No account required to try it",
-    body: "Convert your first statements without signing up. An account is only needed for Pro.",
+    body: "Convert your first statements without signing up. An account is only needed to upgrade to Lifetime.",
   },
 ];
 

@@ -79,15 +79,15 @@ function UploadPage() {
             <div>
               <div className="text-sm font-semibold text-ink">You're on the free plan</div>
               <p className="mt-0.5 text-xs text-muted-foreground">
-                Pro removes the page cap entirely — a full year of statements in one sitting, all seven export
-                formats.
+                Lifetime removes the page cap entirely — a full year of statements in one sitting,
+                all seven export formats.
               </p>
             </div>
             <Link
               to="/account/billing"
               className="inline-flex h-10 shrink-0 items-center gap-2 rounded-lg bg-emerald px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-emerald/90"
             >
-              Upgrade to Pro <ArrowRight className="h-4 w-4" />
+              Upgrade to Lifetime <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         )}
@@ -98,13 +98,14 @@ function UploadPage() {
               <span className="text-amber-700">
                 {pageUsage.used} of {pageUsage.limit} free lifetime pages used —{" "}
                 <Link to="/account/billing" className="font-semibold underline hover:no-underline">
-                  upgrade to Pro
+                  upgrade to Lifetime
                 </Link>{" "}
                 for unlimited.
               </span>
             ) : (
               <>
-                {pageUsage.used} of {pageUsage.limit} free lifetime pages used (PDFs and photos/scans combined).
+                {pageUsage.used} of {pageUsage.limit} free lifetime pages used (PDFs and
+                photos/scans combined).
               </>
             )}
           </p>
