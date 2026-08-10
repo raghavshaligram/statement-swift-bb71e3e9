@@ -52,7 +52,8 @@ export function PayPalCheckoutButton() {
           supabase.functions.invoke("paypal-config", { method: "GET" }),
           new Promise<never>((_, reject) => setTimeout(() => reject(new Error("timeout")), 8000)),
         ]);
-      } catch {
+      } catch (err) {
+        console.error("paypal-config request failed:", err);
         if (!cancelled) setStatus("unavailable");
         return;
       }
@@ -61,6 +62,7 @@ export function PayPalCheckoutButton() {
       if (cancelled) return;
 
       if (error || !data?.configured || !data?.clientId) {
+        console.error("paypal-config returned no usable config:", { error, data });
         setStatus("unavailable");
         return;
       }
