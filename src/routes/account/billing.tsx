@@ -101,7 +101,7 @@ function BillingPage() {
 
         <div className="rounded-2xl border border-border bg-background p-6 shadow-sm">
           <div className="font-mono text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Page usage (lifetime)
+            Page usage (all-time)
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-3xl font-bold tracking-tight text-ink">{used}</span>
