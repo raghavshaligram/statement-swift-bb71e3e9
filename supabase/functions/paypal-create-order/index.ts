@@ -88,7 +88,10 @@ Deno.serve(async (req: Request) => {
     // gets embedded as custom_id below, never anything the request body
     // claims about itself (the body isn't even read for identity here).
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    if (!authHeader) {
+      console.error("auth: no Authorization header on request");
+      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -98,8 +101,10 @@ Deno.serve(async (req: Request) => {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (userError || !user)
+    if (userError || !user) {
+      console.error("auth: getUser rejected token:", userError?.message ?? "no user returned");
       return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+    }
 
     const accessToken = await getAccessToken();
     const orderRes = await fetch(`${paypalApiBase()}/v2/checkout/orders`, {
