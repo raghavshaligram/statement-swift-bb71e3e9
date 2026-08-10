@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
 import { LIFETIME_PRICE_USD } from "@/lib/pricing-constants";
-import { Check, X, ShieldCheck, Zap, Landmark, Star, ArrowRight } from "lucide-react";
+import { Check, X, ShieldCheck, Zap, Landmark, Star, ArrowRight, RefreshCw } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { FaqList, type FaqItem } from "@/components/faq-list";
 import { ComparisonLinks } from "@/components/comparison-links";
@@ -258,24 +258,57 @@ function Pricing() {
       {/* Callout + comparison table */}
       <section className="border-b border-border bg-surface-muted/40 py-20">
         <div className="mx-auto max-w-5xl px-6">
-          <div className="rounded-2xl border-2 border-emerald/40 bg-emerald-soft/40 p-8">
-            <h2 className="text-center text-2xl font-bold tracking-tight text-ink sm:text-3xl">
+          <div className="overflow-hidden rounded-2xl border-2 border-emerald/40 bg-emerald-soft/40">
+            <h2 className="px-8 pt-8 text-center text-2xl font-bold tracking-tight text-ink sm:text-3xl">
               Every competitor here bills you again next month. We don't — ever.
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-center text-sm leading-relaxed text-accent-foreground">
-              BalanceExtract's Pro tier is a{" "}
-              <strong className="font-bold text-ink">one-time payment</strong>,{" "}
-              <strong className="font-bold text-ink">genuinely unlimited pages</strong> — not a
-              subscription that renews, not a bigger number to unlock next month. Pay once, keep it.
-            </p>
-            <p className="mx-auto mt-4 max-w-2xl text-center text-xs text-muted-foreground">
-              Cheapest competitor plan:{" "}
-              <span className="font-mono font-semibold text-ink">$15/mo for 400 pages</span>, billed
-              forever. Ours:{" "}
-              <span className="font-mono font-semibold text-emerald">
-                ${LIFETIME_PRICE_USD} once
-              </span>
-              , unlimited pages, no renewal.
+
+            {/* The actual differentiator, shown rather than described: a
+                repeating charge with no end vs a single payment. Putting the
+                two side by side with matching layout (icon, big number,
+                caption) is what makes the contrast readable at a glance --
+                the previous version said the same thing in two paragraphs of
+                prose, which reads as a wall of text instead of a comparison. */}
+            <div className="mt-8 grid divide-y divide-emerald/20 sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+              <div className="flex flex-col items-center gap-3 p-8 text-center">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-muted-foreground/10">
+                  <RefreshCw className="h-5 w-5 text-muted-foreground" aria-hidden />
+                </div>
+                <div className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  Everyone else
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-mono text-3xl font-bold text-muted-foreground line-through decoration-2">
+                    $15/mo
+                  </span>
+                </div>
+                <p className="max-w-[22ch] text-sm text-muted-foreground">
+                  for 400 pages — then it renews, and renews, for as long as you use it
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center gap-3 bg-emerald/[0.06] p-8 text-center">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald/20">
+                  <Check className="h-5 w-5 text-emerald" aria-hidden />
+                </div>
+                <div className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald">
+                  BalanceExtract
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-mono text-3xl font-bold text-ink">
+                    ${LIFETIME_PRICE_USD}
+                  </span>
+                  <span className="text-sm text-muted-foreground">once</span>
+                </div>
+                <p className="max-w-[22ch] text-sm text-ink/80">
+                  unlimited pages, paid one time — no renewal, ever
+                </p>
+              </div>
+            </div>
+
+            <p className="px-8 pb-3 pt-6 text-center text-xs text-muted-foreground/80">
+              Not a bigger allowance, not a subscription that renews — pay once, keep it, whether
+              you convert ten pages or ten thousand.
             </p>
             {/*
               Sourcing note, deliberately visible rather than buried.
@@ -289,10 +322,10 @@ function Pricing() {
 
               Dating the figures and telling readers to verify is what makes
               the table defensible. It also costs us nothing: the structural
-              claim (flat vs metered) is the one doing the persuading, and that
-              one doesn't expire.
+              claim (one-time vs recurring) is the one doing the persuading,
+              and that one doesn't expire.
             */}
-            <p className="mx-auto mt-3 max-w-2xl text-center text-xs text-muted-foreground/70">
+            <p className="mx-auto max-w-2xl px-8 pb-8 text-center text-xs text-muted-foreground/70">
               Competitor figures are entry-tier list prices taken from each vendor&apos;s own
               pricing page in August 2026, and may have changed since. Please check them directly
               before deciding — we&apos;d rather you verify than take our word for it.
