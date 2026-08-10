@@ -111,6 +111,11 @@ export function PayPalCheckoutButton() {
           style: { layout: "vertical", color: "gold", shape: "rect", label: "pay" },
           async createOrder() {
             const headers = await authHeader();
+            if (!headers) {
+              setErrorMessage("Your session has expired. Please sign in again to continue.");
+              setStatus("error");
+              throw new Error("No valid session");
+            }
             const { data, error } = await supabase.functions.invoke("paypal-create-order", {
               headers,
             });
@@ -125,7 +130,11 @@ export function PayPalCheckoutButton() {
                 }
               }
               console.error("paypal-create-order failed:", { error, serverMessage, data });
-              setErrorMessage("Something went wrong starting checkout. Please try again.");
+              setErrorMessage(
+                serverMessage === "Unauthorized"
+                  ? "Your session has expired. Please sign in again to continue."
+                  : "Something went wrong starting checkout. Please try again.",
+              );
               setStatus("error");
               throw error ?? new Error("No orderId returned");
             }
