@@ -87,24 +87,22 @@ Deno.serve(async (req: Request) => {
     // Identify the calling user from their own auth token -- this is what
     // gets embedded as custom_id below, never anything the request body
     // claims about itself (the body isn't even read for identity here).
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      console.error("auth: no Authorization header on request");
+    //
+    // Done with a direct call to the Auth API rather than
+    // supabase.auth.getUser(token): with this project's opaque
+    // (non-JWT) service key, the SDK path rejected perfectly valid user
+    // tokens with "Auth session missing!", because it looks for a stored
+    // session instead of verifying the token it was handed.
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+    if (!token) {
+      console.error("auth: no bearer token on request");
       return new Response("Unauthorized", { status: 401, headers: corsHeaders });
     }
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-    );
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (userError || !user) {
-      console.error("auth: getUser rejected token:", userError?.message ?? "no user returned");
-      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
-    }
+    const user = await getUserFromToken(token);
+    if (!user) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
+
 
     const accessToken = await getAccessToken();
     const orderRes = await fetch(`${paypalApiBase()}/v2/checkout/orders`, {
