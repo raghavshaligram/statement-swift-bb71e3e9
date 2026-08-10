@@ -107,7 +107,8 @@ function Page() {
       <ArticleHero
         eyebrow="Converter"
         title="Convert Bank Statement to QBO"
-      />
+        publishedDate="July 2026"
+      publishedDate="July 2026" />
 
 
       {/* EmbeddedConverter carries no width constraint of its own -- without

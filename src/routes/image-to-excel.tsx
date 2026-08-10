@@ -69,7 +69,8 @@ function Page() {
       <ArticleHero
         eyebrow="Converter guide"
         title="Free Image to Excel Converter"
-      />
+        publishedDate="July 2026"
+      publishedDate="July 2026" />
 
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
