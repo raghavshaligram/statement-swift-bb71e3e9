@@ -114,7 +114,7 @@ function Page() {
         eyebrow="Converter"
         title="Convert Bank Statement to Excel"
         publishedDate="July 2026"
-      publishedDate="July 2026" />
+      />
 
 
       {/* EmbeddedConverter carries no width constraint of its own -- without

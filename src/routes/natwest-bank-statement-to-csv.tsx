@@ -83,7 +83,7 @@ function Page() {
         eyebrow="Bank guide"
         title="NatWest Bank Statement to CSV: Formats and Limits"
         publishedDate="July 2026"
-      publishedDate="July 2026" />
+      />
 
       <div className="mx-auto max-w-3xl px-6 pb-4">
         <EmbeddedConverter />
