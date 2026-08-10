@@ -160,7 +160,7 @@ export type Database = {
         Returns: boolean
       }
       increment_page_usage: {
-        Args: { p_count: number }
+        Args: { p_count: number; p_limit: number }
         Returns: boolean
       }
     }
