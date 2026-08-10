@@ -393,7 +393,7 @@ export function categorize(
   const sign: -1 | 1 = amount >= 0 ? 1 : -1;
 
   for (const rule of RULES) {
-    if (rule.sign && rule.sign !== 0 && rule.sign !== sign) continue;
+    if (rule.sign && rule.sign !== sign) continue;
     if (rule.patterns.some((p) => matches(haystack, p))) {
       // A payee we couldn't cleanly extract means the match came off raw text,
       // which is weaker evidence. Reflect that rather than overstating it.
