@@ -214,10 +214,13 @@ export function PayPalCheckoutButton() {
         // second, Venmo-branded button automatically when the buyer is
         // eligible (US-based, USD, has the Venmo app) -- no separate
         // integration beyond this query param. components=googlepay adds
-        // the paypal.Googlepay() client used below.
+        // the paypal.Googlepay() client used below. disable-funding=
+        // paylater suppresses Pay Later, which PayPal's SDK otherwise adds
+        // automatically for eligible US buyers without being asked to --
+        // confirmed on a real US test, this app never opted into it.
         await loadScript(
           "paypal-sdk-script",
-          `https://www.paypal.com/sdk/js?client-id=${clientId}&intent=capture&components=buttons,googlepay&enable-funding=venmo`,
+          `https://www.paypal.com/sdk/js?client-id=${clientId}&intent=capture&components=buttons,googlepay&enable-funding=venmo&disable-funding=paylater`,
         );
       } catch (err) {
         console.error("PayPal SDK failed to load:", err);
