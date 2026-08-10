@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
-import { useSubscription } from "@/hooks/use-subscription";
+import { useSubscription, planLabel } from "@/hooks/use-subscription";
 import { useStatementStore } from "@/lib/statement-store";
 import {
   DropdownMenu,
@@ -9,13 +9,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, History, User as UserIcon, CreditCard, Zap, Settings, ChevronDown } from "lucide-react";
+import {
+  LogOut,
+  History,
+  User as UserIcon,
+  CreditCard,
+  Zap,
+  Settings,
+  ChevronDown,
+} from "lucide-react";
 
 type Variant = "dark" | "light";
 
 export function AuthActions({ variant = "dark" }: { variant?: Variant }) {
   const { user, loading, signOut } = useAuth();
-  const { isPro, loading: subLoading } = useSubscription();
+  const { subscription, isPro, loading: subLoading } = useSubscription();
   const navigate = useNavigate();
   const resetStatements = useStatementStore((s) => s.reset);
 
@@ -24,10 +32,16 @@ export function AuthActions({ variant = "dark" }: { variant?: Variant }) {
   }
 
   if (!user) {
-    const textCls = variant === "dark" ? "text-background/85 hover:text-background" : "text-ink/80 hover:text-ink";
+    const textCls =
+      variant === "dark"
+        ? "text-background/85 hover:text-background"
+        : "text-ink/80 hover:text-ink";
     return (
       <div className="flex shrink-0 items-center gap-3 sm:gap-4">
-        <Link to="/signin" className={`whitespace-nowrap text-sm font-semibold transition-colors ${textCls}`}>
+        <Link
+          to="/signin"
+          className={`whitespace-nowrap text-sm font-semibold transition-colors ${textCls}`}
+        >
           Log In
         </Link>
         <Link
@@ -58,7 +72,10 @@ export function AuthActions({ variant = "dark" }: { variant?: Variant }) {
         </span>
         <ChevronDown className="h-3.5 w-3.5 text-background/70" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-64 border-white/10 bg-ink p-0 text-background shadow-2xl">
+      <DropdownMenuContent
+        align="end"
+        className="w-64 border-white/10 bg-ink p-0 text-background shadow-2xl"
+      >
         <div className="px-4 pb-3 pt-4">
           <div className="truncate text-sm font-bold text-background">{displayName}</div>
           <div className="truncate font-mono text-[11px] text-background/60">{user.email}</div>
@@ -68,14 +85,17 @@ export function AuthActions({ variant = "dark" }: { variant?: Variant }) {
               "Free" and then correcting to "Pro" is what read as the badge
               flickering. */}
           {subLoading ? (
-            <span className="mt-2 inline-block h-[18px] w-14 animate-pulse rounded-full bg-white/10" aria-hidden />
+            <span
+              className="mt-2 inline-block h-[18px] w-14 animate-pulse rounded-full bg-white/10"
+              aria-hidden
+            />
           ) : (
             <span
               className={`mt-2 inline-block rounded-full px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
                 isPro ? "bg-emerald/20 text-emerald" : "bg-white/10 text-background/80"
               }`}
             >
-              {isPro ? "Pro" : "Free"}
+              {planLabel(subscription, isPro)}
             </span>
           )}
         </div>
@@ -118,7 +138,10 @@ function MenuLink({
   label: string;
 }) {
   return (
-    <DropdownMenuItem asChild className="cursor-pointer rounded-none px-4 py-2.5 text-background/90 focus:bg-white/5 focus:text-background">
+    <DropdownMenuItem
+      asChild
+      className="cursor-pointer rounded-none px-4 py-2.5 text-background/90 focus:bg-white/5 focus:text-background"
+    >
       <Link to={to} className="flex items-center gap-3 text-sm font-semibold">
         <Icon className="h-4 w-4 text-background/70" /> {label}
       </Link>

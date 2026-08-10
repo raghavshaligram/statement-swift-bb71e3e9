@@ -19,14 +19,17 @@ import {
 /**
  * The closest competitor of the four, and the hardest page to write honestly.
  *
- * StatementDesk sits at the same $19 entry price, also does PDF bank
- * statements, and also categorises transactions automatically. On a feature
- * checklist the two products look nearly identical, so a page that pretends
- * otherwise would be transparently self-serving.
+ * StatementDesk charges $19/month, also does PDF bank statements, and also
+ * categorises transactions automatically. On a feature checklist the two
+ * products look nearly identical, so a page that pretends otherwise would
+ * be transparently self-serving.
  *
  * Two differences are real and structural: they process in the cloud and we
  * process on-device, and their plans are measured in TRANSACTION ROWS while
- * ours has no page or row limit at all.
+ * ours has no page or row limit at all -- and, since this page was last
+ * updated, a third: they bill monthly, forever, and we now charge a single
+ * $79 one-time payment for lifetime access. That pricing-model gap (not a
+ * price-match) is the honest hook now.
  *
  * Sourcing, held to the same standard as the other comparison pages:
  *  - The $19 Professional / $49 Business plan structure comes from Capterra,
@@ -41,8 +44,8 @@ import {
 
 const FAQ: FaqItem[] = [
   {
-    q: "How is BalanceExtract's pricing different if we're both $19?",
-    a: "What the $19 buys. StatementDesk's plans are measured in transaction rows, so a long statement consumes more of your monthly allowance than a short one and a heavy month can run you out. BalanceExtract's Pro plan has no page limit and no row limit — the price is the same whether you convert one statement or two hundred.",
+    q: "How is BalanceExtract's pricing different from StatementDesk's?",
+    a: "StatementDesk is $19/month, billed every month, for as long as you use it. BalanceExtract's Pro plan is a one-time $79 payment — no renewal, ever. Their plans are also measured in transaction rows, so a long statement consumes more of the monthly allowance than a short one; ours has no page or row limit at all, whether you convert one statement or two hundred.",
   },
   {
     q: "Do both tools categorise transactions?",
@@ -74,7 +77,7 @@ export const Route = createFileRoute("/statementdesk-alternative")({
       {
         name: "description",
         content:
-          "An honest comparison of BalanceExtract and StatementDesk. Same $19 entry price — but StatementDesk meters transaction rows and processes in the cloud, while BalanceExtract has no limits and never uploads your statement.",
+          "An honest comparison of BalanceExtract and StatementDesk. StatementDesk is $19/month, billed forever; BalanceExtract is $79 once, for life — plus StatementDesk meters transaction rows and processes in the cloud, while BalanceExtract has no limits and never uploads your statement.",
       },
       { property: "og:title", content: "StatementDesk Alternative — BalanceExtract" },
     ],
@@ -91,20 +94,22 @@ function Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ)) }}
       />
 
-      <Breadcrumbs trail={[{ label: "Comparisons", href: "/blog" }, { label: "StatementDesk Alternative" }]} />
+      <Breadcrumbs
+        trail={[{ label: "Comparisons", href: "/blog" }, { label: "StatementDesk Alternative" }]}
+      />
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Comparison"
-        title="StatementDesk Alternative: Same Price, No Row Limit"
+        title="StatementDesk Alternative: One-Time $79 vs. $19/Month Forever"
         publishedDate="August 2026"
       />
 
       <QuickSummary>
-        This is the closest comparison of the four we publish. StatementDesk sits at the same entry
-        price, converts PDF bank statements, and categorises transactions automatically — on a
-        feature list the two look alike, and pretending otherwise would be dishonest. Two
-        differences are real: their plans are measured in transaction rows, and their processing
-        happens on their servers. Ours has no row or page limit, and never uploads your file.
+        This is the closest comparison of the four we publish. StatementDesk converts PDF bank
+        statements and categorises transactions automatically, just like we do — on a feature list
+        the two look alike, and pretending otherwise would be dishonest. What's different: they
+        charge $19/month, billed forever, and meter by transaction row; we charge $79 once, for
+        life, with no row or page limit and no server your file ever touches.
       </QuickSummary>
 
       <PricingCallout competitorModel="StatementDesk's plans are measured in transaction rows, so a long statement eats more of your monthly allowance than a short one." />
@@ -113,8 +118,8 @@ function Page() {
         <p>
           On sourcing: StatementDesk&apos;s plan structure here comes from an independent software
           directory rather than a competitor&apos;s blog, and we describe how their metering works
-          rather than quoting a specific row cap, because those figures are only published by rivals.
-          Check{" "}
+          rather than quoting a specific row cap, because those figures are only published by
+          rivals. Check{" "}
           <a href="https://www.statementdesk.com/" rel="nofollow noopener" target="_blank">
             statementdesk.com
           </a>{" "}
@@ -132,8 +137,9 @@ function Page() {
         </p>
         <p>
           There is nothing dishonest about that model; it maps cost to usage, which is defensible.
-          It just means your bill has a ceiling you have to think about. Ours doesn&apos;t: the same
-          $19 whether the month is quiet or you convert every client you have.
+          It just means your bill has a ceiling you have to think about, every month, indefinitely.
+          Ours doesn&apos;t: one $79 payment, whether the month is quiet or you convert every client
+          you have — and no bill next month either.
         </p>
       </ArticleProse>
 
@@ -178,7 +184,7 @@ function Page() {
         limits={[
           {
             lead: "Your volume is uneven",
-            body: "month-end, year-end and onboarding a new client are all spikes. A flat price with no ceiling means the busy month costs what the quiet one did.",
+            body: "month-end, year-end and onboarding a new client are all spikes. One payment, no ceiling, means the busy month costs what the quiet one did — and there's no next month's bill either.",
           },
           {
             lead: "The statements belong to clients",

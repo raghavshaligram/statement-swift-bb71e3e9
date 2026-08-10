@@ -13,7 +13,7 @@ const FAQ: Array<{ q: string; a: string }> = [
   },
   {
     q: "Is it free?",
-    a: "Yes, for occasional use. No signup: 6 pages per conversion, as many conversions as you like. Sign up free: a 10-page lifetime allowance (PDFs and photos/scans combined). Pro removes the limit entirely for one flat monthly price — no credits, no per-page fees.",
+    a: "Yes, for occasional use. No signup: 6 pages per conversion, as many conversions as you like. Sign up free: a 10-page lifetime allowance (PDFs and photos/scans combined). Pro removes the limit entirely for a one-time payment — no subscription, no credits, no renewal.",
   },
   {
     q: "Which banks and formats are supported?",
@@ -61,7 +61,10 @@ export function HomepageFaq() {
 
   return (
     <section className="border-b border-border py-20">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <div className="mx-auto max-w-3xl px-6">
         <ScrollReveal className="text-center">
           <h2 className="text-3xl font-bold tracking-tight text-ink sm:text-4xl">

@@ -14,23 +14,90 @@ import { Bot, MessageCircle, Send, User, X } from "lucide-react";
 type Entry = { q: string; a: string; href?: string; hrefLabel?: string };
 
 const ENTRIES: Entry[] = [
-  { q: "Is my data uploaded anywhere? What about security and privacy?", a: "No. Every conversion — PDF, photo, or scan — runs entirely in your browser, on your device. Nothing is sent to a server. You can confirm this yourself by opening your browser's DevTools Network tab during a conversion and watching for outbound requests. There won't be any." },
-  { q: "Do I need to sign up to use BalanceExtract?", a: "Not for PDF statements — up to 6 pages per conversion, unlimited conversions, no account needed. Signing up gets you a 10-page lifetime allowance total (PDFs and photos/scans combined, not per conversion). Converting a photo or scanned image specifically does require a free account, since OCR takes real processing time." },
-  { q: "How much does BalanceExtract cost? What is the price, and what are the pricing plans?", a: "Free to try — 6 pages per conversion with no signup, or a 10-page lifetime allowance total once you sign up (that's a cumulative pool across every statement, not 10 pages each time). Pro is $19/month flat: unlimited conversions, no page cap, all seven export formats, no per-page fees." },
-  { q: "What file formats can I export to?", a: "Excel (.xlsx), CSV, OFX, QFX, QBO, QIF, IIF, and Tally XML — covering QuickBooks Desktop, QuickBooks Online, Quicken, Xero, and Tally." },
-  { q: "What banks does BalanceExtract support?", a: "23+ banks with named layout detection across the US, UK, Canada, and India — including Chase, Bank of America, Wells Fargo, Lloyds, NatWest, ICICI, HDFC, SBI, Axis, and Kotak. Any other bank's text-based PDF falls back to a generic layout parser." },
-  { q: "Why is a row marked low confidence?", a: "Every extracted transaction gets a confidence score. Low-confidence rows usually come from a blurry photo, an unusual layout, or a merged/split line the parser had to make a judgment call on — worth checking that specific row against the original statement before exporting." },
-  { q: "Can I convert a scanned or photographed statement?", a: "Yes — BalanceExtract falls back to on-device OCR automatically for scans and photos (JPG, PNG, WEBP), and for any PDF page with no real text layer. This does require a free account, unlike text-based PDF conversion." },
-  { q: "Will the dates come out right?", a: "BalanceExtract infers the real date order (DD/MM/YYYY vs MM/DD/YYYY) from the statement itself rather than assuming one, and normalises output dates to ISO (YYYY-MM-DD) by default — a format Excel reads unambiguously regardless of your regional settings." },
-  { q: "Can I combine statements from different banks in one export?", a: "Yes. Drop PDFs from multiple banks into the same batch — BalanceExtract detects each one and processes them together into a single export." },
-  { q: "How do I cancel or change my Pro subscription?", a: "From your account's Billing page. If you can't find that option or something looks wrong, send us a message via Contact and we'll sort it out directly.", href: "/contact", hrefLabel: "Contact us" },
-  { q: "Why does QuickBooks Desktop need an IIF or QBO file instead of a CSV?", a: "QuickBooks Desktop has no built-in way to import a CSV or Excel file of transactions at all — confirmed directly via Intuit's own support community. IIF and QBO are the real paths in.", href: "/csv-to-iif", hrefLabel: "CSV to IIF guide" },
-  { q: "Why does my QFX file stop importing into Quicken?", a: "Quicken ties QFX import to your software version's age — once it's roughly three years old, QFX downloads stop being accepted, forcing an upgrade. Converting to CSV sidesteps that limit entirely.", href: "/qfx-to-csv", hrefLabel: "QFX to CSV guide" },
-  { q: "What's the difference between QIF, QFX, and OFX for Quicken?", a: "QIF is the only one of the three that carries categories and split transactions into Quicken — QFX and OFX both drop category data entirely.", href: "/csv-to-qif", hrefLabel: "CSV to QIF guide" },
-  { q: "Does any bank export directly to Tally XML?", a: "No — it isn't one of the formats banks offer at all (CSV, Excel, OFX, QIF, and QBO cover almost everyone's native export list, but never Tally). Converting a PDF statement is the real path in.", href: "/bank-statement-to-tally", hrefLabel: "Bank statement to Tally guide" },
-  { q: "What is a QBO file, and how is it different from IIF?", a: "QBO is QuickBooks' Web Connect format, built on the same underlying structure as OFX — it imports as a live bank-feed match on both QuickBooks Desktop and Online. IIF is a QuickBooks Desktop-only format with simpler, unmatched transaction entries.", href: "/qbo-to-csv", hrefLabel: "QBO to CSV guide" },
-  { q: "How accurate is converting a photo of a statement?", a: "It depends on the photo — a clean, well-lit, straight-on scan reads nearly as well as a real PDF. Blur, poor lighting, or an angled shot increases how many rows get flagged as low-confidence, which is why every row is scored rather than silently accepted.", href: "/image-to-excel", hrefLabel: "Image to Excel guide" },
-  { q: "How do I report a conversion issue or contact support if a statement isn't converting?", a: "Head to our Contact page — you can attach the actual statement that's giving you trouble, which helps us diagnose it much faster than a description alone.", href: "/contact", hrefLabel: "Contact us" },
+  {
+    q: "Is my data uploaded anywhere? What about security and privacy?",
+    a: "No. Every conversion — PDF, photo, or scan — runs entirely in your browser, on your device. Nothing is sent to a server. You can confirm this yourself by opening your browser's DevTools Network tab during a conversion and watching for outbound requests. There won't be any.",
+  },
+  {
+    q: "Do I need to sign up to use BalanceExtract?",
+    a: "Not for PDF statements — up to 6 pages per conversion, unlimited conversions, no account needed. Signing up gets you a 10-page lifetime allowance total (PDFs and photos/scans combined, not per conversion). Converting a photo or scanned image specifically does require a free account, since OCR takes real processing time.",
+  },
+  {
+    q: "How much does BalanceExtract cost? What is the price, and what are the pricing plans?",
+    a: "Free to try — 6 pages per conversion with no signup, or a 10-page lifetime allowance total once you sign up (that's a cumulative pool across every statement, not 10 pages each time). Pro is a one-time $79 payment: unlimited conversions, no page cap, all seven export formats, no subscription and no renewal, ever.",
+  },
+  {
+    q: "What file formats can I export to?",
+    a: "Excel (.xlsx), CSV, OFX, QFX, QBO, QIF, IIF, and Tally XML — covering QuickBooks Desktop, QuickBooks Online, Quicken, Xero, and Tally.",
+  },
+  {
+    q: "What banks does BalanceExtract support?",
+    a: "23+ banks with named layout detection across the US, UK, Canada, and India — including Chase, Bank of America, Wells Fargo, Lloyds, NatWest, ICICI, HDFC, SBI, Axis, and Kotak. Any other bank's text-based PDF falls back to a generic layout parser.",
+  },
+  {
+    q: "Why is a row marked low confidence?",
+    a: "Every extracted transaction gets a confidence score. Low-confidence rows usually come from a blurry photo, an unusual layout, or a merged/split line the parser had to make a judgment call on — worth checking that specific row against the original statement before exporting.",
+  },
+  {
+    q: "Can I convert a scanned or photographed statement?",
+    a: "Yes — BalanceExtract falls back to on-device OCR automatically for scans and photos (JPG, PNG, WEBP), and for any PDF page with no real text layer. This does require a free account, unlike text-based PDF conversion.",
+  },
+  {
+    q: "Will the dates come out right?",
+    a: "BalanceExtract infers the real date order (DD/MM/YYYY vs MM/DD/YYYY) from the statement itself rather than assuming one, and normalises output dates to ISO (YYYY-MM-DD) by default — a format Excel reads unambiguously regardless of your regional settings.",
+  },
+  {
+    q: "Can I combine statements from different banks in one export?",
+    a: "Yes. Drop PDFs from multiple banks into the same batch — BalanceExtract detects each one and processes them together into a single export.",
+  },
+  {
+    q: "How do I cancel or change my Pro subscription?",
+    a: "From your account's Billing page. If you can't find that option or something looks wrong, send us a message via Contact and we'll sort it out directly.",
+    href: "/contact",
+    hrefLabel: "Contact us",
+  },
+  {
+    q: "Why does QuickBooks Desktop need an IIF or QBO file instead of a CSV?",
+    a: "QuickBooks Desktop has no built-in way to import a CSV or Excel file of transactions at all — confirmed directly via Intuit's own support community. IIF and QBO are the real paths in.",
+    href: "/csv-to-iif",
+    hrefLabel: "CSV to IIF guide",
+  },
+  {
+    q: "Why does my QFX file stop importing into Quicken?",
+    a: "Quicken ties QFX import to your software version's age — once it's roughly three years old, QFX downloads stop being accepted, forcing an upgrade. Converting to CSV sidesteps that limit entirely.",
+    href: "/qfx-to-csv",
+    hrefLabel: "QFX to CSV guide",
+  },
+  {
+    q: "What's the difference between QIF, QFX, and OFX for Quicken?",
+    a: "QIF is the only one of the three that carries categories and split transactions into Quicken — QFX and OFX both drop category data entirely.",
+    href: "/csv-to-qif",
+    hrefLabel: "CSV to QIF guide",
+  },
+  {
+    q: "Does any bank export directly to Tally XML?",
+    a: "No — it isn't one of the formats banks offer at all (CSV, Excel, OFX, QIF, and QBO cover almost everyone's native export list, but never Tally). Converting a PDF statement is the real path in.",
+    href: "/bank-statement-to-tally",
+    hrefLabel: "Bank statement to Tally guide",
+  },
+  {
+    q: "What is a QBO file, and how is it different from IIF?",
+    a: "QBO is QuickBooks' Web Connect format, built on the same underlying structure as OFX — it imports as a live bank-feed match on both QuickBooks Desktop and Online. IIF is a QuickBooks Desktop-only format with simpler, unmatched transaction entries.",
+    href: "/qbo-to-csv",
+    hrefLabel: "QBO to CSV guide",
+  },
+  {
+    q: "How accurate is converting a photo of a statement?",
+    a: "It depends on the photo — a clean, well-lit, straight-on scan reads nearly as well as a real PDF. Blur, poor lighting, or an angled shot increases how many rows get flagged as low-confidence, which is why every row is scored rather than silently accepted.",
+    href: "/image-to-excel",
+    hrefLabel: "Image to Excel guide",
+  },
+  {
+    q: "How do I report a conversion issue or contact support if a statement isn't converting?",
+    a: "Head to our Contact page — you can attach the actual statement that's giving you trouble, which helps us diagnose it much faster than a description alone.",
+    href: "/contact",
+    hrefLabel: "Contact us",
+  },
 ];
 
 const STARTER_QUESTIONS = [
@@ -43,7 +110,8 @@ const STARTER_QUESTIONS = [
 const FALLBACK =
   "I'm not sure I have an article on that specific question. Is it about one of these, or something else entirely?";
 
-const GREETING = "Hi there! Ask me a question about converting statements, pricing, security, or export formats — or tap one of the suggestions below.";
+const GREETING =
+  "Hi there! Ask me a question about converting statements, pricing, security, or export formats — or tap one of the suggestions below.";
 const GREETING_WORDS = new Set(["hi", "hello", "hey", "hiya", "yo", "sup", "howdy", "hola"]);
 
 // Naive .includes() matching was scoring false hits from short query words
@@ -78,9 +146,33 @@ const MIN_MATCH_SCORE = 3;
 // picked the wrong one. Excluding these from scoring means only the
 // actual topic words drive a match.
 const STOP_WORDS = new Set([
-  "what", "are", "is", "does", "do", "the", "a", "an", "to", "for", "of",
-  "in", "on", "and", "or", "can", "how", "much", "with", "my", "me", "you",
-  "it", "this", "that", "there", "about",
+  "what",
+  "are",
+  "is",
+  "does",
+  "do",
+  "the",
+  "a",
+  "an",
+  "to",
+  "for",
+  "of",
+  "in",
+  "on",
+  "and",
+  "or",
+  "can",
+  "how",
+  "much",
+  "with",
+  "my",
+  "me",
+  "you",
+  "it",
+  "this",
+  "that",
+  "there",
+  "about",
 ]);
 
 function rankEntries(query: string): Array<{ entry: Entry; s: number }> {
@@ -110,10 +202,24 @@ function hasAnyStandaloneSignal(query: string): boolean {
   return !!top && top.s > 0;
 }
 
-type Message = { role: "assistant" | "user"; text: string; href?: string; hrefLabel?: string; chips?: string[] };
+type Message = {
+  role: "assistant" | "user";
+  text: string;
+  href?: string;
+  hrefLabel?: string;
+  chips?: string[];
+};
 
-const CLARIFY_CHIPS = ["Pricing", "Security & privacy", "Supported banks", "Export formats", "Report a conversion issue", "Something else"];
-const SOMETHING_ELSE_REPLY = "No problem — head to Contact and tell us a bit more. We read every message.";
+const CLARIFY_CHIPS = [
+  "Pricing",
+  "Security & privacy",
+  "Supported banks",
+  "Export formats",
+  "Report a conversion issue",
+  "Something else",
+];
+const SOMETHING_ELSE_REPLY =
+  "No problem — head to Contact and tell us a bit more. We read every message.";
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
@@ -128,7 +234,8 @@ export function ChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (open) scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    if (open)
+      scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, open]);
 
   const lastMatchedQuery = useRef<string | null>(null);
@@ -152,7 +259,13 @@ export function ChatWidget() {
     // was a real bug ("what is price" inheriting the previous
     // export-formats topic purely because "export formats" alone scores
     // high, with "price" contributing nothing).
-    if (!match && !isGreeting && !isSomethingElse && lastMatchedQuery.current && hasAnyStandaloneSignal(trimmed)) {
+    if (
+      !match &&
+      !isGreeting &&
+      !isSomethingElse &&
+      lastMatchedQuery.current &&
+      hasAnyStandaloneSignal(trimmed)
+    ) {
       const combined = `${lastMatchedQuery.current} ${trimmed}`;
       const combinedMatch = bestMatch(combined);
       if (combinedMatch) {
@@ -169,9 +282,20 @@ export function ChatWidget() {
       isGreeting
         ? { role: "assistant", text: GREETING, chips: STARTER_QUESTIONS }
         : isSomethingElse
-          ? { role: "assistant", text: SOMETHING_ELSE_REPLY, href: "/contact", hrefLabel: "Contact us" }
+          ? {
+              role: "assistant",
+              text: SOMETHING_ELSE_REPLY,
+              href: "/contact",
+              hrefLabel: "Contact us",
+            }
           : match
-            ? { role: "assistant", text: match.a, href: match.href, hrefLabel: match.hrefLabel, chips: CLARIFY_CHIPS }
+            ? {
+                role: "assistant",
+                text: match.a,
+                href: match.href,
+                hrefLabel: match.hrefLabel,
+                chips: CLARIFY_CHIPS,
+              }
             : { role: "assistant", text: FALLBACK, chips: CLARIFY_CHIPS },
     ]);
     setInput("");
@@ -188,7 +312,9 @@ export function ChatWidget() {
               </div>
               <div>
                 <div className="text-sm font-bold text-ink">BalanceExtract Assistant</div>
-                <div className="text-[11px] text-muted-foreground">Matched from our help articles — not AI</div>
+                <div className="text-[11px] text-muted-foreground">
+                  Matched from our help articles — not AI
+                </div>
               </div>
             </div>
             <button
@@ -209,7 +335,11 @@ export function ChatWidget() {
                       m.role === "user" ? "bg-ink" : "bg-emerald-soft"
                     }`}
                   >
-                    {m.role === "user" ? <User className="h-3 w-3 text-background" /> : <Bot className="h-3 w-3 text-emerald" />}
+                    {m.role === "user" ? (
+                      <User className="h-3 w-3 text-background" />
+                    ) : (
+                      <Bot className="h-3 w-3 text-emerald" />
+                    )}
                   </div>
                   <div
                     className={`max-w-[82%] rounded-xl px-3.5 py-2 text-sm leading-relaxed ${
@@ -218,7 +348,10 @@ export function ChatWidget() {
                   >
                     {m.text}
                     {m.href && (
-                      <Link to={m.href} className="mt-1.5 block text-xs font-semibold text-emerald hover:underline">
+                      <Link
+                        to={m.href}
+                        className="mt-1.5 block text-xs font-semibold text-emerald hover:underline"
+                      >
                         {m.hrefLabel} →
                       </Link>
                     )}

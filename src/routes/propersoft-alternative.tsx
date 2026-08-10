@@ -50,7 +50,7 @@ const FAQ: FaqItem[] = [
   },
   {
     q: "How much does BalanceExtract cost?",
-    a: "$19 a month, flat, with no page limit and every export format included in that one price rather than sold per conversion pair.",
+    a: "$79 once, with no page limit and every export format included in that one price rather than sold per conversion pair. No subscription, no renewal.",
   },
   {
     q: "Is my data uploaded?",
@@ -83,7 +83,9 @@ function Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ)) }}
       />
 
-      <Breadcrumbs trail={[{ label: "Comparisons", href: "/blog" }, { label: "ProperSoft Alternative" }]} />
+      <Breadcrumbs
+        trail={[{ label: "Comparisons", href: "/blog" }, { label: "ProperSoft Alternative" }]}
+      />
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Comparison"
@@ -95,8 +97,8 @@ function Page() {
         ProperSoft have made accountant-focused conversion utilities for years and they do the job
         they set out to do. Two structural differences matter: they sell a separate desktop
         application for each conversion pair, and their converters work on structured financial
-        files rather than PDF statements. BalanceExtract handles every direction in one browser-based
-        converter, and reads PDFs as well.
+        files rather than PDF statements. BalanceExtract handles every direction in one
+        browser-based converter, and reads PDFs as well.
       </QuickSummary>
 
       <PricingCallout competitorModel="ProperSoft licenses a separate desktop application per conversion pair, and its trial is capped at 10 transactions per file." />
@@ -131,11 +133,19 @@ function Page() {
         headers={["", "ProperSoft", "BalanceExtract"]}
         rows={[
           ["Product model", "One app per conversion pair", "One converter, all directions"],
-          ["PDF bank statements", "Not the focus — structured files", "Yes, including scanned via OCR"],
+          [
+            "PDF bank statements",
+            "Not the focus — structured files",
+            "Yes, including scanned via OCR",
+          ],
           ["Where it runs", "Windows / Mac desktop app", "Browser tab, any OS"],
           ["Installation", "Required", "None"],
-          ["Free tier", "Trial capped at 10 transactions per file", "6 pages no signup, 10 pages with an account"],
-          ["Pricing model", "Per-product licence", "$19/mo flat, unlimited pages"],
+          [
+            "Free tier",
+            "Trial capped at 10 transactions per file",
+            "6 pages no signup, 10 pages with an account",
+          ],
+          ["Pricing model", "Per-product licence", "$79 once, lifetime, unlimited pages"],
           ["Multi-account OFX/QBO files", "—", "Split by account, one sheet each"],
         ]}
       />

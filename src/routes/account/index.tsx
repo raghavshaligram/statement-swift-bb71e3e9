@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Mail, User as UserIcon, Trash2 } from "lucide-react";
-import { useSubscription } from "@/hooks/use-subscription";
+import { useSubscription, planLabel } from "@/hooks/use-subscription";
 import { AccountShell } from "@/components/account-shell";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,7 +11,10 @@ export const Route = createFileRoute("/account/")({
   head: () => ({
     meta: [
       { title: "Account — BalanceExtract" },
-      { name: "description", content: "Manage your BalanceExtract account, profile, and connected sign-in methods." },
+      {
+        name: "description",
+        content: "Manage your BalanceExtract account, profile, and connected sign-in methods.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -20,13 +23,15 @@ export const Route = createFileRoute("/account/")({
 
 function AccountPage() {
   const { user } = useAuth();
-  const { isPro, loading: subLoading } = useSubscription();
+  const { subscription, isPro, loading: subLoading } = useSubscription();
   const [displayName, setDisplayName] = useState("");
   const [saving, setSaving] = useState(false);
   const [passwordOpen, setPasswordOpen] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const initial = (user?.email ?? "?").charAt(0).toUpperCase();
-  const googleLinked = user?.app_metadata?.providers?.includes?.("google") ?? user?.app_metadata?.provider === "google";
+  const googleLinked =
+    user?.app_metadata?.providers?.includes?.("google") ??
+    user?.app_metadata?.provider === "google";
 
   useEffect(() => {
     if (!user) return;
@@ -65,7 +70,11 @@ function AccountPage() {
   }
 
   return (
-    <AccountShell eyebrow="Account" title="Account management" subtitle="Your profile and sign-in options.">
+    <AccountShell
+      eyebrow="Account"
+      title="Account management"
+      subtitle="Your profile and sign-in options."
+    >
       <div className="space-y-6">
         {/* Profile card */}
         <div className="rounded-2xl border border-border bg-background p-6 shadow-sm">
@@ -74,17 +83,24 @@ function AccountPage() {
               {initial}
             </div>
             <div className="min-w-0 flex-1">
-              <div className="text-lg font-bold text-ink">{displayName || user?.email?.split("@")[0]}</div>
+              <div className="text-lg font-bold text-ink">
+                {displayName || user?.email?.split("@")[0]}
+              </div>
               <div className="truncate text-sm text-muted-foreground">{user?.email}</div>
               {subLoading ? (
-                <span className="mt-2 inline-block h-[18px] w-20 animate-pulse rounded-full bg-surface-muted" aria-hidden />
+                <span
+                  className="mt-2 inline-block h-[18px] w-20 animate-pulse rounded-full bg-surface-muted"
+                  aria-hidden
+                />
               ) : (
                 <span
                   className={`mt-2 inline-block rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
-                    isPro ? "bg-emerald-soft text-emerald" : "bg-surface-muted text-muted-foreground"
+                    isPro
+                      ? "bg-emerald-soft text-emerald"
+                      : "bg-surface-muted text-muted-foreground"
                   }`}
                 >
-                  {isPro ? "Pro plan" : "Free plan"}
+                  {planLabel(subscription, isPro)} plan
                 </span>
               )}
             </div>

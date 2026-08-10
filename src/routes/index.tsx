@@ -28,7 +28,11 @@ import { CapabilityGrid } from "@/components/capability-grid";
 import { ComparisonSection } from "@/components/comparison-section";
 import { HomepageFaq } from "@/components/homepage-faq";
 import { BANK_LABELS } from "@/lib/pdf/bank-detection";
-import { ANONYMOUS_MAX_PAGES, SIGNED_IN_MAX_PAGES } from "@/lib/pricing-constants";
+import {
+  ANONYMOUS_MAX_PAGES,
+  SIGNED_IN_MAX_PAGES,
+  LIFETIME_PRICE_USD,
+} from "@/lib/pricing-constants";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { ClaimTag, CornerRibbon } from "@/components/claim-tag";
@@ -43,7 +47,10 @@ export const Route = createFileRoute("/")({
         content:
           "Close your books without retyping transactions — the bank statement to Excel software that works everywhere. Convert PDF bank statements to CSV and Excel on your device, free to try, unlimited pages on Pro. Works with Chase, BofA, Wells Fargo, ICICI, HDFC, SBI, Axis, Kotak and more.",
       },
-      { property: "og:title", content: "BalanceExtract — Free Bank Statement Converter (PDF to CSV & Excel)" },
+      {
+        property: "og:title",
+        content: "BalanceExtract — Free Bank Statement Converter (PDF to CSV & Excel)",
+      },
       {
         property: "og:description",
         content: "100% on-device. Unlimited pages on Pro. Real software for real accountants.",
@@ -154,7 +161,10 @@ function Landing() {
       {/* HERO — centered, clean, reference-style layout */}
       <section id="converter" className="relative overflow-hidden border-b border-border">
         <div className="absolute inset-0 grid-fintech" aria-hidden />
-        <div className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-emerald-soft/40 to-transparent" aria-hidden />
+        <div
+          className="absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-emerald-soft/40 to-transparent"
+          aria-hidden
+        />
         <div className="relative mx-auto max-w-5xl px-6 pb-12 pt-16 lg:pt-24">
           <ScrollReveal className="text-center">
             <div className="mb-5 flex justify-center">
@@ -179,7 +189,8 @@ function Landing() {
                 "convert bank statement to Excel" (480/mo, KD 2, $10.22 CPC),
                 "convert PDF to CSV" (2,400/mo). Bank coverage moved to a tag.
               */}
-              The <strong className="font-semibold text-ink">bank statement to Excel software</strong>{" "}
+              The{" "}
+              <strong className="font-semibold text-ink">bank statement to Excel software</strong>{" "}
               that runs entirely on your device. Convert bank statement to Excel, convert PDF to CSV
               and more — every row balance-checked before you export.
             </p>
@@ -257,13 +268,16 @@ function Landing() {
       <section className="border-b border-border bg-surface-muted/20 py-20">
         <div className="mx-auto grid max-w-6xl items-center gap-12 px-6 lg:grid-cols-2">
           <ScrollReveal>
-            <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Batch conversion</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-emerald">
+              Batch conversion
+            </div>
             <h2 className="mt-3 font-serif text-3xl font-bold tracking-tight text-ink sm:text-4xl">
               A year of statements, one workbook
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              Drop twelve monthly PDFs at once and get a single Excel file back — with each statement on its
-              own named tab, not merged into one undifferentiated sheet you then have to pull apart by hand.
+              Drop twelve monthly PDFs at once and get a single Excel file back — with each
+              statement on its own named tab, not merged into one undifferentiated sheet you then
+              have to pull apart by hand.
             </p>
             <ul className="mt-6 space-y-3 text-sm text-muted-foreground">
               {[
@@ -289,13 +303,15 @@ function Landing() {
       <section className="border-b border-border py-20">
         <div className="mx-auto max-w-7xl px-6">
           <ScrollReveal className="mx-auto max-w-2xl text-center">
-            <div className="text-xs font-semibold uppercase tracking-wider text-emerald">Accuracy</div>
+            <div className="text-xs font-semibold uppercase tracking-wider text-emerald">
+              Accuracy
+            </div>
             <h2 className="mt-3 font-serif text-3xl font-bold tracking-tight text-ink sm:text-4xl">
               Getting the numbers out is the easy part
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              Any tool can pull text off a PDF. The question that matters is whether the figures are right —
-              so BalanceExtract checks its own work and tells you where it isn't sure.
+              Any tool can pull text off a PDF. The question that matters is whether the figures are
+              right — so BalanceExtract checks its own work and tells you where it isn't sure.
             </p>
           </ScrollReveal>
 
@@ -328,9 +344,9 @@ function Landing() {
               A bank statement converter tested against real statements
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Named support for these banks today. Statements from other banks go through
-              the same generic parsing engine, and every row it isn't sure about is flagged
-              for you to check before export — so you always know what to trust.
+              Named support for these banks today. Statements from other banks go through the same
+              generic parsing engine, and every row it isn't sure about is flagged for you to check
+              before export — so you always know what to trust.
             </p>
           </div>
           <div className="mx-auto mt-10 grid max-w-5xl grid-cols-2 gap-3 sm:grid-cols-3">
@@ -345,10 +361,7 @@ function Landing() {
           </div>
           <div className="mt-6 text-center text-xs text-muted-foreground">
             Don't see yours?{" "}
-            <Link
-              to="/contact"
-              className="font-medium text-emerald hover:underline"
-            >
+            <Link to="/contact" className="font-medium text-emerald hover:underline">
               Request a bank profile →
             </Link>
           </div>
@@ -373,7 +386,9 @@ function Landing() {
             ].map(([stat, label]) => (
               <ScrollRevealItem key={label}>
                 <div className="text-center">
-                  <div className="font-mono text-4xl font-bold text-emerald sm:text-5xl">{stat}</div>
+                  <div className="font-mono text-4xl font-bold text-emerald sm:text-5xl">
+                    {stat}
+                  </div>
                   <div className="mt-2 text-xs text-muted-foreground sm:text-sm">{label}</div>
                 </div>
               </ScrollRevealItem>
@@ -397,8 +412,9 @@ function Landing() {
             </h2>
             <p className="mt-4 text-base leading-relaxed text-background/70">
               Competing "converters" upload your PDF to their servers, parse it there, then email
-              you the result. BalanceExtract parses everything locally using WebAssembly — the file never
-              touches the network, even though the page itself is a normal web app you load online.
+              you the result. BalanceExtract parses everything locally using WebAssembly — the file
+              never touches the network, even though the page itself is a normal web app you load
+              online.
             </p>
             <ul className="mt-6 space-y-3 text-sm">
               {[
@@ -443,12 +459,7 @@ function Landing() {
             Exports straight into the tools you already use
           </div>
           <ScrollRevealGroup className="mx-auto mt-8 flex max-w-3xl flex-wrap items-center justify-center gap-3">
-            {[
-              "QuickBooks",
-              "Tally",
-              "Xero",
-              "Google Sheets",
-            ].map((name) => (
+            {["QuickBooks", "Tally", "Xero", "Google Sheets"].map((name) => (
               <ScrollRevealItem key={name}>
                 <Link
                   to="/upload"
@@ -488,7 +499,9 @@ function Landing() {
                   <span className="text-4xl font-bold tracking-tight text-ink">$0</span>
                   <span className="text-sm text-muted-foreground">no signup required</span>
                 </div>
-                <p className="mt-2 text-sm text-muted-foreground">Prove it works on a real statement first.</p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Prove it works on a real statement first.
+                </p>
 
                 <ul className="mt-6 flex-1 space-y-3 text-sm">
                   {[
@@ -520,22 +533,27 @@ function Landing() {
                 transition={{ type: "spring", stiffness: 300, damping: 22 }}
                 className="relative flex h-full flex-col overflow-hidden rounded-2xl border-2 border-emerald bg-ink p-7 text-background shadow-lg"
               >
-                <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald/20 blur-3xl" aria-hidden />
+                <div
+                  className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-emerald/20 blur-3xl"
+                  aria-hidden
+                />
                 <CornerRibbon>No page cap</CornerRibbon>
                 <div className="flex items-center gap-3">
                   <span className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald">
-                    BalanceExtract Pro
+                    BalanceExtract Lifetime
                   </span>
                 </div>
                 <div className="mt-3 flex items-baseline gap-2">
-                  <span className="text-4xl font-bold tracking-tight">$19</span>
-                  <span className="text-sm text-background/60">/ month · flat</span>
+                  <span className="text-4xl font-bold tracking-tight">${LIFETIME_PRICE_USD}</span>
+                  <span className="text-sm text-background/60">once · lifetime</span>
                 </div>
-                <p className="mt-2 text-sm text-background/70">One price. No credits, no per-page fees.</p>
+                <p className="mt-2 text-sm text-background/70">
+                  One payment. No subscription, no renewal, ever.
+                </p>
 
                 <ul className="mt-6 flex-1 space-y-3 text-sm">
                   {[
-                    "Unlimited pages and unlimited conversions",
+                    "Unlimited pages and unlimited conversions, forever",
                     "A full year, every account, in one sitting",
                     "All seven export formats, including Tally XML",
                     "Multi-statement workbooks with a tab per statement",
@@ -552,7 +570,7 @@ function Landing() {
                   to="/account/billing"
                   className="mt-7 inline-flex h-11 items-center justify-center rounded-lg bg-emerald text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-emerald/90"
                 >
-                  Get Pro
+                  Get lifetime access
                 </Link>
               </motion.div>
             </ScrollRevealItem>

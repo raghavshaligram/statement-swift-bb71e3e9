@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { LIFETIME_PRICE_USD } from "@/lib/pricing-constants";
 
 /**
  * Our own pricing, stated plainly, for use on comparison pages.
@@ -9,9 +10,10 @@ import { Link } from "@tanstack/react-router";
  * can't verify" -- it was never "hide ours".
  *
  * The claim that actually differentiates is structural rather than numeric:
- * every competitor in this space meters by page, so their cost scales with
- * usage and ours doesn't. That framing survives a competitor changing their
- * prices next week, whereas "cheaper than X" doesn't.
+ * every competitor in this space bills you again next month (or meters by
+ * page), so their cost never stops. Ours is one payment, ever. That framing
+ * survives a competitor changing their prices next week, whereas "cheaper
+ * than X" doesn't.
  *
  * If pricing changes, this component and src/routes/pricing.tsx must change
  * together -- they are the two places a number appears.
@@ -27,13 +29,13 @@ export function PricingCallout({ competitorModel }: { competitorModel: string })
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
           <div>
             <div className="flex items-baseline gap-1.5">
-              <span className="font-mono text-3xl font-bold text-ink">$19</span>
-              <span className="text-sm text-muted-foreground">/ month · flat</span>
+              <span className="font-mono text-3xl font-bold text-ink">${LIFETIME_PRICE_USD}</span>
+              <span className="text-sm text-muted-foreground">once · lifetime</span>
             </div>
-            <p className="mt-1.5 text-sm font-semibold text-ink">Unlimited pages</p>
+            <p className="mt-1.5 text-sm font-semibold text-ink">Unlimited pages, forever</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Not a large allowance — no page limit at all. The same $19 whether you convert ten
-              pages this month or ten thousand. All seven export formats included.
+              One payment, no subscription, no renewal. Convert ten pages this year or ten thousand
+              -- same ${LIFETIME_PRICE_USD}, paid once. All seven export formats included.
             </p>
           </div>
 
@@ -51,8 +53,8 @@ export function PricingCallout({ competitorModel }: { competitorModel: string })
         </div>
 
         <p className="mt-5 border-t border-emerald/20 pt-4 text-sm text-ink/80">
-          {competitorModel} That means their bill grows as your workload does. Ours doesn&apos;t —
-          which is the whole reason we price this way.
+          {competitorModel} That means their bill grows for as long as you use it. Ours is one
+          payment, ever -- which is the whole reason we price this way.
         </p>
 
         <Link

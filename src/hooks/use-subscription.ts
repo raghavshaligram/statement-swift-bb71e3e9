@@ -28,6 +28,22 @@ export function subscriptionRef(row: SubscriptionRow | null): string | null {
 }
 
 /**
+ * The label a status badge should show for a Pro user: "Lifetime" for the
+ * one-time lifetime purchase specifically, "Pro" for anything else Pro
+ * (e.g. a future recurring subscription plan), "Free" otherwise. Shared so
+ * every badge across the app (account menu, billing page, settings,
+ * account overview) agrees -- a lifetime purchaser seeing "Pro" in one
+ * place and "Lifetime" in another reads as inconsistent, not exciting.
+ */
+export function planLabel(
+  subscription: SubscriptionRow | null,
+  isPro: boolean,
+): "Lifetime" | "Pro" | "Free" {
+  if (!isPro) return "Free";
+  return subscription?.plan_id === "lifetime" ? "Lifetime" : "Pro";
+}
+
+/**
  * The user's most recent subscription row. `status` is the source of truth for
  * Pro access and is written ONLY server-side, by whichever payment processor's
  * webhook is wired up, using the service role. The browser only ever reads it.
@@ -55,11 +71,27 @@ let cache: { userId: string; data: SubscriptionRow | null } | null = null;
 let inFlight: Promise<SubscriptionRow | null> | null = null;
 let inFlightUserId: string | null = null;
 
-/** Drop the cache so the next read re-fetches (e.g. after checkout). */
+// Every currently-mounted useSubscription() instance registers a "please
+// refetch now" callback here on mount and removes it on unmount.
+//
+// Real bug this fixes: invalidateSubscriptionCache() previously only
+// cleared the module-level cache variable, which does nothing for a
+// component that's already mounted -- its effect only re-runs when
+// [userId, authLoading, refreshKey] changes, none of which
+// invalidateSubscriptionCache() touches. So right after a successful
+// purchase, the checkout button's own "success" message showed correctly
+// (that's separate local state), but the account-menu badge and the
+// billing page's own "Current Plan" box both kept showing Free until a
+// full page reload remounted them. Now invalidation actively pushes a
+// refetch to every live subscriber, not just future ones.
+const subscribers = new Set<() => void>();
+
+/** Drop the cache AND push a refetch to every currently-mounted useSubscription() caller (e.g. after checkout). */
 export function invalidateSubscriptionCache() {
   cache = null;
   inFlight = null;
   inFlightUserId = null;
+  subscribers.forEach((notify) => notify());
 }
 
 async function fetchSubscription(userId: string): Promise<SubscriptionRow | null> {
@@ -69,22 +101,22 @@ async function fetchSubscription(userId: string): Promise<SubscriptionRow | null
   inFlightUserId = userId;
   inFlight = Promise.resolve(
     supabase
-    .from("subscriptions")
-    // select("*") rather than naming columns: the live schema may predate
-    // the provider rename, and a named column that does not exist fails the
-    // whole query. The table is RLS-scoped to the caller's own row.
-    .select("*")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(1)
-    .maybeSingle()
-    .then(({ data, error }) => {
-      const row = error ? null : ((data as SubscriptionRow) ?? null);
-      cache = { userId, data: row };
-      inFlight = null;
-      inFlightUserId = null;
-      return row;
-    })
+      .from("subscriptions")
+      // select("*") rather than naming columns: the live schema may predate
+      // the provider rename, and a named column that does not exist fails the
+      // whole query. The table is RLS-scoped to the caller's own row.
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        const row = error ? null : ((data as SubscriptionRow) ?? null);
+        cache = { userId, data: row };
+        inFlight = null;
+        inFlightUserId = null;
+        return row;
+      }),
   );
 
   return inFlight;
@@ -99,8 +131,26 @@ export function useSubscription(refreshKey = 0) {
   const cached = cache && cache.userId === userId ? cache.data : null;
   const [subscription, setSubscription] = useState<SubscriptionRow | null>(cached);
   const [loading, setLoading] = useState(cached === null);
+  // Bumped by the subscriber-notify callback below to force the effect to
+  // re-run even though none of [userId, authLoading, refreshKey] changed --
+  // see the invalidateSubscriptionCache() comment for why this exists.
+  const [pushedRefresh, setPushedRefresh] = useState(0);
 
   useEffect(() => {
+    const notify = () => setPushedRefresh((n) => n + 1);
+    subscribers.add(notify);
+    return () => {
+      subscribers.delete(notify);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Only an external, caller-driven refresh (the refreshKey prop) should
+    // trigger a NEW invalidation here. pushedRefresh changing means
+    // invalidateSubscriptionCache() already ran and already cleared the
+    // cache before notifying this instance -- re-invalidating here too
+    // would re-notify every subscriber again, including this one, forever.
+    // This effect just needs to re-run and see the already-empty cache.
     if (refreshKey > 0) invalidateSubscriptionCache();
 
     if (authLoading) return; // don't decide anything until auth is known
@@ -128,7 +178,7 @@ export function useSubscription(refreshKey = 0) {
     };
     // Keyed on the user ID (a stable string) rather than the user object,
     // whose identity changes on every render and caused an endless refetch.
-  }, [userId, authLoading, refreshKey]);
+  }, [userId, authLoading, refreshKey, pushedRefresh]);
 
   const isPro = subscription?.status === "active";
   // Report "still loading" while auth itself is unresolved. Otherwise this

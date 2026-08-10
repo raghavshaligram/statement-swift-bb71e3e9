@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { User as UserIcon, FileText, Download, Trash2, Mail } from "lucide-react";
-import { useSubscription } from "@/hooks/use-subscription";
+import { useSubscription, planLabel } from "@/hooks/use-subscription";
 import { AccountShell } from "@/components/account-shell";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,7 +12,11 @@ export const Route = createFileRoute("/account/settings")({
   head: () => ({
     meta: [
       { title: "Settings — BalanceExtract" },
-      { name: "description", content: "Configure your BalanceExtract parsing defaults, export preferences, and account information." },
+      {
+        name: "description",
+        content:
+          "Configure your BalanceExtract parsing defaults, export preferences, and account information.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -27,7 +31,7 @@ const TABS = [
 
 function SettingsPage() {
   const { user } = useAuth();
-  const { isPro, loading: subLoading } = useSubscription();
+  const { subscription, isPro, loading: subLoading } = useSubscription();
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("account");
   const [displayName, setDisplayName] = useState("");
   const [saving, setSaving] = useState(false);
@@ -52,7 +56,11 @@ function SettingsPage() {
   }
 
   return (
-    <AccountShell eyebrow="Account" title="Settings" subtitle="Customize how BalanceExtract parses and exports your statements.">
+    <AccountShell
+      eyebrow="Account"
+      title="Settings"
+      subtitle="Customize how BalanceExtract parses and exports your statements."
+    >
       <div className="grid gap-6 lg:grid-cols-[200px_1fr]">
         {/* Sub-tabs */}
         <aside className="space-y-4">
@@ -66,7 +74,9 @@ function SettingsPage() {
                   onClick={() => setTab(t.id)}
                   className={cn(
                     "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-semibold transition",
-                    active ? "bg-emerald/10 text-emerald" : "text-muted-foreground hover:bg-surface-muted",
+                    active
+                      ? "bg-emerald/10 text-emerald"
+                      : "text-muted-foreground hover:bg-surface-muted",
                   )}
                 >
                   <Icon className="h-4 w-4" /> {t.label}
@@ -76,9 +86,7 @@ function SettingsPage() {
           </nav>
           <div className="border-t border-border pt-4">
             <button
-              onClick={() =>
-                toast.info("Account deletion requires email confirmation.")
-              }
+              onClick={() => toast.info("Account deletion requires email confirmation.")}
               className="flex items-center gap-2 text-sm font-semibold text-destructive hover:underline"
             >
               <Trash2 className="h-4 w-4" /> Danger zone
@@ -93,7 +101,9 @@ function SettingsPage() {
               <p className="text-sm text-muted-foreground">Update your name and email.</p>
               <div className="mt-6 space-y-4">
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-ink">Display name</label>
+                  <label className="mb-1.5 block text-sm font-semibold text-ink">
+                    Display name
+                  </label>
                   <div className="relative">
                     <UserIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <input
@@ -123,18 +133,26 @@ function SettingsPage() {
                     conditionally rather than class-toggled. */}
                 <div className="flex items-center gap-3">
                   {subLoading ? (
-                    <span className="inline-block h-[18px] w-20 animate-pulse rounded-full bg-surface-muted" aria-hidden />
+                    <span
+                      className="inline-block h-[18px] w-20 animate-pulse rounded-full bg-surface-muted"
+                      aria-hidden
+                    />
                   ) : (
                     <span
                       className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${
-                        isPro ? "bg-emerald-soft text-emerald" : "bg-surface-muted text-muted-foreground"
+                        isPro
+                          ? "bg-emerald-soft text-emerald"
+                          : "bg-surface-muted text-muted-foreground"
                       }`}
                     >
-                      {isPro ? "Pro plan" : "Free plan"}
+                      {planLabel(subscription, isPro)} plan
                     </span>
                   )}
                   {!subLoading && !isPro && (
-                    <Link to="/account/billing" className="text-sm font-semibold text-emerald hover:underline">
+                    <Link
+                      to="/account/billing"
+                      className="text-sm font-semibold text-emerald hover:underline"
+                    >
                       Upgrade to Pro →
                     </Link>
                   )}
@@ -166,7 +184,9 @@ function SettingsPage() {
           {tab === "parsing" ? (
             <div className="rounded-2xl border border-border bg-background p-6 shadow-sm">
               <div className="text-base font-bold text-ink">Parsing defaults</div>
-              <p className="text-sm text-muted-foreground">Fine-tune how new statements are parsed.</p>
+              <p className="text-sm text-muted-foreground">
+                Fine-tune how new statements are parsed.
+              </p>
 
               <div className="mt-6 space-y-5">
                 <Toggle
@@ -204,11 +224,15 @@ function SettingsPage() {
           {tab === "export" ? (
             <div className="rounded-2xl border border-border bg-background p-6 shadow-sm">
               <div className="text-base font-bold text-ink">Export defaults</div>
-              <p className="text-sm text-muted-foreground">Set the default file format and formatting for exports.</p>
+              <p className="text-sm text-muted-foreground">
+                Set the default file format and formatting for exports.
+              </p>
 
               <div className="mt-6 space-y-5">
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-ink">Default format</label>
+                  <label className="mb-1.5 block text-sm font-semibold text-ink">
+                    Default format
+                  </label>
                   <select
                     value={defaultFormat}
                     onChange={(e) => setDefaultFormat(e.target.value as typeof defaultFormat)}
@@ -232,7 +256,9 @@ function SettingsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="mb-1.5 block text-sm font-semibold text-ink">Decimal separator</label>
+                  <label className="mb-1.5 block text-sm font-semibold text-ink">
+                    Decimal separator
+                  </label>
                   <div className="flex gap-2">
                     {[".", ","].map((v) => (
                       <button

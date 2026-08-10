@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SITE_ORIGIN } from "@/lib/site";
+import { LIFETIME_PRICE_USD } from "@/lib/pricing-constants";
 import { Check, X, ShieldCheck, Zap, Landmark, Star, ArrowRight } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/site-header";
 import { FaqList, type FaqItem } from "@/components/faq-list";
@@ -13,10 +14,13 @@ export const Route = createFileRoute("/pricing")({
       {
         name: "description",
         content:
-          "One flat Pro price. Genuinely unlimited pages. Convert PDF bank statements to Excel, CSV, Tally, OFX, QIF, and QBO — entirely on your device.",
+          "One-time lifetime price. Genuinely unlimited pages, forever. Convert PDF bank statements to Excel, CSV, Tally, OFX, QIF, and QBO — entirely on your device.",
       },
       { property: "og:title", content: "Pricing — BalanceExtract" },
-      { property: "og:description", content: "Flat monthly Pro plan. Unlimited pages. No credits, no caps." },
+      {
+        property: "og:description",
+        content: "Pay once, unlimited pages forever. No subscription, no credits, no caps.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -28,7 +32,10 @@ const FREE_ROWS: Array<[string, boolean]> = [
   ["6 pages per conversion, no signup needed", true],
   ["10-page lifetime allowance once signed up", true],
   ["Excel and CSV export", true],
-  ["Named detection for 23+ major banks (US, UK, Canada, India) + generic parser for any other bank", true],
+  [
+    "Named detection for 23+ major banks (US, UK, Canada, India) + generic parser for any other bank",
+    true,
+  ],
   ["100% on-device — nothing ever uploaded", true],
   ["Tally XML, OFX, QIF, QBO, IIF export", false],
 ];
@@ -121,11 +128,26 @@ const COMPARISON_ROWS: Array<{ label: string; values: Record<string, string> }> 
 ];
 
 const FAQ: FaqItem[] = [
-  { q: "How do the free pages work?", a: "6 pages per statement with no signup at all, and no persistent tracking on that anonymous tier — convert as many separate statements as you like. Signing up gives you 10 pages total, but as a lifetime pool shared across every PDF page and photo/scan you convert combined, not a per-statement allowance — once those 10 pages are used, you'll need Pro for anything more." },
-  { q: "What counts as a \"page\"?", a: "Each page of the PDF you upload, counted before any processing starts." },
-  { q: "What happens if my statement is longer than the limit?", a: "You'll see the page count and a clear message before anything processes — no partial or silently-truncated results. Sign up free for the 10-page limit, or upgrade to Pro for no limit at all." },
-  { q: "Which banks and formats are supported?", a: "Named detection for 23+ banks across the US, UK, Canada, and India, plus a generic parser for any other bank's text-based PDF. Six export formats on Pro; Excel and CSV on Free." },
-  { q: "Does it work with scanned PDFs?", a: "Yes, via on-device OCR, automatically when a scanned page is detected — slower and less precise than reading real text, so double-check results." },
+  {
+    q: "How do the free pages work?",
+    a: "6 pages per statement with no signup at all, and no persistent tracking on that anonymous tier — convert as many separate statements as you like. Signing up gives you 10 pages total, but as a lifetime pool shared across every PDF page and photo/scan you convert combined, not a per-statement allowance — once those 10 pages are used, you'll need Pro for anything more.",
+  },
+  {
+    q: 'What counts as a "page"?',
+    a: "Each page of the PDF you upload, counted before any processing starts.",
+  },
+  {
+    q: "What happens if my statement is longer than the limit?",
+    a: "You'll see the page count and a clear message before anything processes — no partial or silently-truncated results. Sign up free for the 10-page limit, or upgrade to Pro for no limit at all.",
+  },
+  {
+    q: "Which banks and formats are supported?",
+    a: "Named detection for 23+ banks across the US, UK, Canada, and India, plus a generic parser for any other bank's text-based PDF. Six export formats on Pro; Excel and CSV on Free.",
+  },
+  {
+    q: "Does it work with scanned PDFs?",
+    a: "Yes, via on-device OCR, automatically when a scanned page is detected — slower and less precise than reading real text, so double-check results.",
+  },
 ];
 
 function Pricing() {
@@ -143,17 +165,26 @@ function Pricing() {
             Stop retyping bank statements
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            Convert PDF bank statements to Excel, CSV, Tally, OFX, QIF, and QBO — entirely on your device.
-            Try instantly with no signup, or sign up free for more.
+            Convert PDF bank statements to Excel, CSV, Tally, OFX, QIF, and QBO — entirely on your
+            device. Try instantly with no signup, or sign up free for more.
           </p>
 
           {/* Trust row */}
           <div className="mx-auto mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-emerald" /> <span className="font-semibold text-ink">0 bytes</span> uploaded, ever</span>
+            <span className="inline-flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-emerald" />{" "}
+              <span className="font-semibold text-ink">0 bytes</span> uploaded, ever
+            </span>
             <span className="text-border">·</span>
-            <span className="inline-flex items-center gap-2"><Zap className="h-4 w-4 text-emerald" /> <span className="font-semibold text-ink">Seconds</span> per statement</span>
+            <span className="inline-flex items-center gap-2">
+              <Zap className="h-4 w-4 text-emerald" />{" "}
+              <span className="font-semibold text-ink">Seconds</span> per statement
+            </span>
             <span className="text-border">·</span>
-            <span className="inline-flex items-center gap-2"><Landmark className="h-4 w-4 text-emerald" /> <span className="font-semibold text-ink">23+ banks</span> named, works with any bank</span>
+            <span className="inline-flex items-center gap-2">
+              <Landmark className="h-4 w-4 text-emerald" />{" "}
+              <span className="font-semibold text-ink">23+ banks</span> named, works with any bank
+            </span>
           </div>
         </div>
 
@@ -161,7 +192,9 @@ function Pricing() {
         <div className="mx-auto mt-14 grid max-w-5xl gap-6 px-6 lg:grid-cols-2">
           {/* FREE */}
           <div className="rounded-2xl border border-border bg-card p-8">
-            <div className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">Free</div>
+            <div className="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Free
+            </div>
             <p className="mt-1 text-sm text-muted-foreground">Try it instantly</p>
             <div className="mt-4 flex items-baseline gap-2">
               <span className="font-mono text-4xl font-bold text-ink">$0</span>
@@ -181,7 +214,9 @@ function Pricing() {
                   ) : (
                     <X className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground/50" />
                   )}
-                  <span className={ok ? "text-ink" : "text-muted-foreground/70 line-through"}>{label}</span>
+                  <span className={ok ? "text-ink" : "text-muted-foreground/70 line-through"}>
+                    {label}
+                  </span>
                 </li>
               ))}
             </ul>
@@ -192,17 +227,21 @@ function Pricing() {
             <div className="absolute right-6 top-6 inline-flex items-center gap-1 rounded-full bg-emerald px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
               <Star className="h-3 w-3" /> Best value
             </div>
-            <div className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald">BalanceExtract Pro</div>
-            <p className="mt-1 text-sm text-background/70">For unlimited page counts and every export format</p>
+            <div className="font-mono text-xs font-semibold uppercase tracking-wider text-emerald">
+              BalanceExtract Lifetime
+            </div>
+            <p className="mt-1 text-sm text-background/70">
+              For unlimited page counts and every export format, forever
+            </p>
             <div className="mt-4 flex items-baseline gap-2">
-              <span className="font-mono text-4xl font-bold">$19</span>
-              <span className="text-sm text-background/60">/ month · flat</span>
+              <span className="font-mono text-4xl font-bold">${LIFETIME_PRICE_USD}</span>
+              <span className="text-sm text-background/60">once · lifetime</span>
             </div>
             <Link
               to="/account/billing"
               className="mt-6 inline-flex w-full items-center justify-center rounded-md bg-emerald px-5 py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-emerald/90"
             >
-              Get Pro
+              Get lifetime access
             </Link>
             <ul className="mt-8 space-y-3 text-sm">
               {PRO_ROWS.map((label) => (
@@ -221,17 +260,22 @@ function Pricing() {
         <div className="mx-auto max-w-5xl px-6">
           <div className="rounded-2xl border-2 border-emerald/40 bg-emerald-soft/40 p-8">
             <h2 className="text-center text-2xl font-bold tracking-tight text-ink sm:text-3xl">
-              Every competitor here caps your pages and charges more as you grow. We don't.
+              Every competitor here bills you again next month. We don't -- ever.
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-center text-sm leading-relaxed text-accent-foreground">
-              BalanceExtract's Pro tier is <strong className="font-bold text-ink">one flat price</strong>,{" "}
-              <strong className="font-bold text-ink">genuinely unlimited pages</strong> — not a bigger number,
-              not a higher tier to unlock. It's the one structural thing none of them do.
+              BalanceExtract's Pro tier is a{" "}
+              <strong className="font-bold text-ink">one-time payment</strong>,{" "}
+              <strong className="font-bold text-ink">genuinely unlimited pages</strong> — not a
+              subscription that renews, not a bigger number to unlock next month. Pay once, keep it.
             </p>
             <p className="mx-auto mt-4 max-w-2xl text-center text-xs text-muted-foreground">
-              Cheapest competitor plan: <span className="font-mono font-semibold text-ink">$15/mo for 400 pages</span>.
-              Ours: <span className="font-mono font-semibold text-emerald">unlimited</span>, same price whether
-              you convert 10 pages or 10,000.
+              Cheapest competitor plan:{" "}
+              <span className="font-mono font-semibold text-ink">$15/mo for 400 pages</span>, billed
+              forever. Ours:{" "}
+              <span className="font-mono font-semibold text-emerald">
+                ${LIFETIME_PRICE_USD} once
+              </span>
+              , unlimited pages, no renewal.
             </p>
             {/*
               Sourcing note, deliberately visible rather than buried.
@@ -249,9 +293,9 @@ function Pricing() {
               one doesn't expire.
             */}
             <p className="mx-auto mt-3 max-w-2xl text-center text-xs text-muted-foreground/70">
-              Competitor figures are entry-tier list prices taken from each vendor&apos;s own pricing
-              page in August 2026, and may have changed since. Please check them directly before
-              deciding — we&apos;d rather you verify than take our word for it.
+              Competitor figures are entry-tier list prices taken from each vendor&apos;s own
+              pricing page in August 2026, and may have changed since. Please check them directly
+              before deciding — we&apos;d rather you verify than take our word for it.
             </p>
           </div>
 
@@ -280,7 +324,9 @@ function Pricing() {
                       <td
                         key={c.key}
                         className={`px-4 py-4 align-top text-xs leading-relaxed ${
-                          c.highlight ? "bg-emerald-soft/40 font-semibold text-ink" : "text-muted-foreground"
+                          c.highlight
+                            ? "bg-emerald-soft/40 font-semibold text-ink"
+                            : "text-muted-foreground"
                         }`}
                       >
                         {row.values[c.key]}
@@ -297,7 +343,9 @@ function Pricing() {
       {/* Why choose */}
       <section className="border-b border-border py-20">
         <div className="mx-auto max-w-5xl px-6">
-          <h2 className="text-center text-3xl font-bold tracking-tight text-ink">Why choose BalanceExtract</h2>
+          <h2 className="text-center text-3xl font-bold tracking-tight text-ink">
+            Why choose BalanceExtract
+          </h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             {[
               [
@@ -325,7 +373,9 @@ function Pricing() {
       {/* FAQ */}
       <section className="border-b border-border py-20">
         <div className="mx-auto max-w-3xl px-6">
-          <h2 className="text-center text-3xl font-bold tracking-tight text-ink">Frequently asked questions</h2>
+          <h2 className="text-center text-3xl font-bold tracking-tight text-ink">
+            Frequently asked questions
+          </h2>
           <FaqList items={FAQ} />
         </div>
       </section>
@@ -334,7 +384,9 @@ function Pricing() {
       <section className="py-20">
         <div className="mx-auto max-w-4xl px-6">
           <div className="rounded-2xl bg-ink p-10 text-center text-background shadow-xl">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Ready to stop retyping transactions?</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Ready to stop retyping transactions?
+            </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm text-background/70">
               6 pages free, no signup. 10 pages free with an account. No credit card, ever, on Free.
             </p>

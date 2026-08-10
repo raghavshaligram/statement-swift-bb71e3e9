@@ -3,7 +3,7 @@ import { Check, Minus, CreditCard } from "lucide-react";
 import { AccountShell } from "@/components/account-shell";
 import { usePageUsage } from "@/hooks/use-page-usage";
 import { SIGNED_IN_MAX_PAGES, LIFETIME_PRICE_USD } from "@/lib/pricing-constants";
-import { useSubscription } from "@/hooks/use-subscription";
+import { useSubscription, planLabel } from "@/hooks/use-subscription";
 import { PayPalCheckoutButton } from "@/components/paypal-checkout-button";
 
 export const Route = createFileRoute("/account/billing")({
@@ -80,7 +80,7 @@ function BillingPage() {
           </div>
           <div className="mt-2 flex items-center gap-3">
             <div className="text-2xl font-bold tracking-tight text-ink">
-              {subLoading ? "…" : isPro ? "Pro" : "Free"}
+              {subLoading ? "…" : planLabel(subscription, isPro)}
             </div>
             <span
               className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${

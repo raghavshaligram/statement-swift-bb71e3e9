@@ -52,7 +52,7 @@ const FAQ: FaqItem[] = [
   },
   {
     q: "How much does BalanceExtract cost?",
-    a: "$19 a month, flat, with no page limit — the same price whether you convert ten pages or ten thousand, and all seven export formats are included. Before that, 6 pages per conversion with no signup at all, or 10 pages as a lifetime pool once you make an account.",
+    a: "$79 once, with no page limit — the same price whether you convert ten pages or ten thousand, and all seven export formats are included. No subscription, no renewal. Before that, 6 pages per conversion with no signup at all, or 10 pages as a lifetime pool once you make an account.",
   },
   {
     q: "What happens to my data if I stop paying?",
@@ -85,7 +85,9 @@ function Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ)) }}
       />
 
-      <Breadcrumbs trail={[{ label: "Comparisons", href: "/blog" }, { label: "DocuClipper Alternative" }]} />
+      <Breadcrumbs
+        trail={[{ label: "Comparisons", href: "/blog" }, { label: "DocuClipper Alternative" }]}
+      />
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Comparison"
@@ -101,22 +103,20 @@ function Page() {
         distinction is the decision.
       </QuickSummary>
 
-      <PricingCallout competitorModel="DocuClipper meters by page — their own pricing page is titled &quot;Pay by Pages Processed&quot;, and every tier carries a monthly page allowance." />
+      <PricingCallout competitorModel='DocuClipper meters by page — their own pricing page is titled "Pay by Pages Processed", and every tier carries a monthly page allowance.' />
 
       <ArticleProse>
         <p>
-          Most "alternative" pages are a pricing table with the author's product coloured green. This
-          one deliberately isn't. We researched DocuClipper's entry-tier price across ten sources in
-          August 2026 and got nine different answers, nearly all of them published by competitors.
-          Rather than add a tenth, check{" "}
+          Most "alternative" pages are a pricing table with the author's product coloured green.
+          This one deliberately isn't. We researched DocuClipper's entry-tier price across ten
+          sources in August 2026 and got nine different answers, nearly all of them published by
+          competitors. Rather than add a tenth, check{" "}
           <a href="https://www.docuclipper.com/pricing/" rel="nofollow noopener" target="_blank">
             DocuClipper's own pricing page
           </a>{" "}
           and ours, and compare them yourself.
         </p>
-        <p>
-          What follows is the part that doesn't change between billing cycles.
-        </p>
+        <p>What follows is the part that doesn't change between billing cycles.</p>
       </ArticleProse>
 
       <ArticleH2>The architectural difference</ArticleH2>
@@ -128,7 +128,11 @@ function Page() {
           ["Works offline once loaded", "No", "Yes"],
           ["Approach to layouts", "Template library plus AI", "Infers structure from the document"],
           ["QuickBooks / Xero direct sync", "Yes", "No — exports a file you import"],
-          ["Pricing model", "Metered — priced by pages processed", "$19/mo flat, unlimited pages"],
+          [
+            "Pricing model",
+            "Metered — priced by pages processed",
+            "$79 once, lifetime, unlimited pages",
+          ],
           ["Cost as volume grows", "Rises with usage", "Unchanged"],
           ["Free tier", "Trial only", "6 pages no signup, 10 pages with an account"],
           ["Rows it isn't sure about", "—", "Flagged for review before export"],

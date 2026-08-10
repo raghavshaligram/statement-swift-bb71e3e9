@@ -50,7 +50,7 @@ const FAQ: FaqItem[] = [
   },
   {
     q: "How much does BalanceExtract cost?",
-    a: "$19 a month, flat, with no page limit, and every export format included in that one price rather than sold separately. Before that, 6 pages per conversion with no signup, or 10 pages as a lifetime pool with a free account.",
+    a: "$79 once, with no page limit, and every export format included in that one price rather than sold separately. No subscription, no renewal. Before that, 6 pages per conversion with no signup, or 10 pages as a lifetime pool with a free account.",
   },
   {
     q: "What if a statement converts badly?",
@@ -83,7 +83,9 @@ function Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(FAQ)) }}
       />
 
-      <Breadcrumbs trail={[{ label: "Comparisons", href: "/blog" }, { label: "MoneyThumb Alternative" }]} />
+      <Breadcrumbs
+        trail={[{ label: "Comparisons", href: "/blog" }, { label: "MoneyThumb Alternative" }]}
+      />
       <ArticleBackLink />
       <ArticleHero
         eyebrow="Comparison"
@@ -122,8 +124,8 @@ function Page() {
         <p>
           MoneyThumb's lineup is format-specific: pdf2qbo for QuickBooks, pdf2csv for spreadsheets,
           pdf2qfx for Quicken, pdf2ofx, pdf2qif, and the 2qbo Convert Pro bundle. Each is a separate
-          desktop application with its own licence. Their Pro bundles pair a lifetime Convert licence
-          with a one-year PDF+ licence, and Express licences expire after 50 days.
+          desktop application with its own licence. Their Pro bundles pair a lifetime Convert
+          licence with a one-year PDF+ licence, and Express licences expire after 50 days.
         </p>
         <p>
           That's a reasonable model if you only ever need one format. It's an awkward one if you
@@ -139,7 +141,11 @@ function Page() {
           ["Statement leaves your device", "No on desktop; yes on cloud", "No"],
           ["Installation", "Required", "None"],
           ["Licence model", "Per product; some licences time-limited", "One plan, all formats"],
-          ["Pricing model", "Per-format licence; cloud sold in conversion bundles", "$19/mo flat, unlimited pages"],
+          [
+            "Pricing model",
+            "Per-format licence; cloud sold in conversion bundles",
+            "$79 once, lifetime, unlimited pages",
+          ],
           ["Free tier", "Trial", "6 pages no signup, 10 pages with an account"],
           ["OCR for scans", "PinPoint OCR, statement-specific", "In-browser OCR"],
           ["Row-level confidence flags", "—", "Yes, with balance reconciliation"],
