@@ -58,19 +58,32 @@ async function getAccessToken(): Promise<string> {
   return data.access_token as string;
 }
 
+// See paypal-config for why these are required: the browser pre-flights
+// every functions.invoke() call, and a missing CORS header blocks it.
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Max-Age": "86400",
+};
+const jsonHeaders = { ...corsHeaders, "Content-Type": "application/json" };
+
 Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
   if (req.method !== "POST") {
-    return new Response("Method not allowed", { status: 405 });
+    return new Response("Method not allowed", { status: 405, headers: corsHeaders });
   }
 
   try {
     const { orderId } = await req.json();
     if (!orderId || typeof orderId !== "string") {
-      return new Response("Missing orderId", { status: 400 });
+      return new Response("Missing orderId", { status: 400, headers: corsHeaders });
     }
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) return new Response("Unauthorized", { status: 401 });
+    if (!authHeader) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -80,7 +93,8 @@ Deno.serve(async (req: Request) => {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
-    if (userError || !user) return new Response("Unauthorized", { status: 401 });
+    if (userError || !user)
+      return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
     const accessToken = await getAccessToken();
     const captureRes = await fetch(`${paypalApiBase()}/v2/checkout/orders/${orderId}/capture`, {
@@ -94,7 +108,7 @@ Deno.serve(async (req: Request) => {
     if (!captureRes.ok) {
       const body = await captureRes.text();
       console.error("PayPal capture failed:", captureRes.status, body);
-      return new Response("Failed to capture PayPal order", { status: 502 });
+      return new Response("Failed to capture PayPal order", { status: 502, headers: corsHeaders });
     }
 
     const captured = await captureRes.json();
@@ -112,7 +126,10 @@ Deno.serve(async (req: Request) => {
         customId,
         userId: user.id,
       });
-      return new Response("Order does not belong to this account", { status: 403 });
+      return new Response("Order does not belong to this account", {
+        status: 403,
+        headers: corsHeaders,
+      });
     }
 
     if (captureStatus !== "COMPLETED") {
@@ -120,7 +137,7 @@ Deno.serve(async (req: Request) => {
       // source. Nothing to grant; the buyer sees PayPal's own error.
       return new Response(JSON.stringify({ status: captureStatus ?? "unknown" }), {
         status: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: jsonHeaders,
       });
     }
 
@@ -143,15 +160,15 @@ Deno.serve(async (req: Request) => {
 
     if (upsertError) {
       console.error("Failed to record lifetime purchase:", upsertError);
-      return new Response("Database write failed", { status: 500 });
+      return new Response("Database write failed", { status: 500, headers: corsHeaders });
     }
 
     return new Response(JSON.stringify({ status: "COMPLETED" }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: jsonHeaders,
     });
   } catch (err) {
     console.error("paypal-capture-order error:", err);
-    return new Response("Internal error", { status: 500 });
+    return new Response("Internal error", { status: 500, headers: corsHeaders });
   }
 });
