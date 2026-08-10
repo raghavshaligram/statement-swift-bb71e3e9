@@ -30,3 +30,10 @@ Then redeploy all four functions and confirm the PayPal buttons render on `/acco
 - A shared `corsHeaders` constant per function (Edge functions don't share modules unless placed in `supabase/functions/_shared/`; a small `_shared/cors.ts` is the cleaner option and will be used).
 - No frontend changes needed — `PayPalCheckoutButton` already handles `configured: true` and renders the SDK buttons once the call succeeds.
 - Environment stays `sandbox` (per `PAYPAL_ENV`); flipping to live is just a secret change later.
+
+## Unrelated pre-existing build errors
+
+The project currently fails typecheck for reasons unrelated to PayPal, and these will be fixed in the same pass:
+
+- Eight converter/landing routes pass a hero without the now-required `publishedDate` field.
+- `src/lib/enrich/categorize.ts:396` compares a `-1 | 1` value against `0`, which can never match.
