@@ -2,21 +2,25 @@ project_id = "nszosplsazwdxqxkztfo"
 
 # PayPal one-time lifetime checkout (Orders API, not the old removed
 # Subscriptions API -- see the 20260805 migration and each function's own
-# comment for why). Two functions are invoked from the browser via
-# supabase.functions.invoke, carrying the user's own Supabase JWT, and stay
-# on the platform default (verify_jwt = true). The webhook is called by
-# PayPal's own servers, which cannot supply a Supabase JWT at all -- it
-# must be verify_jwt = false, with its own signature verification against
-# PayPal's API standing in as the real auth check (see that function).
+# comment for why).
+#
+# All four run with verify_jwt = false. The platform gateway's own JWT
+# check rejected valid user sessions outright (401 "Unauthorized" before
+# the function ever booted) once this project moved to asymmetric signing
+# keys, so create-order/capture-order do the auth check themselves:
+# each validates the caller's Authorization bearer via
+# supabase.auth.getUser(token) and refuses the request without a real
+# user. The webhook is called by PayPal's servers, which cannot supply a
+# Supabase JWT at all, and verifies PayPal's own signature instead.
 
 [functions.paypal-config]
 verify_jwt = false
 
 [functions.paypal-create-order]
-verify_jwt = true
+verify_jwt = false
 
 [functions.paypal-capture-order]
-verify_jwt = true
+verify_jwt = false
 
 [functions.paypal-webhook]
 verify_jwt = false
