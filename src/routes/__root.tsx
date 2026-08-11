@@ -86,17 +86,34 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "BalanceExtract is a bank statement converter that turns PDF statements into clean, editable Excel spreadsheets — 100% on-device. Works with 23+ banks across the US, UK, Canada, and India.",
       },
       { name: "author", content: "BalanceExtract" },
-      { property: "og:title", content: "BalanceExtract — Bank Statement Converter & Excel Software" },
+      {
+        property: "og:title",
+        content: "BalanceExtract — Bank Statement Converter & Excel Software",
+      },
       {
         property: "og:description",
-        content: "Convert PDF bank statements to Excel, CSV, Tally, OFX, QIF, QBO. 100% on-device. Free up to 10 pages, lifetime, once signed up.",
+        content:
+          "Convert PDF bank statements to Excel, CSV, Tally, OFX, QIF, QBO. 100% on-device. Free up to 10 pages, lifetime, once signed up.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      // Full icon set, not just the legacy .ico. The old favicon.ico only
+      // ever contained 16x16 and 32x32 -- below Google's recommended 48x48
+      // minimum for showing a favicon in search results at all, which is
+      // very likely why Search Console wasn't picking one up. favicon.svg
+      // is listed first so modern browsers that support it skip straight to
+      // a crisp, resolution-independent icon; favicon.ico (now rebuilt with
+      // a 48x48 frame included) remains for legacy/fallback support.
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/icon-48.png", sizes: "48x48", type: "image/png" },
+      { rel: "icon", href: "/icon-96.png", sizes: "96x96", type: "image/png" },
+      { rel: "icon", href: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { rel: "icon", href: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -119,7 +136,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             "@type": "Offer",
             price: "0",
             priceCurrency: "USD",
-            description: "Free tier: 6 pages per conversion with no signup, or a 10-page lifetime allowance once signed up.",
+            description:
+              "Free tier: 6 pages per conversion with no signup, or a 10-page lifetime allowance once signed up.",
           },
         }),
       },
